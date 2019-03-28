@@ -1,0 +1,92 @@
+package monitor.goodsHouse.service.impl;
+
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.goodsHouse.bean.entity.Wzzdb;
+import monitor.goodsHouse.dao.IPartsDao;
+import monitor.goodsHouse.service.IPartsService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:43:24
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class PartsServiceImpl implements IPartsService{
+	private IPartsDao partsDao;
+
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws Exception {
+		try {
+			return partsDao.getPartsMenu(squ);
+		} catch (Exception e) {
+			throw new Exception("加载部件目录失败"+e.getMessage());
+		}
+	}
+
+	public IPartsDao getPartsDao() {
+		return partsDao;
+	}
+
+	public void setPartsDao(IPartsDao partsDao) {
+		this.partsDao = partsDao;
+	}
+
+	@Override
+	public PageInfoVo selectChildMenu(PageInfoVo page, String squ)
+			throws Exception {
+		try {
+			return partsDao.selectChildMenu(page, squ);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+	}
+/**
+ * 添加子目
+  * addMenu:接口实现
+  * @author 唐青
+  * @date  2017-10-16 下午6:36:17
+  * @param wzz
+  * @throws Exception
+ */
+	@Override
+	public void addMenu(Wzzdb wzz) throws Exception {
+		try {
+			partsDao.addMenu(wzz);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+
+		}
+		
+	}
+
+@Override
+public void updateMenu(Wzzdb wzz) throws Exception {
+	try {
+		partsDao.updateMenu(wzz);
+	} catch (Exception e) {
+		throw new Exception(e.getMessage());
+
+	}
+	
+}
+
+@Override
+public void delChildMenu(String squ) throws Exception {
+	try {
+		partsDao.delChildMenu(squ);
+	} catch (Exception e) {
+		throw new Exception(e.getMessage());
+
+	}
+	
+}
+	
+	
+}

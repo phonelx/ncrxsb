@@ -1,0 +1,128 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 17, 2011 3:51:00 PM
+*/
+package monitor.registry.bean.entity;
+
+/** 
+ * 实体关系表 对应的实体bean
+ * @author  liangxj
+ * @datetime  May 17, 2011 3:51:00 PM
+ */
+public class Relation {
+	//编号
+	private int squ ;
+	//关系名称
+	private String name ;
+	//关系描述
+	private String descb ;
+	//实体编号
+	private int entitySqu ;
+	//参照实体的编号
+	private int refEntitySqu ;
+	//字段编号
+	private int fieldSqu ;
+	//参照字段的编号
+	private int refFieldSqu ;
+	//关系类型  "1:n" 一对多，"m:n" 多对多
+	private String relationType ;
+	/** 
+	 * @return squ 
+	 */
+	public int getSqu() {
+		return squ;
+	}
+	/** 
+	 */
+	
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+	/** 
+	 * @return name 
+	 */
+	public String getName() {
+		return name;
+	}
+	/** 
+	 */
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	/** 
+	 * @return descb 
+	 */
+	public String getDescb() {
+		return descb;
+	}
+	/** 
+	 */
+	
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	/** 
+	 * @return entitySqu 
+	 */
+	public int getEntitySqu() {
+		return entitySqu;
+	}
+	/** 
+	 */
+	
+	public void setEntitySqu(int entitySqu) {
+		this.entitySqu = entitySqu;
+	}
+	/** 
+	 * @return refEntitySqu 
+	 */
+	public int getRefEntitySqu() {
+		return refEntitySqu;
+	}
+	/** 
+	 */
+	
+	public void setRefEntitySqu(int refEntitySqu) {
+		this.refEntitySqu = refEntitySqu;
+	}
+	/** 
+	 * @return fieldSqu 
+	 */
+	public int getFieldSqu() {
+		return fieldSqu;
+	}
+	/** 
+	 */
+	
+	public void setFieldSqu(int fieldSqu) {
+		this.fieldSqu = fieldSqu;
+	}
+	/** 
+	 * @return refFieldSqu 
+	 */
+	public int getRefFieldSqu() {
+		return refFieldSqu;
+	}
+	/** 
+	 */
+	
+	public void setRefFieldSqu(int refFieldSqu) {
+		this.refFieldSqu = refFieldSqu;
+	}
+	/** 
+	 * @return relationType 
+	 */
+	public String getRelationType() {
+		return relationType;
+	}
+	/** 
+	 */
+	
+	public void setRelationType(String relationType) {
+		this.relationType = relationType;
+	}
+	
+}

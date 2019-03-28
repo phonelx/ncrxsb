@@ -1,0 +1,25 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="goodsHouse" extends="monitor-struts-default">
+		<!-- 跳转到应用管理页面 -->
+		 <action name="goStentsIndex" class="stentsAction" method="goStentsIndex">
+			<result name="success">pages/goodsHouse/stentsTree.jsp</result>
+		</action> 
+		<!--  查询部件-->
+		<action name="queryChileStents" class="stentsAction" method="queryChileStents">
+		</action> 
+		<!-- 添加部件 -->
+		<action name="addStents" class="stentsAction" method="addStents">
+		</action> 
+		<!-- 修改部件 -->
+		<action name="editStents" class="stentsAction" method="editStents">
+		</action> 
+		<!-- 删除部件 -->
+		<action name="deleteStents" class="stentsAction" method="deleteStents">
+		</action> 
+
+		
+	</package>
+</struts>

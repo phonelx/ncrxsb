@@ -1,0 +1,498 @@
+package monitor.goodsHouse.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.goodsHouse.bean.entity.Img;
+import monitor.goodsHouse.bean.entity.ImgFl;
+import monitor.goodsHouse.bean.entity.Zhbj;
+import monitor.goodsHouse.dao.IImgDao;
+import monitor.user.bean.vo.PageInfoVo;
+
+public class ImgDaoImpl extends BaseDAO implements IImgDao {
+	
+	private void closeCon(Connection conn, PreparedStatement pstmt, ResultSet rs)
+			throws SQLException {
+		// 关闭连接
+		if (rs != null) {
+			rs.close();
+		}
+		if (pstmt != null) {
+			pstmt.close();
+		}
+		if (conn != null) {
+			conn.close();
+		}
+	}
+
+	@Override
+	public String addImgFl(ImgFl imgFl) {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String sql="INSERT INTO PROJECT_IMGFL(FLMC,FLDM)"
+				+ "VALUES(?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, imgFl.getFLMC());
+			pstmt.setString(2, imgFl.getFLDM());
+			
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "addSuccess";
+	}
+
+	@Override
+	public int delImgFl(String squ) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int i = 0;
+		try {
+			try {
+				conn = datasource.getConnection();
+				String sql="SELECT COUNT(*) FROM PROJCRT_IMG WHERE TPFL='"+squ+"'";
+				
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				while(rs.next()){
+					i = rs.getInt(1);
+				}
+				this.closeCon(null, pstmt, rs);
+				if(i==0){
+					String sql1="DELETE FROM PROJECT_IMGFL WHERE SQU=?";
+					pstmt = conn.prepareStatement(sql1);
+					pstmt.setString(1,squ);
+					pstmt.executeUpdate();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}finally{
+			try {
+				this.closeCon(conn, pstmt, rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return i;
+		
+	}
+
+	@Override
+	public String editImgFl(ImgFl imgFl) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			String sql = "UPDATE PROJECT_IMGFL SET FLMC=?,FLDM=? where SQU = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, imgFl.getFLMC());
+			pstmt.setString(2, imgFl.getFLDM());
+			pstmt.setString(3, imgFl.getSQU());
+			
+			
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "editSuccess";
+
+	}
+
+	@Override
+	public List<Map<String, String>> getImgFlList() {
+		List<Map<String, String>> list = new ArrayList<>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			
+			StringBuffer sbsql = new StringBuffer();
+			sbsql.append(" SELECT * FROM ");
+			sbsql.append(" PROJECT_IMGFL ");	
+			pstmt = conn.prepareStatement(sbsql.toString());
+			rs = pstmt.executeQuery();
+			Map<String, String> map = null;
+			while(rs.next()){
+				 map = new HashMap<>();
+				map.put("SQU", rs.getString("SQU"));
+				map.put("FLMC", rs.getString("FLMC"));
+				map.put("FLDM", rs.getString("FLDM"));
+				
+				list.add(map);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}finally{
+			try {
+				this.closeCon(conn, pstmt, rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+
+	@Override
+	public PageInfoVo getImgFlXq(PageInfoVo page, String key) {
+		
+				List<ImgFl> list = new ArrayList<ImgFl>();
+				Connection conn = null;
+				PreparedStatement pstmt = null;
+				ResultSet rs = null;
+				try {
+					conn = datasource.getConnection();
+					StringBuffer sql = new StringBuffer();
+					String query = "";
+					
+					sql.append("SELECT COUNT(*) FROM (");
+					sql.append("  SELECT* FROM PROJECT_IMGFL WHERE FLMC LIKE '%"+key+"%')");		
+					conn = datasource.getConnection();
+					pstmt = conn.prepareStatement(sql.toString());
+					rs = pstmt.executeQuery();
+					//获取总数
+					if (rs.next()) {
+						page.setTotal(rs.getInt(1));
+					}
+					this.closeCon(null, pstmt, rs);
+					//开始数
+					int startIndex = (page.getPageNumber() - 1) * page.getPageSize() + 1;
+					
+					StringBuffer sbsql = new StringBuffer();
+					sbsql.append(" SELECT * FROM ( ");
+					sbsql.append(" SELECT A.* ,ROWNUM RN FROM ( ");
+					sbsql.append(" SELECT * FROM ");
+					sbsql.append(" PROJECT_IMGFL WHERE FLMC LIKE '%"+key+"%') A) ");
+					sbsql.append("WHERE RN<"+(startIndex + page.getPageSize())+" AND RN>="+startIndex);
+				
+					pstmt = conn.prepareStatement(sbsql.toString());
+					rs = pstmt.executeQuery();
+					ImgFl imgFl = null;
+					while(rs.next()){
+						imgFl = new ImgFl();
+						imgFl.setSQU(rs.getString("SQU"));
+						imgFl.setFLMC(rs.getString("FLMC"));
+						imgFl.setFLDM(rs.getString("FLDM"));
+						
+						list.add(imgFl);
+					}
+					
+					page.setRows(list);
+					
+				} catch (Exception e) {
+					// TODO: handle exception
+				}finally{
+					try {
+						this.closeCon(conn, pstmt, rs);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				return page;
+	}
+
+	@Override
+	public List<ImgFl> getImgFlBySqu(String squ) {
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<ImgFl> list = new ArrayList<ImgFl>();
+		try {
+			try {
+				conn = datasource.getConnection();
+				
+				String sql = "SELECT * FROM PROJECT_IMGFL WHERE SQU = '"+squ+"'";
+				
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				ImgFl imgFl = null;
+				while(rs.next()){
+					imgFl = new ImgFl();
+					imgFl.setSQU(rs.getString("SQU"));
+					imgFl.setFLMC(rs.getString("FLMC"));
+					imgFl.setFLDM(rs.getString("FLDM"));
+					
+				}
+				
+				list.add(imgFl);
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} finally{
+			try {
+				this.closeCon(conn, pstmt, rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return list;
+	}
+
+	@Override
+	public String addImg(Img img) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String sql="INSERT INTO PROJCRT_IMG(TPNAME,TPDZ,TPSM,TPFL)"
+				+ "VALUES(?,?,?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, img.getTPNAME());
+			pstmt.setString(2, img.getTPDZ());
+			pstmt.setString(3, img.getTPSM());
+			pstmt.setString(4, img.getTPFL());
+			
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "addSuccess";
+	}
+
+	@Override
+	public String delImg(String squ) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+
+			String sql = "delete from PROJCRT_IMG where SQU = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, squ);
+			pstmt.executeUpdate();
+
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "delSuccess";
+	}
+
+	@Override
+	public String editImg(Img img) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			String sql = "UPDATE PROJCRT_IMG SET TPNAME=?,TPDZ=?,TPSM=?,TPFL=? where SQU = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, img.getTPNAME());
+			pstmt.setString(2, img.getTPDZ());
+			pstmt.setString(3, img.getTPSM());
+			pstmt.setString(4, img.getTPFL());
+			pstmt.setString(5, img.getSQU());
+			
+			
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "editSuccess";
+	}
+
+	@Override
+	public PageInfoVo getImgList(PageInfoVo page, String flsqu, String key) {
+		
+		List<Map<String,String>> list = new ArrayList<Map<String,String>>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			StringBuffer sql = new StringBuffer();
+			
+			sql.append("SELECT COUNT(*) FROM (");
+			sql.append("  SELECT *  FROM PROJCRT_IMG ");	
+			sql.append(" WHERE TPFL='"+flsqu+"' AND TPNAME LIKE '%"+key+"%' OR TPFL='"+flsqu+"' AND TPSM LIKE '%"+key+"%')");
+		
+			pstmt = conn.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+			//获取总数
+			if (rs.next()) {
+				page.setTotal(rs.getInt(1));
+			}
+			this.closeCon(null, pstmt, rs);
+			
+			
+			//开始数
+			int startIndex = (page.getPageNumber() - 1) * page.getPageSize() + 1;
+			
+			StringBuffer sbsql = new StringBuffer();
+			sbsql.append(" SELECT * FROM ( ");
+			sbsql.append(" SELECT H.* ,ROWNUM RN FROM ( ");
+			sbsql.append(" SELECT * FROM PROJCRT_IMG");
+			sbsql.append("  WHERE TPFL='"+flsqu+"' AND TPNAME LIKE '%"+key+"%' OR TPFL='"+flsqu+"' AND TPSM LIKE '%"+key+"%' ORDER BY CJSJ DESC) H)");
+			sbsql.append("WHERE RN<"+(startIndex + page.getPageSize())+" AND RN>="+startIndex);	
+			pstmt = conn.prepareStatement(sbsql.toString());
+			rs = pstmt.executeQuery();
+			Map<String,String> map = null;
+			while(rs.next()){
+				map = new HashMap<String,String>();
+				map.put("SQU", rs.getString("SQU"));
+				map.put("TPNAME", rs.getString("TPNAME"));
+				map.put("TPSM", rs.getString("TPSM"));
+				map.put("TPDZ", rs.getString("TPDZ"));
+				map.put("TPFL", rs.getString("TPFL"));
+				
+				list.add(map);
+			}
+			page.setRows(list);
+		 
+		} catch (Exception e) {
+			
+		}finally{
+			try {
+				this.closeCon(conn, pstmt, rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return page;
+	}
+
+}

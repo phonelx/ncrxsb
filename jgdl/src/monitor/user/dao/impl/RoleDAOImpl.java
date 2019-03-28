@@ -1,0 +1,1147 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-4-18 下午05:02:12
+*/
+package monitor.user.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.user.bean.dto.DatasourceDto;
+import monitor.user.bean.dto.EntityDto;
+import monitor.user.bean.dto.ModuleMainDto;
+import monitor.user.bean.dto.ModuleSubDto;
+import monitor.user.bean.dto.QueryDto;
+import monitor.user.bean.dto.RoleDto;
+import monitor.user.bean.entity.RoleEntity;
+import monitor.user.bean.vo.PageInfoVo;
+import monitor.user.dao.IRoleDAO;
+
+/** 
+ * <description> 
+ * @author  cl
+ * @datetime  2011-4-18 下午05:02:12
+ */
+public class RoleDAOImpl extends BaseDAO implements IRoleDAO {
+	/** 列出所有角色
+	 * @return List<RoleDto>
+	 */
+	public List<RoleDto> listRoles() {
+		List<RoleDto> roleList = new ArrayList<RoleDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			
+			String sql = "select * from ssp_troleinfo";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			RoleEntity role = null;
+			RoleDto roleDto = null;
+			while(rs.next()){
+				role = new RoleEntity();
+				role.setSqu(rs.getInt("squ"));
+				role.setRoleName(rs.getString("rolename").trim());
+				role.setDescb(rs.getString("descb"));
+				role.setIsAdmin(rs.getInt("isAdmin"));
+				role.setIsDefault(rs.getInt("isDefault"));
+				
+				roleDto = new RoleDto(role);//将实体bean封装成传输bean
+				roleList.add(roleDto);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return roleList;
+	}
+
+	/**
+	 * 返回通过PageInfoVo封装后的角色列表，已通过分页处理
+	 * @author:  cl 
+	 * @param PageInfoVo
+	 * @return PageInfoVo
+	 */
+	public PageInfoVo listRolesInPage(PageInfoVo page) {
+		List<RoleDto> roleList = new ArrayList<RoleDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			
+			String sql = "select count(*) from ssp_troleinfo";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()){
+				page.setTotal(rs.getInt(1));
+			}
+			
+			int startIndex = (page.getPageNumber() -1)*page.getPageSize() +1;
+			sql = "select * from (select my_table.*,rownum as my_rownum from (select * from ssp_troleinfo) my_table where rownum < "+ 
+			(startIndex+page.getPageSize()) +") where my_rownum >= "+startIndex;
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			RoleEntity role = null;
+			RoleDto roleDto = null;
+			while(rs.next()){
+				role = new RoleEntity();
+				role.setSqu(rs.getInt("squ"));
+				role.setRoleName(rs.getString("rolename").trim());
+				role.setDescb(rs.getString("descb"));
+				role.setIsAdmin(rs.getInt("isAdmin"));
+				role.setIsDefault(rs.getInt("isDefault"));
+				role.setIsSpr(rs.getInt("ISSPR"));
+				roleDto = new RoleDto(role);//将实体bean封装成传输bean
+				roleList.add(roleDto);
+			}
+			
+			
+			page.setRows(roleList);
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		
+		return page;
+	}
+
+	/**
+	 * 查询指定角色的权限树，
+	 * @author:  cl 
+	 * @param roleSqu
+	 * @return String
+	 */
+	public List<ModuleMainDto> queryModules() {
+		List<ModuleMainDto> moduleMainDtoList = new ArrayList<ModuleMainDto>();
+		ModuleMainDto moduleMainDto = null;
+		ModuleSubDto moduleSubDto = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		try {
+			conn = datasource.getConnection();
+			String sql = "select * from ssp_tmodulemain";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()){
+				int mainSqu = rs.getInt("squ");
+				moduleMainDto = new ModuleMainDto();
+				moduleMainDto.setSqu(mainSqu);
+				moduleMainDto.setName(rs.getString("name").trim());
+				
+				sql = "select * from ssp_tmodulesub where mainSqu = ?";
+			//	System.out.println(sql);
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, rs.getInt(1));
+				rs2 = pstmt.executeQuery();
+				List<ModuleSubDto> moduleSubDtoList = new ArrayList<ModuleSubDto>();
+				while(rs2.next()){
+					moduleSubDto = new ModuleSubDto();
+					moduleSubDto.setSqu(rs2.getInt("squ"));
+					moduleSubDto.setMainSqu(mainSqu);
+					moduleSubDto.setName(rs2.getString("name").trim());
+					moduleSubDto.setEntryUrl(rs2.getString("entryUrl").trim());
+					moduleSubDtoList.add(moduleSubDto);
+				}
+				
+				moduleMainDto.setSubModuleList(moduleSubDtoList);
+				moduleMainDtoList.add(moduleMainDto);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		
+		return moduleMainDtoList;
+	}
+
+	public List<ModuleSubDto> queryModulesByRoleSqu(int roleSqu) {
+		List<ModuleSubDto> subModuleList = new ArrayList<ModuleSubDto>();
+		ModuleSubDto moduleSubDto = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			String sql = "select * from ssp_tmodulesub t1,SSP_TRole_ModuleSub t2 where t1.squ = t2.subsqu and t2.rolesqu = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, roleSqu);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()){
+				moduleSubDto = new ModuleSubDto();
+				moduleSubDto.setSqu(rs.getInt("subsqu"));
+				moduleSubDto.setName(rs.getString("name").trim());
+				subModuleList.add(moduleSubDto);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		
+		return subModuleList;
+	}
+
+	public String addRole(RoleDto roleDto, List<ModuleSubDto> moduleSubList) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//写入ssp_troleinfo表
+			String sql = "insert into ssp_troleinfo(SQU,roleName,descb,isAdmin,isDefault,isSpr) values(SEQ_TROLEINFO.NEXTVAL,?,?,?,0,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,roleDto.getRoleName());
+			pstmt.setString(2,roleDto.getDescb());
+			pstmt.setInt(3,roleDto.getIsAdmin());
+			pstmt.setInt(4, roleDto.getIsSpr());
+			pstmt.executeUpdate();
+			
+			//获取刚刚生成的roleid值
+			sql = "select squ from ssp_troleinfo where roleName=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, roleDto.getRoleName());
+			rs = pstmt.executeQuery();
+			int roleSqu = -1;
+			if(rs.next()){
+				roleSqu = rs.getInt(1);
+			}
+			
+			//写入SSP_TRole_ModuleSub
+			for(ModuleSubDto sub:moduleSubList){
+				sql = "insert into SSP_TRole_ModuleSub(roleSqu,subSqu) values(?,?)";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, roleSqu);
+				pstmt.setInt(2, sub.getSqu());
+				pstmt.executeUpdate();
+				
+			}	
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "addSuccess";
+	}
+
+	public String editRole(RoleDto roleDto, List<ModuleSubDto> moduleSubList) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//写入ssp_troleinfo表
+			String sql = "update ssp_troleinfo set roleName=?,isAdmin=?,descb=?,isSpr=? where squ = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,roleDto.getRoleName());
+			pstmt.setInt(2,roleDto.getIsAdmin());
+			pstmt.setString(3,roleDto.getDescb());
+			pstmt.setInt(4, roleDto.getIsSpr());
+			pstmt.setInt(5,roleDto.getSqu());
+			pstmt.executeUpdate();
+			
+			//先删除SSP_TRole_ModuleSub中信息后重新插入
+			sql = "delete from SSP_TRole_ModuleSub where rolesqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,roleDto.getSqu());
+			pstmt.executeUpdate();
+			
+			//写入SSP_TRole_ModuleSub
+			for(ModuleSubDto sub:moduleSubList){
+				sql = "insert into SSP_TRole_ModuleSub(roleSqu,subSqu) values(?,?)";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, roleDto.getSqu());
+				pstmt.setInt(2, sub.getSqu());
+				pstmt.executeUpdate();
+			}	
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "editSuccess";
+	}
+
+	public String deleteRoleBySqu(int squ) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//检查该角色是否是默认
+			String sql = "select * from ssp_troleinfo where squ = ? and isdefault = 1";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,squ);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return "defaultRole";
+			}
+			
+			//检查是否有用户被授予该角色
+			sql = "select * from ssp_tuserinfo where rolesqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,squ);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return "roleHasGranted";
+			}
+			
+			//删除SSP_TRole_ModuleSub中角色信息
+			sql = "delete from SSP_TRole_ModuleSub where roleSqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,squ);
+			pstmt.executeUpdate();
+
+			//删除ssp_troleinfo中角色信息
+			sql = "delete from ssp_troleinfo where squ = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,squ);
+			pstmt.executeUpdate();
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "deleteSuccess";
+	}
+
+	/**
+	 * 查询出所有已注册的实体信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryAllEntities() {
+		List<EntityDto> entityDtoList = new ArrayList<EntityDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String sql = "select * from SSP_TRegEntity";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			EntityDto entityDto = null;
+			while(rs.next()){
+				entityDto = new EntityDto();
+				entityDto.setSqu(rs.getInt("squ"));
+				entityDto.setDatasourceSqu(rs.getInt("datasourceSqu"));
+				entityDto.setName(rs.getString("name").trim());
+				entityDto.setTitle(rs.getString("title").trim());
+				entityDtoList.add(entityDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return entityDtoList;
+	}
+	
+	/**
+	 * 根据角色squ查询出所有注册并已授权实体信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByRoleSqu(int roleSqu) {
+		List<EntityDto> entityDtoList = new ArrayList<EntityDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String sql = "select * from ssp_trole_entity t1,SSP_TRegEntity t2 where t1.entitySqu = t2.squ and roleSqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, roleSqu);
+			rs = pstmt.executeQuery();
+			EntityDto entityDto = null;
+			while(rs.next()){
+				entityDto = new EntityDto();
+				entityDto.setSqu(rs.getInt("squ"));
+				entityDto.setDatasourceSqu(rs.getInt("datasourceSqu"));
+				entityDto.setTypeSqu(rs.getInt("typeSqu"));
+				entityDto.setName(rs.getString("name").trim());
+				entityDto.setTitle(rs.getString("title").trim());
+				entityDto.setIsView(rs.getInt("isView")) ;
+				entityDtoList.add(entityDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return entityDtoList;
+	}
+	
+	/**
+	 * 根据角色squ查询出所有注册并已授权实体信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByRoleSqu(List<String> roleSquList) {
+		List<EntityDto> entityDtoList = new ArrayList<EntityDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String roleSquStr = "";
+			for(int i =0;i<roleSquList.size();i++){
+				if(i==0){
+					roleSquStr+= "" + roleSquList.get(i);
+				}else{
+					roleSquStr+= "," + roleSquList.get(i);
+				}
+				
+			}
+			
+			//检查该角色是否是默认
+			String sql = "select * from ssp_trole_entity t1,SSP_TRegEntity t2 where t1.entitySqu = t2.squ and roleSqu in (";
+			sql+=roleSquStr+")";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			EntityDto entityDto = null;
+			while(rs.next()){
+				entityDto = new EntityDto();
+				entityDto.setSqu(rs.getInt("squ"));
+				entityDto.setDatasourceSqu(rs.getInt("datasourceSqu"));
+				entityDto.setTypeSqu(rs.getInt("typeSqu"));
+				entityDto.setName(rs.getString("name").trim());
+				entityDto.setTitle(rs.getString("title").trim());
+				entityDto.setIsView(rs.getInt("isView")) ;
+				if(!entityDtoList.contains(entityDto)){
+					entityDtoList.add(entityDto);
+				}
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return entityDtoList;
+	}
+
+	/**
+	 * 根据name查询出所有注册并已授权实体信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByName(String  squName) {
+		List<EntityDto> entityDtoList = new ArrayList<EntityDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//检查该角色是否是默认
+		 
+			
+			StringBuffer sql = new StringBuffer("select * from SSP_TRegEntity t1 where  1=1 and ");			
+			for(int i=0 ;i<squName.split(",").length;i++){
+				if(i!=0){
+					sql.append(" or ");
+				}
+				sql.append("  t1.name = '"+squName.split(",")[i]+"' ORDER BY t1.SQU DESC");
+				
+			}
+			
+			System.out.println("sql--"+sql.toString());
+			pstmt = conn.prepareStatement(sql.toString());		 
+			rs = pstmt.executeQuery();
+			EntityDto entityDto = null;
+			while(rs.next()){
+				entityDto = new EntityDto();
+				entityDto.setSqu(rs.getInt("squ"));
+				entityDto.setDatasourceSqu(rs.getInt("datasourceSqu"));
+				entityDto.setTypeSqu(rs.getInt("typeSqu"));
+				entityDto.setName(rs.getString("name").trim());
+				entityDto.setTitle(rs.getString("title").trim());
+				entityDto.setIsView(rs.getInt("isView")) ;
+				entityDtoList.add(entityDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return entityDtoList;
+	}
+	
+	/**
+	 * 查询出所有已注册的数据源信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<DatasourceVo>
+	 */
+	public List<DatasourceDto> queryAllDatasources() {
+		List<DatasourceDto> datasourceDtoList = new ArrayList<DatasourceDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//检查该角色是否是默认
+			String sql = "select * from SSP_TRegDatasource";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			DatasourceDto dsDto = null;
+			while(rs.next()){
+				dsDto = new DatasourceDto();
+				dsDto.setSqu(rs.getInt("squ"));
+				dsDto.setTitle(rs.getString("title").trim());
+				datasourceDtoList.add(dsDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return datasourceDtoList;
+	}
+
+	/**
+	 * 查询出所有已注册的查询信息,包括查询关联的实体List
+	 * @author:  cl 
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryAllQueries() {
+		List<QueryDto> queryDtoList = new ArrayList<QueryDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//检查该角色是否是默认
+			String sql = "select * from SSP_TRegQuery";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			QueryDto queryDto = null;
+			EntityDto entityDto = null;
+			while(rs.next()){
+				sql = "select * from SSP_TQuery_Entity t1,SSP_TRegEntity t2 where t1.entitySqu = t2.squ and t1.querySqu = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, rs.getInt("squ"));
+				rs2 = pstmt.executeQuery();
+				List<EntityDto> entityDtoList  = new ArrayList<EntityDto>();
+				while(rs2.next()){
+					entityDto = new EntityDto();
+					entityDto.setSqu(rs2.getInt("squ"));
+					entityDto.setName(rs2.getString("name").trim());
+					entityDto.setTitle(rs2.getString("title").trim());
+					entityDtoList.add(entityDto);
+				}
+				
+				queryDto = new QueryDto();
+				queryDto.setSqu(rs.getInt("squ"));
+				queryDto.setDsSqu(rs.getInt("datasourceSqu"));
+				queryDto.setName(rs.getString("name").trim());
+				queryDto.setEntityDtoList(entityDtoList);
+				queryDtoList.add(queryDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs2!=null){
+					rs2.close();
+				}
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return queryDtoList;
+	}
+
+	/**
+	 * 保存实体的授权信息
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String saveGrantedEntities(RoleDto roleDto,List<EntityDto> entityDtoList) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//删除SSP_TRole_Entity中所有信息表
+			String sql = "delete from SSP_TRole_Entity where roleSqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,roleDto.getSqu());
+			pstmt.executeUpdate();
+			
+			//重新向SSP_TRole_Entity表中插入数据
+			for(EntityDto entityDto:entityDtoList){
+				sql = "insert into SSP_TRole_Entity values(?,?)";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1,roleDto.getSqu());
+				pstmt.setInt(2,entityDto.getSqu());
+				pstmt.executeUpdate();
+			}
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "saveSuccess";
+	}
+
+	/**
+	 * 根据角色squ查询出所有注册并已授权查询信息,包括查询关联的实体List
+	 * @author:  cl 
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryGrantedQueriesByRoleSqu(int roleSqu) {
+		List<QueryDto> queryDtoList = new ArrayList<QueryDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//检查该角色是否是默认
+			String sql = "select * from SSP_TRole_Query t1,SSP_TRegQuery t2 where t1.querySqu = t2.squ and roleSqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, roleSqu);
+			rs = pstmt.executeQuery();
+			QueryDto queryDto = null;
+			EntityDto entityDto = null;
+			while(rs.next()){
+				sql = "select * from SSP_TQuery_Entity t1,SSP_TRegEntity t2 where t1.entitySqu = t2.squ and t1.querySqu = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, rs.getInt("querySqu"));
+				rs2 = pstmt.executeQuery();
+				List<EntityDto> entityDtoList  = new ArrayList<EntityDto>();
+				while(rs2.next()){
+					entityDto = new EntityDto();
+					entityDto.setSqu(rs2.getInt("squ"));
+					entityDto.setName(rs2.getString("name").trim());
+					entityDto.setTitle(rs2.getString("title").trim());
+					entityDto.setTypeSqu(rs2.getInt("typeSqu"));
+					entityDtoList.add(entityDto);
+				}
+				
+				queryDto = new QueryDto();
+				queryDto.setSqu(rs.getInt("squ"));
+				queryDto.setName(rs.getString("name").trim());
+				queryDto.setEntityDtoList(entityDtoList);
+				queryDtoList.add(queryDto);
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs2!=null){
+					rs2.close();
+				}
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return queryDtoList;
+	}
+	
+	/**
+	 * 根据角色squList查询出所有注册并已授权查询信息,包括查询关联的实体List
+	 * @author:  cl
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryGrantedQueriesByRoleSqu(List<String> roleSquList) {
+		List<QueryDto> queryDtoList = new ArrayList<QueryDto>();
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			String roleSquStr = "";
+			for(int i =0;i<roleSquList.size();i++){
+				if(i==0){
+					roleSquStr+= "" + roleSquList.get(i);
+				}else{
+					roleSquStr+= "," + roleSquList.get(i);
+				}
+				
+			}
+			
+			//检查该角色是否是默认
+			String sql = "select  * from SSP_TRole_Query t1,SSP_TRegQuery t2 where t1.querySqu = t2.squ and roleSqu in (";
+			sql += roleSquStr+")";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			QueryDto queryDto = null;
+			EntityDto entityDto = null;
+			while(rs.next()){
+				sql = "select * from SSP_TQuery_Entity t1,SSP_TRegEntity t2 where t1.entitySqu = t2.squ and t1.querySqu = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, rs.getInt("querySqu"));
+				rs2 = pstmt.executeQuery();
+				List<EntityDto> entityDtoList  = new ArrayList<EntityDto>();
+				while(rs2.next()){
+					entityDto = new EntityDto();
+					entityDto.setSqu(rs2.getInt("squ"));
+					entityDto.setName(rs2.getString("name").trim());
+					entityDto.setTitle(rs2.getString("title").trim());
+					entityDto.setTypeSqu(rs2.getInt("typeSqu"));
+					if(!entityDtoList.contains(entityDto)){
+						entityDtoList.add(entityDto);
+					}
+					
+				}
+				
+				queryDto = new QueryDto();
+				queryDto.setSqu(rs.getInt("squ"));
+				queryDto.setName(rs.getString("name").trim());
+				queryDto.setEntityDtoList(entityDtoList);
+				if(!queryDtoList.contains(queryDto)){
+					queryDtoList.add(queryDto);
+				}
+			}
+			
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs2!=null){
+					rs2.close();
+				}
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return queryDtoList;
+	}
+
+
+	/**
+	 * 保存查询的授权信息
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String saveGrantedQueries(RoleDto roleDto,List<QueryDto> queryDtoList) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn=datasource.getConnection();
+			conn.setAutoCommit(false);
+			
+			//删除SSP_TRole_Query中所有信息表
+			String sql = "delete from SSP_TRole_Query where roleSqu = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,roleDto.getSqu());
+			pstmt.executeUpdate();
+			
+			//重新向SSP_TRole_Entity表中插入数据
+			for(QueryDto queryDto:queryDtoList){
+				sql = "insert into SSP_TRole_Query values(?,?)";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1,roleDto.getSqu());
+				pstmt.setInt(2,queryDto.getSqu());
+				pstmt.executeUpdate();
+			}
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "saveSuccess";
+	}
+
+	public RoleEntity findRoleBySqu(int squ) {
+		RoleEntity roleEntity = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			
+			String sql = "select * from SSP_TRoleInfo where squ = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, squ);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()){
+				roleEntity = new RoleEntity();
+				roleEntity.setSqu(squ);
+				roleEntity.setRoleName(rs.getString("roleName").trim());
+				roleEntity.setDescb(rs.getString("descb"));
+				roleEntity.setIsAdmin(rs.getInt("isAdmin"));
+				roleEntity.setIsDefault(rs.getInt("isDefault"));
+				roleEntity.setIsSpr(rs.getInt("ISSPR"));
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}finally{
+			try {
+				if(rs!=null){
+					rs.close();
+				}
+				if(pstmt!=null){
+					pstmt.close();
+				}
+				if(conn!=null){
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		
+		return roleEntity;
+	}
+
+
+	
+
+}

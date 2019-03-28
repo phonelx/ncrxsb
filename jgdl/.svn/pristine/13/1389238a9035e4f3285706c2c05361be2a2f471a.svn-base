@@ -1,0 +1,285 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/pages/head.jsp" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<base href="<%=basePath%>">
+
+	<title>项目配置页面</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+	<link rel="stylesheet" type="text/css" href="resource/css/addStyle.css">
+	
+	<style>
+	.form-horizontal .control-group{
+		    margin-bottom: 12px;
+	}
+	.input_box {
+	    padding-right: 10px;
+	    border: 1px solid #ccc;
+	    border-radius : 5px;
+	}
+	legend{
+		margin-bottom: 0px;
+	}
+ 	.control-label{
+		width: 100px !important;
+	} 
+	.controls {
+    margin-left: 100px !important;
+    }
+    
+    	.add-style1{
+		background-color: #f5f5f5;
+	}
+	.container-fluid {
+	    padding-right: 10px;
+	    padding-left: 10px;
+	}
+    .topnav li:last-child{
+		border-bottom:none;
+	}
+	.form-horizontal .control-group {
+    margin-bottom: 8px;
+	}
+	.control-group h4{
+	    margin-top:4px;
+	}
+	#tree .border-bottom a{
+    margin-left: 10px;
+    }
+    .msg_div{
+    	display: none;
+    }
+	</style>
+
+</head>
+  
+<body>
+	<!-- 顶端导航-->
+	<ul class="breadcrumb" style="list-style:none;">
+		<li id="titleName" style="color: #369BD7;">
+			当前页面：项目配置管理&nbsp;&gt;
+			<span id="home"> 
+				<a id="head_title" href="javascript:void(0)"> 
+					项目基本配置
+				</a>
+			</span>
+		</li>
+	</ul>
+	<!-- 顶端导航结束 /////////////////////////////////////////////////////////////////////////////////////////////////-->
+	
+	<!-- 页面内容-->	
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<!-- 树菜单 start-->
+			<div class="leftSideBar span3">
+				<ul style="width:100%;" class="parNav">
+					<li class="nav-header hidden-tablet border-bottom">
+						<a class="ajax-link" style="padding-left:10px;"
+							href="javascript:void(0);" onclick="loadTree(0)"><b>[工程项目目录]</b>
+						</a>
+					</li>
+					<!-- 工程项目分页 -->
+					<li class="nav-header hidden-tablet border-bottom">
+						<ul class="topnav" id="tree"></ul>
+					</li>
+					<li>
+						<div id="pageInfo"></div>
+					</li>
+				</ul>
+			</div>
+			<!-- 树菜单 end//////////////////////////////////////////////////////-->
+			
+			<!-- 右边内容 start-->	
+			<div class="span9" style="margin-left: 20px;">
+				<!-- 信息展示 -->
+				<div>
+				<!-- 项目信息 -->
+				<div class="msg_div project_msg">项目信息</div>
+				<!-- 子项目信息 -->
+				<div class="msg_div child_msg">子项目信息</div>
+				<!-- 部位信息 -->
+				<div class="msg_div site_msg">部位信息</div>
+				<!-- 支架信息 -->
+				<div class="msg_div holder_msg">支架信息</div>
+				<!-- 数据统计信息 -->
+				<div class="msg_div count_msg">数据统计信息</div>
+				</div>
+			
+			
+				<!-- 项目列表 -->
+				<div style="padding:0;text-align: center;" class="list_div project_list">
+					<li style="float: right;"><a style="margin-top:-3px;"
+						title="新增" class="btn btn-primary" onclick="showAddModal();"
+						href="javascript:void(0);"> <i class="icon-plus-sign icon-white"></i> 新增
+					</a></li>
+					<li id="ss" style="float:right;margin-right: 5px;"><input
+						id="input_search" type="text" class="inputText" value="关键字搜索"
+						onfocus="if(this.value == '关键字搜索') this.value = ''"
+						onblur="if(this.value =='')  this.value = '关键字搜索'" /> &nbsp;&nbsp;
+						<a style="margin-top:-10px;" class="btn" onclick="doSearch();"
+						href="javascript:void(0);"> <i class="icon-search"></i> 检索
+					</a></li>
+					<div id="projectGrid"></div>
+				</div>
+				
+				<!-- 子项目列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div child_list">
+				子项目列表
+				</div>
+				<!-- 部位列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div site_list">
+				部位列表
+				</div>
+				<!-- 支架列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div holder_list">
+				支架列表
+				</div>
+				<!-- 部件列表 -->
+			</div>
+			<!-- 右边内容 end/////////////////////////////////////////////////////-->
+			
+	  	</div>
+	</div>
+	<!-- 页面内容/////////////////////////////////////////////////////////////////////////////////////////////////-->	
+	
+	
+	<!-- 模态框 -->
+	<div class="container">
+		<!-- 项目表单模态框 -->
+		<form method="post" id="objectForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="objectModal" class="modal hide fade in windowBoxBig" style="display: none;height: 600px;width: 880px;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal" id='clBtn'>×</a> 
+					<h3 id="htmlTitle">新增项目</h3>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid" style="width: 800px;">
+						 <div class="row-fluid tooltip-demo" style="margin-left:-5px;width: 800px;">
+							 <input type="hidden" id="project_squ" name="project_squ" placeholder="id" value=""/>
+						     <!--左边内容-->
+						     <div class="span5">
+						     	<div class="box-content" style="width: 360px;">
+									<fieldset>
+										<div class="input_box" style="height: 300px;">
+											<div style="width: 300px;float: left;margin-top: 10px;">
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目名称：</label>
+													<div class="controls">
+													   <input type="text" id="xmmc" class="input" name="xmmc" placeholder=""
+															datatype="s1-18" errormsg="项目名称至少1个字符,最多18个字符！" required="true"/>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目编号：</label>
+													<div class="controls">
+													   <input type="text" id="xmbh" class="input" name="xmbh" placeholder=""
+															datatype="s10-18" errormsg="项目编号四位大写字母六位报备日期！" required="true"/>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目地址：</label>
+													<div class="controls">
+														<input type="text" id="xmdz" class="input" name="xmdz" placeholder=""
+															datatype="s1-18" errormsg="项目地址至少1个字符,最多18个字符！" required="true"/>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目类型：</label>
+													<div class="controls">
+														<input type="text" id="xmlx" class="input" name="xmlx" placeholder=""
+															 required="true" nullmsg/>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目面积：</label>
+													<div class="controls">
+														<input type="text" id="xmmj" class="input" name="xmmj" placeholder=""  required="true" nullmsg/>
+													</div>
+												</div>
+												
+												<div class="control-group">
+													<label class="control-label" for="dzlx">地震类型：</label>
+													<div class="controls">
+														<select id="dzlx" class="input" name="dzlx" required="true" nullmsg>
+														</select>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" >地区设防烈度：</label>
+													<div class="controls">
+														<select id="dzsfld" class="input" name="dzsfld" required="true" nullmsg>
+														</select>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label">地震加速度：</label>
+													<div class="controls">
+													<!-- 	 <input type="text" id="dzjsd" class="input" name="dzjsd" placeholder="" required="true"
+														datatype="/^-?[1-9]+(\.\d+)?$|^-?0(\.\d+)?$|^-?[1-9]+[0-9]*(\.\d+)?$/"  errormsg="地震加速度请输入数字！"/> -->
+													   <select id="dzjsd" class="input" name="dzjsd" placeholder="" required="true" nullmsg>
+													   </select>
+													</div>
+												</div>
+												
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">系数最大值：</label>
+													<div class="controls">
+														<input type="text" id="alphaMax" class="input" name="alphaMax" placeholder=""  required="true" nullmsg readonly="readonly"/>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</fieldset>
+								</div>
+						     </div>
+						     <!--左边内容-->
+						</div>
+					</div>
+			</div>
+			 <div class="bottomBtnBox">
+				<span id="msg" style="margin-left:30px;"></span>
+				<input type="submit" value="确定" class="btn btn-success" id="subBtn" style="display: none;"/>
+				<a title="确定" href="javaScript:void(0);" class="btn btn-success" onclick="subBtnClick()" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+				<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;"> 
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div> 	 
+			 
+		</form>
+
+		<!-- 子项目表单模态框 -->
+		
+		<!-- 部位表单模态框 -->
+		
+		<!-- 支架模态框 -->
+
+	</div>
+	
+	
+	
+	
+</body>
+	<!-- 树菜单依赖 -->
+	<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+ 	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+	
+	<!-- 项目公共js -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectCommon.js"></script>
+	<!-- 项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/project.js"></script>
+	<!-- 子项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectChild.js"></script>
+	<!-- 部位项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectChildSite.js"></script>
+	
+</html>

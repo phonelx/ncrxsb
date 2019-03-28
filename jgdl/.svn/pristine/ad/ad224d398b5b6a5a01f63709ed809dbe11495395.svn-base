@@ -1,0 +1,167 @@
+
+var _projectSqu = "";
+
+$().ready(function(){
+	listen();
+});
+
+/**
+  * listen:(监听)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午7:26:08
+  * @param: 
+  * @return: void
+ */
+function listen(){
+	//项目树监听
+	$(".project_link").on("click", function(){
+		$('#holderBox').show();
+		$('#projectName').html($(this).attr("title"));
+		
+		_projectSqu = $(this).attr("id");
+		//加载支架列表
+		loadHolderOfProject($(this).attr("id"));
+	});
+}
+
+/**
+  * loadHolderOfProject:(加载项目下的支架列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午7:30:04
+  * @param: 
+  * @return: void
+ */
+function loadHolderOfProject(squOfProject){
+	$("#holderList").uiGrid({ 
+		url : "loadHolderOfProjectPageInfo.do",
+		rowNum : 10,//每页显示记录数
+		columns : [ {
+			field : 'dxmc',
+			title : '单项名称',
+			width : 300,
+		},{
+			field : 'zjxs',
+			title : '支架形式',
+			width : 300,
+		},{
+			field : 'sl',
+			title : '数量',
+			width : 100,
+		}],
+		divId : "#holderList",
+		showPage : 5,//显示
+		showDelete : true,
+		showDeleteEvent : showDelete,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		},
+		data : {
+			squ : squOfProject,
+		}
+	});
+}
+
+function showDelete(){
+	
+}
+
+/**
+  * showAddModal:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午6:38:39
+  * @param: 
+  * @return: void
+ */
+function showAddModal(){
+	$('#holderModal').modal();
+	loadHolderList();
+}
+
+/**
+  * loadHolderList:(分页加载支架信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午7:25:04
+  * @param: 
+  * @return: void
+ */
+function loadHolderList(){
+	$("#holderAll").uiGrid({ 
+		url : "getHolderList.do",
+		rowNum : 5,//每页显示记录数
+		columns : [ {
+			field : 'zp',
+			title : '照片',
+			width : 60,
+			formatter : function(value, rec) {
+					return '<img src="http://localhost:8080/cs/aaa.jpg" width="60px" height="60px">';
+			}
+		},{
+			field : 'dxmc',
+			title : '单项名称',
+			width : 800,
+			formatter : function(value, rec) {
+				return '<p><h4>支架名:' + rec.dxmc + '&nbsp;&nbsp;<small>支架形式:'+rec.zjxs+'</small></h4></p><span><b>管道类型:</b>'
+				+rec.gdlx+'</span>&nbsp;&nbsp;&nbsp;<span><b>安装方式:</b>'+rec.azfs+'</span>';
+		}
+		}],
+		divId : "#holderAll",
+		showPage : 5,//显示
+		toAdd : true,
+		toAddEvent : toAdd,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		}
+	});
+}
+
+/**
+  * toAdd:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午9:11:27
+  * @param: 
+  * @return: void
+ */
+function toAdd(row){
+	$.ajax({
+		type : "post",
+		url : "addHolderToProject.do",
+		timeout : 1321231232131213123,
+		dataType : 'text',
+		data : {
+			projectSqu : _projectSqu,
+			holderSqu : row.dxsqu
+		},
+		success : function(data) {
+			if (data == "success") {
+				Modal.alert({
+					title : "提示",
+					msg : "添加成功！",
+					btnok : "确定"
+				});
+				loadHolderOfProject(_projectSqu);
+			} else {
+				Modal.alert({
+					msg : '执行添加操作异常！',
+					title : '消息提示',
+					btnok : '确定',
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : 'ajax执行添加操作错误！',
+				title : '消息提示',
+				btnok : '确定',
+			});
+		}
+	});
+}

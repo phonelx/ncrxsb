@@ -1,0 +1,557 @@
+$(function() {
+	$("#TPFL").click();
+	
+	});	
+
+var i=0;
+var obj1 = null;
+function parentload(obj){
+	obj1 = obj;
+	
+	if($(obj).next().hasClass('on')){
+    	$(obj).next().slideUp(500).removeClass('on');  
+    	$(obj).prev().text('[+]');  
+    	$("#zhbjmc").html("");
+    }else{  
+    	$(obj).next().slideDown(500).addClass('on');  
+    	$(obj).prev().text('[-]'); 
+
+    }
+	
+	var flag = $(obj).attr("flag")
+	$("#flag").val(flag)	
+	loadMenu();
+	gridload();	
+}
+
+
+//重新加载左部菜单列表
+function loadMenu(){
+	
+		$.ajax({
+			type : 'post',
+			url : 'getImgFlList.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			//async : false, //是否发送异步请求	
+			data:{
+				
+			},
+			success : function(data) {
+				
+				var html = "";
+				var list = data.list			
+					for(var i = 0;i < data.list.length; i++){				
+							html+=" <li class='border-bottom' style='display:block; margin-left:15px;'>";			
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  flag='1'  id='"+data.list[i].SQU+"' title ='"+data.list[i].FLMC+"' onclick='queryImg(this,1)' '>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].FLMC+"</a>";	
+							
+							html+=" </li>";
+							
+						}
+
+				$("#topnav1").css("display","block") ;
+				$("#topnav1").html(html)
+			},
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+}
+
+var op = 0;
+var records=0;
+var currentPage=0;
+var total=0;
+var pageShowPage=5;//显示多少个人分页标签
+var pageRowNum=10;//每页显示记录数
+var pager=1;
+var pageNo = 1;
+var query="";
+
+function searchWord(){
+	if(op == 0){
+		gridload();
+	}
+	if(op == 1){
+		queryImg(obj2,pager);	
+	}
+	
+}
+
+
+//加载表格
+var grid ;
+function gridload(){
+	
+	$("#abj").css("display","none");
+	$("#azhbj").show();
+	
+	op = 0;
+	$("#zhbjmc").html("/图片分类");
+	var word = $("#input_search").attr("value");
+	if (word=="关键字搜索") {
+		query ="";
+	}else{
+		query=$("#input_search").attr("value");
+	} 
+	
+	document.getElementById("pageDiv").style.display="none";
+	$("#uigrld").uiGrid({
+		url : "searchImgFlInfo.do",
+		rowNum : 10,//每页显示记录数
+		columns : [  {
+			field : 'FLMC',
+			title : '分类名称',
+			width : 220
+		}, {
+			field : 'FLDM',
+			title : '分类别码',
+			width : 200
+		}],
+		divId : "#uigrld",
+		showPage : 5,//显示
+		showEdit : true,
+		showDelete : true,
+		
+		showEditEvent : showEditEvent,
+		showDeleteEvent : deleteImgFl,
+		data : {
+			searchKey:query,
+		},
+		jsonPager : {
+			root : "datas",// 当前页数据
+			records : "rowCount",//总记录数
+			currentPage : pageNo,//当前访问页
+			total : "pageCount"//总页数
+		}
+	});	
+	 
+}
+
+//删除图片分类
+function deleteImgFl(obj){
+	
+	Modal.confirm({
+		msg: "确认删除？"
+		}).on( function (e) {
+	if(e){
+		$.ajax({
+			type : "post",
+			url : "delImgFl.do",
+			timeout : 1321231232131213123,
+			data : {
+				"squ" :obj.SQU,
+			},
+			success : function(data) {
+			
+				var da = eval("(" + data + ")");
+				var sta = da.staus	
+				if(sta==0){
+					alert("删除成功！")
+					parentload(obj1);
+					 $("#TPFL").click();
+				}
+				if(sta!=0){
+					Modal.alert(
+							  {
+							    msg: '请先删除图片分类下的图片',
+							    title: '消息提示',
+							    btnok: '确定',
+							    btncl:'取消'
+							    	
+							  });
+					}
+				},
+			
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '删除分类信息出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+		 }
+	});
+}
+
+//新增图片分类
+function appRegister(){
+	$("#secondTitle").html("新增图片分类")
+	$("#flmc").val("");
+	$("#fldm").val("");
+	
+	var type = $("#flag").val();
+	
+	$("#example").modal();
+	$('#appBtn').unbind();
+		 $("#appBtn").click(function(){
+			
+				$("#uploadForm").form("submit",{ 
+			    	url:"addImgFl.do",
+			        success:function(data){ 
+			        alert("添加图片分类成功！");
+			        parentload(obj1);
+			        $("#TPFL").click();
+					$('#example').modal("hide");
+		        	$(".modal-backdrop").remove();
+			        }  
+			    });
+				
+			});		 		
+	}
+
+//编辑图片分类
+function showEditEvent(obj){
+	$("#secondTitle").html("编辑图片分类")
+		$.ajax( {
+			type : 'post',
+			url : 'getImgFlBysqu.do',
+			dataType : 'json',
+			async : false,
+			data : {	
+				squ:obj.SQU,
+			},
+			success:function(data){
+				var list = data.list;
+				$("#squ").val(list[0].SQU);
+				
+				$("#flmc").val(list[0].FLMC);
+				
+				$("#fldm").val(list[0].FLDM);
+					
+			}
+		});
+			
+	$("#example").modal();
+	$('#appBtn').unbind();
+		 $("#appBtn").click(function(){
+			
+				$("#uploadForm").form("submit",{ 
+			    	url:"updateImgFl.do",
+			        success:function(data){ 
+			        	alert("编辑图片分类成功！");
+				        parentload(obj1);
+				        $("#TPFL").click();
+						$('#example').modal("hide");
+			        	$(".modal-backdrop").remove();
+			        }  
+			    });
+				
+			});
+		}
+
+
+//获取图片详情
+var flsqu = null;//添加图片时使用
+var obj2 = null;
+function queryImg(obj,page){
+	op = 1;
+	
+	var word = $("#input_search").attr("value");
+	if (word=="关键字搜索") {
+		query ="";
+	}else{
+		query=$("#input_search").attr("value");
+	} 
+	obj2 = obj;
+	flsqu = $(obj).attr("id");
+	$("#zhbjmc").html("/"+$(obj).attr("title"));
+	var squ = $(obj).attr("id");
+	var flag = $(obj).attr("flag");
+	
+
+	$("#abj").show();
+	$("#azhbj").css("display","none");
+	$("#zhqx").show();
+	$("#flag").val(flag)
+
+	document.getElementById("pageDiv").style.display="block";
+	var html="";
+	$.ajax( {
+		type : 'post',
+		url : 'getImgList.do',
+		dataType : 'json',
+		async : false,
+		data : {
+			rows:pageRowNum,
+			pages:page,
+			squ:squ,
+			key:query,
+			
+		},
+		success : function(data) {
+			
+			records=data.total;
+			currentPage=data.pageNumber;
+			total = data.pageCnt;
+			pageRowNum=data.pageSize;
+			
+			
+			if (data.rows.length == 0) {
+				html += "<li class='border-bottom'>";
+				html += "<a href='javascript:void(0);'>未查询图片列表</a>";
+				html += "</li>";
+			}
+			
+			html += "<div class='row-fluid'>";
+			
+			for ( var i = 0; i < data.rows.length; i++) {
+				html += "<div class='span' style = 'width:17% ;float:left;margin-left:15px'>";
+				html += "<div class='img_list'>";
+				//a标签
+				html += "<a class='lightbox'>";
+				if (data.rows[i].TPDZ == "" || data.rows[i].TPDZ == null) {
+					html += "<img src='resource/images/mrtp.png' />";
+				} else {
+					html += "<img src='/upload/" + data.rows[i].TPDZ + "' onerror='javascript:this.src=\"resource/images/mrtp.png\"' style ='width:850px'/>";
+				}
+				html += "</a>";
+				
+				html += "<div class='caption overflow_hidden'>";
+				html += "<div class='span12'>";
+				html +=  "<h4 class='text_black' style = 'height:25px;' title='" + data.rows[i].TPNAME + "'>图片名：" + data.rows[i].TPNAME + "</h4>";
+				html +=  "<div class='text_number' style = 'height:40px;width:100%;word-wrap: break-word;white-space: normal' title='" + data.rows[i].TPSM + "'>图片说明：" + data.rows[i].TPSM + "</div>";
+				html += "</div>";
+				html += " </div>";
+                    
+				html += "<div class='bottom_btn'>";
+				html += "<div class='buttonTeam'>";
+				
+			
+				html += "<div class='f-right' style='margin-top:7px;'>";
+//				html += "<a href='javascript:void(0);'><i class='icon-zoom-in icon-black'></i></a>&nbsp;&nbsp;";
+				//编辑
+				html += "<a href='javascript:void(0);' onclick='showEditImg(" + JSON.stringify(data.rows[i]) + ")'><i class='icon-edit icon-black'></i></a>&nbsp;&nbsp;";
+				html += "<a href='javascript:void(0);' title='删除' onclick='deleteImg(" + JSON.stringify(data.rows[i]) + ")'><i class='icon-trash icon-black'></i></a>";
+				html += "</div>";
+				
+				html += "</div>";
+		
+				html += "</div>";
+                    
+				html += "</div>";
+				html += "</div>";
+				
+				if ((i + 1)%5 == 0) {
+					html += "</div><div class='row-fluid'>";
+				}
+			}
+		
+			$("#uigrld").html("");
+		$("#uigrld").html(html +"</div>");
+			pageDiv(records,total,currentPage);
+		},
+		error : function() {
+			Modal.alert(
+			  {
+			    msg: '应用加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			    	
+			  });
+		}
+	});
+}
+
+
+function checkForm(){  
+    var fileName = $('#photo').val();  
+    var check_flag = true;  
+     if(fileName==""){  
+        alert("请选择图片！"); 
+        check_flag = false; 
+    }
+    return check_flag;  
+};  
+
+
+function appRegisterImg(){
+	$("#userTitleName").html("添加图片");
+	$("#TPNAME").val("");
+	$("#TPSM").val("");
+	$("#TPFLsqu").val(flsqu);//分类id
+	document.getElementById("imghead").src ="resource/images/picture.png";
+	document.getElementById("imghead").style = "width:120px;height:120px";
+	$("#clearForm").click();
+	$("#userDiv").modal();
+	$('#imgBtn').unbind();
+	
+	$("#imgBtn").click(function(){
+	    var f =	checkForm();
+		if(f){
+			 $("#imgForm").form("submit",{ 
+			    	url:"addImg.do",
+			        success:function(data){ 
+			        	alert("添加图片成功！");
+			        	queryImg(obj2,pager);
+			        	$('#userDiv').modal("hide");
+			        	$(".modal-backdrop").remove();
+			        	
+			        }  
+			    });
+		}
+
+			});	
+}
+
+
+//编辑分类
+function showEditImg(obj){
+	
+
+	$("#userTitleName").html("编辑图片");
+	$("#TPNAME").val(obj.TPNAME);
+	$("#TPSM").val(obj.TPSM);
+	$("#TPFLsqu").val(obj.TPFL);
+	$("#TPsqu").val(obj.SQU);
+	$("#image").val(obj.TPDZ);
+	
+	document.getElementById("imghead").style = "width:120px;height:120px";
+	if(obj.TPDZ != null || obj.TPDZ !=""){
+	document.getElementById("imghead").src ="/upload/"+obj.TPDZ;
+	}else{
+	document.getElementById("imghead").src ="resource/images/picture.png";
+	}
+	$("#userDiv").modal();
+	$('#imgBtn').unbind();
+	
+	$("#imgBtn").click(function(){
+			$("#imgForm").form("submit",{ 
+			    url:"editImg.do",
+			     success:function(data){ 
+			        	alert("编辑图片成功！");
+			        	queryImg(obj2,pager);
+			        	$('#userDiv').modal("hide");
+			        	$(".modal-backdrop").remove();
+			        	
+			        }  
+			    });
+			});	
+}
+
+function deleteImg(obj) {
+	Modal.confirm(
+  {
+    msg: "确认删除？"
+  })
+  .on( function (e) {
+	  if(e){
+			$.ajax({
+				type : "post",
+				url : "deleteImg.do",
+				timeout : 1321231232131213123,
+				data : {
+					"squ" :obj.SQU,
+				},
+				success : function(data) {
+				     alert("删除成功！")
+				     queryImg(obj2,pager);
+					
+					},
+				
+				error : function() {
+					Modal.alert(
+					  {
+					    msg: '删除分类信息出错',
+					    title: '消息提示',
+					    btnok: '确定',
+					    btncl:'取消'
+					    	
+					  });
+				}
+			});
+	  }
+  });
+}
+
+
+
+
+//右边分页
+function pageDiv(records,total,currentPage){
+	var pageTotal=total;// 总共多少页
+	var pageCurrentPage=currentPage;//当前页
+	var pageRecords=records;//总记录数
+	var countt="";
+	var outstr="";
+	pageTotal=parseInt(pageRecords/pageRowNum);
+	if(pageRecords%pageRowNum>0){
+		pageTotal=pageTotal+1;
+	}
+        if(pageTotal<=pageShowPage){
+                for (var count=1;count<=pageTotal;count++){
+                        if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                        if(count!=pageCurrentPage){
+                             outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }else{
+                        	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }
+                }
+        }
+        if(pageTotal>pageShowPage){
+                if(parseInt((pageCurrentPage-1)/pageShowPage) == 0){
+                        outstr = outstr + "<li><a><<</a></li> ";
+                        for (var count=1;count<=pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a  href='javascript:void(0);'>"+countt+"</a></li>";
+                                	
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr+"<li tag='"+count+"' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+                }else if(parseInt((pageCurrentPage-1)/pageShowPage) == parseInt(pageTotal/pageShowPage)){
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt(pageTotal/pageShowPage)*pageShowPage+1;count<=pageTotal;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+                }else{
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+1;count<=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	
+                                        outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+                }
+    }    
+       
+   $("#pageDiv").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+    outstr = "";
+    $(".pageCk").unbind();
+    $(".pageCk").bind('click',function(){
+    	queryImg(obj2,$(this).attr("tag"));
+	});
+    $(".pagePk").unbind();
+    $(".pagePk").bind('click',function(){
+    	queryImg(obj2,$(this).attr("tag"));
+
+	});
+}	
+
+
+	

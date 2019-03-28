@@ -1,0 +1,78 @@
+package monitor.goodsHouse.dao;
+
+
+
+import java.util.List;
+
+import monitor.goodsHouse.bean.entity.Img;
+import monitor.goodsHouse.bean.entity.ImgFl;
+import monitor.user.bean.vo.PageInfoVo;
+
+public interface IImgDao {
+	/**
+	 * 添加图片分类
+	 * @param imgFl
+	 * @return
+	 */
+	String addImgFl(ImgFl imgFl);
+	
+	/**
+	 * 删除图片分类
+	 * @param squ
+	 * @return
+	 */
+	int delImgFl(String squ);
+	
+	/**
+	 * 编辑图片分类
+	 * @param imgFl
+	 * @return
+	 */
+	String editImgFl(ImgFl imgFl);
+	/**
+	 * 获取图片分类列表
+	 * @return
+	 */
+	List<ImgFl> getImgFlList();
+	/**
+	 * 获取图片分类详情通过分页处理
+	 * @param page
+	 * @param key
+	 * @return
+	 */
+	PageInfoVo getImgFlXq(PageInfoVo page,String key);
+	/**
+	 * 获取图片分类详情通过SQU
+	 * @param squ
+	 * @return
+	 */
+	List<ImgFl> getImgFlBySqu(String squ);
+	
+	/**
+	 * 新增图片
+	 * @param img
+	 * @return
+	 */
+	String addImg(Img img);
+	/**
+	 * 删除图片
+	 * @param squ
+	 * @return
+	 */
+	String delImg(String squ);
+	/**
+	 * 修改图片
+	 * @param img
+	 * @return
+	 */
+	String editImg(Img img);
+	/**
+	 * 获取图片详情
+	 * @param page
+	 * @param flsqu
+	 * @param key
+	 * @return
+	 */
+	PageInfoVo getImgList(PageInfoVo page,String flsqu,String key);
+
+}

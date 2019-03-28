@@ -1,0 +1,83 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor_internet
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:OneTask.java
+ * Date:2016-3-15下午04:35:33   
+ ***/
+package monitor.manage.timer;
+
+import java.util.Date;
+import java.util.TimerTask;
+
+import monitor.common.util.TimeUtil;
+import monitor.manage.util.GetProperties;
+import monitor.manage.util.SendHttp;
+
+/**
+ * @ClassName:OneTask
+ * @dateTime: 2016-3-15 下午04:35:33
+ * @Description: TODO
+ * @version
+ * @author: 田浩楠
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class YJTask extends TimerTask {
+	// 上次执行时间
+	private static Date lastRunTime;
+	private static int lastminute;
+	/**
+	 * Creates a new instance of YJTask.
+	 */
+	public YJTask() {
+		super();
+	}
+
+	@Override
+	public void run() {
+		String no = TimeUtil.getTime("yyyy-MM-dd HH:mm:ss");
+		Date nowtime = TimeUtil.parseDate("yyyy-MM-dd HH:mm:ss", no);
+		int nowminute = GetProperties.GetRuntime();
+		if (lastminute == 0) {
+			lastminute = nowminute;
+		}
+		//更改执行时间后重新赋值
+		if (lastminute != nowminute) {
+			lastRunTime = nowtime;
+			lastminute = nowminute;
+		}
+		// 判断是否为第一次
+		if (lastRunTime == null) {
+			lastRunTime = nowtime;
+			lastminute = nowminute;
+			QuyerService();
+			System.out.println("第一次执行了");
+		}
+		System.out.println("当前执行任务时间:" + no);
+		System.out.println("任务间隔:" + nowminute);
+		if (nowtime.getTime() - lastRunTime.getTime()
+			>= nowminute * 60 * 1000) {
+			lastRunTime = nowtime;
+			lastminute = nowminute;
+			QuyerService();
+			System.out.println("第N次执行了");
+		}
+	}
+	/**
+	  * QuyerService:(根据规则查询身份证执行业务查询).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-24 上午08:59:54
+	  * @param:
+	  * @return: void
+	  * @throws
+	  * @since JDK 1.6
+	*/
+	public  void QuyerService() {	
+		SendHttp.SendPost("http://localhost:8080/monitor_internet/yjrun.do", null, null);
+	}
+
+
+}
+

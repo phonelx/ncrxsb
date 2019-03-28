@@ -1,0 +1,83 @@
+package monitor.projectConfig.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:IProjectConfigDao
+ * @dateTime: 2017-10-14 下午3:07:25
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IProjectConfigDao {
+
+	/**
+	  * selectProjectPageInfo:(分页查询项目列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:10:39
+	  * @return List<T_Project>
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	List<T_Project> selectProjectPageInfo(PageInfoVo pageVo, Connection conn) throws SQLException;
+	
+	/**
+	  * selectCountProject:(查询项目总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午4:11:15
+	  * @return Integer
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Integer selectCountProject(Connection conn) throws SQLException;
+	
+	/**
+	  * selectProjectBySqu:(查询单个项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:26:43
+	  * @return T_Project
+	  * @since JDK 1.7
+	*/
+	T_Project selectProjectBySqu(String squ, Connection conn);
+	
+	/**
+	  * insertProject:(新增项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:24:34
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void insertProject(T_Project project, Connection conn);
+	
+	/**
+	  * updateProject:(修改项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:24:57
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void updateProjectBySqu(T_Project pro, Connection conn);
+	
+	/**
+	  * deleteProjectBySqu:(根据id删除项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:25:23
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void deleteProjectBySqu(String squ, Connection conn);
+}

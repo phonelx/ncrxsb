@@ -1,0 +1,239 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 19, 2011 9:40:27 AM
+*/
+package monitor.registry.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import monitor.common.BaseAction;
+import monitor.common.exception.SysException;
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.service.IEntityService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+/** 
+ * 实体注册，包括表注册和视图注册
+ * @author  liangxj
+ * @datetime  Apr 19, 2011 9:40:27 AM
+ */
+public class EntityAction extends BaseAction{
+
+	/** 
+	 * @field serialVersionUID
+	*/
+	private static final long serialVersionUID = 1L;
+	//注入实体Bean
+	private RegEntity entity ;
+	// 注入service
+	private IEntityService service ;
+	// 注入 dbsName 数据源名称
+	private String dbsName ;
+	// 注入 dbsSqu 数据源ID
+	private String dbsSqu ;
+
+    /**
+     *获取表的注释
+     */
+    public void getEntityComments(){
+        String entityName = getRequest().getParameter("entityName");
+        String dbsSqu = getRequest().getParameter("dbsSqu");
+        writeStringBack(service.getEntityComments(entityName , dbsSqu));
+    }
+	/**
+	 * @description 获取已经注册的对象 树形结构
+	 * @return String
+	 */
+	public String findObjects(){
+		try {
+			JSONArray array = new JSONArray();
+			// 调用service 获取所有对象
+			array.addAll(service.getDbsObject(
+				getRequest().getParameter("id") ,
+				getRequest().getParameter("level")));
+			PrintWriter out = getResponse().getWriter();
+			out.print(array);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 注册实体
+	 * @return String
+	 */
+	public String addEntity(){
+		writeStringBack(service.addEntity(entity) + "");
+		setOperationDescb("实体名称：：" + entity.getTitle());
+		return null;
+	}
+	/**
+	 * @description 通过数据源名称 获取 实体  未注册
+	 * @return String
+	 */
+	public String listEntityByDbs(){
+		try {
+		    // 每页显示条数
+	        int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+	        // 当前页
+	        int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+	        int[] page={pageSize,pageNo};
+		    
+			PrintWriter out = getResponse().getWriter();
+			JSONObject datas = new JSONObject();
+			List list = service.getEntityByDbs(dbsSqu , "",page);
+			datas.put("total", list.size());
+			datas.put("rows", list);
+			
+			datas.put("pageSize", pageSize);
+			datas.put("pageNumber", pageNo);
+			out.print(datas);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 列表显示 已经注册的实体对象
+	 * @return String
+	 */
+	public String listRegistedEntity(){
+		try {
+		    // 每页显示条数
+            int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+            // 当前页
+            int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+            int[] page={pageSize,pageNo};
+            
+			PrintWriter out = getResponse().getWriter();
+			JSONObject datas = new JSONObject();
+			List list = service.getRegistedObject(dbsSqu);
+			datas.put("total" , list.size());
+			datas.put("rows" , list);
+			datas.put("pageSize", pageSize);
+            datas.put("pageNumber", pageNo);
+			out.print(datas);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 删除实体
+	 * @return String
+	 */
+	public String deleteEntity(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.deleteEntity(entity.getSqu()));
+			out.close();
+			setOperationDescb("实体名称：：" + entity.getTitle());
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 编辑实体
+	 * @return String
+	 */
+	public String editEntity(){
+		service.editEntity(entity);
+		setOperationDescb("实体名称：：" + entity.getTitle());
+		return null;
+	}
+	/**
+	 * @description 查询所有要素类型
+	 * @param
+	 * @return String
+	 */
+	public String fetchAllType(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			JSONArray array = new JSONArray();
+			String pidStr = getRequest().getParameter("id");
+			if (pidStr == null || "".equals(pidStr)) {
+			    pidStr = "0";
+			}
+			long pid = Long.parseLong(pidStr);
+			array.addAll(service.getAllType(pid));
+			out.print(array);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	public String findTable(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * @description 跳转到实体和字段管理页面 
+	 * @return String
+	 */
+	public String gotoEntityMgr(){
+		return SUCCESS;
+	}
+
+	//-------getters and setters
+	public RegEntity getEntity() {
+		return entity;
+	}
+	public void setEntity(RegEntity entity) {
+		this.entity = entity;
+	}
+	/**
+	 * @return service
+	 */
+	public IEntityService getService() {
+		return service;
+	}
+	public void setService(IEntityService service) {
+		this.service = service;
+	}
+	/**
+	 * @return dbsName 
+	 */
+	public String getDbsName() {
+		return dbsName;
+	}
+	/**
+	 */
+	public void setDbsName(String dbsName) {
+		try {
+			if (dbsName != null) {
+				// 处理中文乱码
+				this.dbsName = new String(
+				 dbsName.getBytes("iso-8859-1") , "utf-8");
+			} else {
+				this.dbsName = dbsName;
+			}
+		} catch (Exception e) {
+		}
+	}
+	/**
+	 * @return dbsSqu
+	 */
+	public String getDbsSqu() {
+		return dbsSqu;
+	}
+	/**
+	 */
+	public void setDbsSqu(String dbsSqu) {
+		this.dbsSqu = dbsSqu.substring(dbsSqu.lastIndexOf("_") + 1);
+	}
+}

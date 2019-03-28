@@ -1,0 +1,56 @@
+package monitor.projectConfig.action;
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import net.sf.json.JSONObject;
+
+import monitor.common.BaseAction;
+import monitor.projectConfig.service.impl.CalculationReportServiceImpl;
+
+/**
+ *@ClassName
+ *@dataTime 2018-4-9-下午3:11:30
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class CalculationReportAction extends BaseAction{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	@Resource(name = "calculationReportService")
+	private CalculationReportServiceImpl calculationReportService;
+	
+	public String geToCalculationIndex(){
+		String prosqu = getRequest().getParameter("prosqu");
+	//	System.out.println(prosqu);
+		getRequest().setAttribute("prosqu", prosqu);
+		return "success";
+		
+	}
+	/**&
+	 * 
+	  * getProjectInfo:(根据项目squ获取项目基本信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-4-11 下午2:18:19 void
+	  * @since JDK 1.7
+	 */
+	public void getProjectInfo(){
+		String  prosqu = getRequest().getParameter("prosqu");
+		JSONObject json = new JSONObject();
+		try {
+			Map<String,String> map = calculationReportService.selectProjectInfo(prosqu);
+			json.accumulate("map", map);
+		} catch (Exception e) {
+			json.accumulate("wrong", e.getMessage());
+			e.printStackTrace();
+		}
+		//System.out.println(json.toString());
+		writeStringBack(json.toString());
+	}
+}

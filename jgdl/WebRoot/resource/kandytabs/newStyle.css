@@ -1,0 +1,31 @@
+/***
+ * author: cl
+ */
+
+.tabcont {
+	height: 100%;
+	width: 100% ;
+	padding : 0px!important;
+	margin : 0px!important;
+}
+
+.tabtitle {
+	height: 100%;
+}
+
+.tabbody {
+	height: 100%;
+	padding : 0px!important;
+	margin : 0px!important;
+}
+
+dl {
+	height: 100%;
+	width: 100% ;
+	padding : 0px!important;
+	margin : 0px!important;
+}
+
+#rollleft {
+	height: 100%;
+}

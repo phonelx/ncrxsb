@@ -1,0 +1,205 @@
+package monitor.dispatched.bean.entity;
+
+import java.io.Serializable;
+
+/**
+ * @ClassName:DispatchedEntity
+ * @datetime: 2017-4-17 下午2:42:10
+ * @Description: 布控人员表实体
+ * @version 
+ * @author: 桂人杰
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class DispatchedEntity implements Serializable{
+	  /**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.6
+	*/
+	private static final long serialVersionUID = 1L;
+
+	/**
+	  * @Fields  id:TODO(主键)
+	  * @since JDK1.6
+	*/
+	private Integer id;      
+	  
+	/**
+	  * @Fields  gmsfhm:TODO(公民身份号码)
+	  * @since JDK1.6
+	*/
+	private String gmsfhm;  
+	  
+	/**
+	  * @Fields  xm:TODO(姓名)
+	  * @since JDK1.6
+	*/
+	private String xm;      
+	  
+	/**
+	  * @Fields  rylx:TODO(人员类型)
+	  * @since JDK1.6
+	*/
+	private Integer rylx;   
+	  
+	/**
+	  * @Fields  cjsj:TODO(创建时间)
+	  * @since JDK1.6
+	*/
+	private String cjsj;    
+	  
+	/**
+	  * @Fields  sxsj:TODO(失效时间)
+	  * @since JDK1.6
+	*/
+	private String sxsj;    
+	  
+	/**
+	  * @Fields  lrrsqu:TODO(录入人ID)
+	  * @since JDK1.6
+	*/
+	private Integer lrrsqu;  
+	  
+	/**
+	  * @Fields  isnew:TODO(是否是最新数据)
+	  * @since JDK1.7
+	*/
+	private Integer isnew;
+	
+	/**
+	  * @Fields  hjdz:TODO(户籍地)
+	  * @since JDK1.6
+	*/
+	private String hjdz;    
+	  
+	/**
+	  * @Fields  bkzt:TODO(布控状态0:申请,1:待审批,2:布控,3:过期)
+	  * @since JDK1.6
+	*/
+	private Integer bkzt;    
+	  
+	/**
+	  * @Fields  bksy:TODO(布控原因)
+	  * @since JDK1.6
+	*/
+	private String bksy;    
+	  
+	/**
+	  * @Fields  bz:TODO(备注)
+	  * @since JDK1.6
+	*/
+	private String bz;     
+	  
+	/**
+	  * @Fields  sprsqu:TODO(审批人ID)
+	  * @since JDK1.6
+	*/
+	private Integer sprsqu;
+	
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getGmsfhm() {
+		return gmsfhm;
+	}
+
+	public void setGmsfhm(String gmsfhm) {
+		this.gmsfhm = gmsfhm;
+	}
+
+	public String getXm() {
+		return xm;
+	}
+
+	public void setXm(String xm) {
+		this.xm = xm;
+	}
+
+	public Integer getRylx() {
+		return rylx;
+	}
+
+	public void setRylx(Integer rylx) {
+		this.rylx = rylx;
+	}
+
+	public String getCjsj() {
+		return cjsj;
+	}
+
+	public void setCjsj(String cjsj) {
+		this.cjsj = cjsj;
+	}
+
+	public String getSxsj() {
+		return sxsj;
+	}
+
+	public void setSxsj(String sxsj) {
+		this.sxsj = sxsj;
+	}
+
+	public Integer getLrrsqu() {
+		return lrrsqu;
+	}
+
+	public void setLrrsqu(Integer lrrsqu) {
+		this.lrrsqu = lrrsqu;
+	}
+
+	public String getHjdz() {
+		return hjdz;
+	}
+
+	public void setHjdz(String hjdz) {
+		this.hjdz = hjdz;
+	}
+
+	public Integer getBkzt() {
+		return bkzt;
+	}
+
+	public void setBkzt(Integer bkzt) {
+		this.bkzt = bkzt;
+	}
+
+	public String getBksy() {
+		return bksy;
+	}
+
+	public void setBksy(String bksy) {
+		this.bksy = bksy;
+	}
+
+	public String getBz() {
+		return bz;
+	}
+
+	public void setBz(String bz) {
+		this.bz = bz;
+	}
+
+	public Integer getSprsqu() {
+		return sprsqu;
+	}
+
+	public void setSprsqu(Integer sprsqu) {
+		this.sprsqu = sprsqu;
+	}
+
+	public Integer getIsnew() {
+		return isnew;
+	}
+
+	public void setIsnew(Integer isnew) {
+		this.isnew = isnew;
+	}  
+	
+	
+}

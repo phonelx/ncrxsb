@@ -1,0 +1,199 @@
+package monitor.dispatched.bean.entity;
+
+import java.io.Serializable;
+
+/**
+ * 与数据库的T_BKRY(布控人员表相对应)
+ * @ClassName:BkryEntity
+ * @dateTime: 2017-4-27 下午2:45:44
+ * @version 
+ * @author: 张家俊
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class BkryEntity implements Serializable{
+    private static final long serialVersionUID = 8006904585937164986L;
+    /**主键 */
+    private int id = -1;
+    /**公民身份号码 */
+    private String gmsfhm = null;
+    /**姓名 */
+    private String xm = null;
+    /**人员类型 */
+    private int rylx = -1;
+    /**创建时间 */
+    private String cjsj = null;
+    /**失效时间 */
+    private String sxsj = null;
+    /**录入人ID */
+    private int lrrsqu = -1;
+    /**户籍地 */
+    private String hjdz = null;
+    /**布控状态0:待审批,1:布控,2:过期,3:取消 */
+    private int bkzt = -1;
+    /** 布控原因*/
+    private String bksy = null;
+    /**备注 */
+    private String bz = null;
+    /**审批人id */
+    private int sprsqu = -1;
+    /** 是否是最新数据0：不是，1：是*/
+    private int isnew = -1;
+    /**民族*/
+    private String mz =  null;
+    
+    /**常量：布控状态待审批*/
+    public static final int BKZT_DSP = 0;
+    /**常量：不是最新数据*/
+    public static final int ISNEW_NO = 0;
+    /**常量：是最新数据*/
+    public static final int ISNEW_YES = 1;
+    
+    
+    
+    public BkryEntity()
+    {
+    }
+    
+    
+    public int getId()
+    {
+        return id;
+    }
+    public void setId(int id)
+    {
+        this.id = id;
+    }
+    public String getGmsfhm()
+    {
+        return gmsfhm;
+    }
+    public void setGmsfhm(String gmsfhm)
+    {
+        this.gmsfhm = gmsfhm;
+    }
+    public String getXm()
+    {
+        return xm;
+    }
+    public void setXm(String xm)
+    {
+        this.xm = xm;
+    }
+    public int getRylx()
+    {
+        return rylx;
+    }
+    public void setRylx(int rylx)
+    {
+        this.rylx = rylx;
+    }
+   
+    public String getCjsj()
+    {
+        return cjsj;
+    }
+
+
+    public void setCjsj(String cjsj)
+    {
+        this.cjsj = cjsj;
+    }
+
+
+    public String getSxsj()
+    {
+        return sxsj;
+    }
+
+
+    public void setSxsj(String sxsj)
+    {
+        this.sxsj = sxsj;
+    }
+
+
+    public int getLrrsqu()
+    {
+        return lrrsqu;
+    }
+    public void setLrrsqu(int lrrsqu)
+    {
+        this.lrrsqu = lrrsqu;
+    }
+    public String getHjdz()
+    {
+        return hjdz;
+    }
+    public void setHjdz(String hjdz)
+    {
+        this.hjdz = hjdz;
+    }
+    public int getBkzt()
+    {
+        return bkzt;
+    }
+    public void setBkzt(int bkzt)
+    {
+        this.bkzt = bkzt;
+    }
+    public String getBksy()
+    {
+        return bksy;
+    }
+    public void setBksy(String bksy)
+    {
+        this.bksy = bksy;
+    }
+    public String getBz()
+    {
+        return bz;
+    }
+    public void setBz(String bz)
+    {
+        this.bz = bz;
+    }
+    public int getSprsqu()
+    {
+        return sprsqu;
+    }
+    public void setSprsqu(int sprsqu)
+    {
+        this.sprsqu = sprsqu;
+    }
+    public int getIsnew()
+    {
+        return isnew;
+    }
+    public void setIsnew(int isnew)
+    {
+        this.isnew = isnew;
+    }
+
+
+    public String getMz()
+    {
+        return mz;
+    }
+
+
+    public void setMz(String mz)
+    {
+        this.mz = mz;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "BkryEntity [id=" + id + ", gmsfhm=" + gmsfhm + ", xm=" + xm + ", rylx=" + rylx + ", cjsj=" + cjsj
+            + ", sxsj=" + sxsj + ", lrrsqu=" + lrrsqu + ", hjdz=" + hjdz + ", bkzt=" + bkzt + ", bksy=" + bksy
+            + ", bz=" + bz + ", sprsqu=" + sprsqu + ", isnew=" + isnew + ", mz=" + mz + "]";
+    }
+
+
+    
+    
+    
+}

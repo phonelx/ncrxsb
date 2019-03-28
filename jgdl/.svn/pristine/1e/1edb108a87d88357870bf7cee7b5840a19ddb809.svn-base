@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">  
+	<bean id="roleService" class="monitor.user.service.impl.RoleServiceImpl" scope="prototype">
+		<property name="roleDAO" ref="roleDAO"/>
+	</bean> 
+	
+	<bean id="userService" class="monitor.user.service.impl.UserServiceImpl" scope="prototype">
+		<property name="userDAO" ref="userDAO"/>
+	</bean> 
+	
+	<bean id="authService" class="monitor.user.service.impl.AuthorityServiceImpl" scope="prototype">
+		<property name="authDAO" ref="authDAO"/>
+	</bean> 
+	
+	
+</beans>

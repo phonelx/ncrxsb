@@ -1,0 +1,161 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:IKzzjMxpzService.java
+	* Date:2017-10-26下午3:37:14   
+	***/
+package monitor.kzzjMxpz.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.kzzjMxpz.bean.entity.Dxinfo;
+import monitor.kzzjMxpz.bean.entity.Dxmxb;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:IKzzjMxpzService
+ * @dateTime: 2017-10-26 下午3:37:14
+ * @Description: TODO
+ * @version 
+ * @author: 康正秋
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IKzzjMxpzService {
+	
+	public List<Map<String, String>> getZjMenu(String squ,String type)
+			throws Exception;
+	
+	/**
+	 * 
+	  * getPartsMenu:(加载支架目录).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午3:29:34
+	  * @param squ
+	  * @return
+	  * @throws Exception List<Map<String,String>>
+	  * @since JDK 1.7
+	 */
+	public PageInfoVo  getPartsMenu(PageInfoVo page,String squ)
+			throws Exception;
+	
+	
+	/**
+	 * 添加抗震支架部件
+	  * addKzzjBj:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-2 上午9:35:28
+	  * @param: @param dxmxb
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String addKzzjBj(Dxmxb dxmxb);
+	
+	/**
+	 * 删除抗震支架部件
+	  * delKzzjBj:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-2 上午11:38:58
+	  * @param: @param dxsqu
+	  * @param: @param bjsqu
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String delKzzjBj(String dxsqu,String bjsqu);
+	
+
+	
+	/**
+	 * 编辑抗震支架部件
+	  * editKzzjBj:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-3 下午2:38:56
+	  * @param: @param dxmxb
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String editKzzjBj(Dxmxb dxmxb);
+	
+	/**
+	 * 查询组合部件
+	  * selectZhbjInfo:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-6 下午3:04:26
+	  * @param: @return
+	  * @return: List<Map<String,String>>
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List<Map<String, String>> selectZhbjInfo(String gdlx,String azfs);
+	/**
+	 * 通过组合部件id查询组合部件信息
+	  * selectZhbjInfoById:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-6 下午3:44:59
+	  * @param: @param ZHSQU
+	  * @param: @return
+	  * @return: List<Map<String,String>>
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List<Map<String, String>> selectZhbjInfoById(String ZHSQU);
+	
+	/**
+	 * 返回部件列表
+	  * getKzzjBjList:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 康正秋
+	  * @dateTime: 2017-11-7 上午11:43:18
+	  * @param: @param pages
+	  * @param: @param dxsqu
+	  * @param: @param searchKey
+	  * @param: @param op
+	  * @param: @return
+	  * @return: PageInfoVo
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public PageInfoVo getKzzjBjList(PageInfoVo pages,String dxsqu,String searchKey,int op)throws SQLException;
+	
+	
+	public PageInfoVo searchKzzjBjList(PageInfoVo pages,String dxsqu,String searchKey,int op)throws SQLException;
+
+	
+	
+	public List<Dxinfo> loadKzzjBySqu(String squ);
+	
+	
+	List<Map<String, String>> searchBjInfo(String id,String type,String azfs)throws Exception;
+	
+	
+	
+	/**
+	 * 
+	  * selectLbInfo:(添加组合部件是获取部件系列信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-25 下午6:59:10
+	  * @param id
+	  * @return
+	  * @throws SQLException List<Wzzdb>
+	  * @since JDK 1.7
+	 */
+	public List<Map<String, String>> selectLbInfo(String id) throws Exception;
+}

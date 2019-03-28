@@ -1,0 +1,174 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 21, 2011 3:01:59 PM
+*/
+package monitor.registry.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import monitor.registry.bean.dto.RegQueryDto;
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.bean.entity.RegQuery;
+import monitor.registry.bean.vo.ComboVo;
+import monitor.registry.dao.IEntityDao;
+import monitor.registry.dao.IRegQueryDao;
+import monitor.registry.service.IRegQueryService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+/** 
+ * <description> 
+ * @author  liangxj
+ * @datetime  Apr 21, 2011 3:01:59 PM
+ */
+public class RegQueryServiceImpl implements IRegQueryService {
+	// 注入 queryDao
+	private IRegQueryDao queryDao ;
+	// 注入 entityDao
+	private IEntityDao entityDao ;
+	
+	//-------main methods 
+	
+	/** 
+	 * 列表显示 所有已经注册的查询信息
+	 * @param pageSize  页面大小
+	 * @param pageNo    当前页
+	 * @return list
+	*/
+	public List getAllQuerys(int pageSize, int pageNo) {
+		return queryDao.getAllQuerys(pageSize, pageNo);
+	}
+	/**注册 查询
+	 * @param query
+	 */
+	public void addQuery(RegQueryDto queryDto) {
+		queryDao.addQuery(queryDto) ;
+	}
+	/**删除 查询
+	 * @param query
+	 */
+	public void deleteQuery(int squ) {
+		queryDao.deleteQuery(squ) ;
+	}
+	/**编辑查询
+	 * @param query
+	 */
+	public void editQuery(RegQuery query) {
+		queryDao.editQuery(query) ;
+	}
+
+	/**获取所有 数据源
+	 * @return
+	 */
+	public List getAllDbs() {
+		return queryDao.getAllDbs();
+	}
+	/**
+	 * @description  
+	 * 		通过数据源 列出所有 已经注册的实体
+	 * 		用于页面上下拉框使用
+	 * @param dbsSqu 数据源编号
+	 * @return List
+	 */
+	public JSONArray getAllEntity(int dbsSqu){
+		JSONArray json  = new JSONArray();
+		// 调用Dao 查询所有 已经注册实体
+		List<RegEntity> listTemp = entityDao.findRegEntity(dbsSqu+"");
+		for(RegEntity entity:listTemp){
+			JSONObject object = new JSONObject();
+			object.put("id", entity.getSqu());
+			String pat="\\d+";
+			Pattern p=Pattern.compile(pat);
+			Matcher m=p.matcher(entity.getTitle());
+			object.put("name", m.replaceAll("").replace("[", "").replace("]", ""));
+			json.add(object);
+		}
+		return json ;
+	}
+	/**
+	 * @description
+	 * 		查询所有 已经注册的字段
+	 * 		提供页面上，选择查询字段 的值
+	 * @param entitySqus  实体编号 
+	 * @return List
+	 */
+	public JSONObject getField4ShowField(String entitySqus){
+		// 用于保存结果
+		JSONObject obj = new JSONObject();
+		// 通过实体squ 获取所有已经注册的字段
+		List<RegField> listTemp = entityDao.findRegField(entitySqus) ;
+		// 所有选中的 实体 
+		String[] squTemp = entitySqus.split(",") ;
+		// 封装数据
+		for(String str:squTemp){
+			JSONArray array = new JSONArray() ;
+			// 根据实体 获取相应的字段
+			for(RegField field : listTemp){
+				if(field.getEntitySqu()== Integer.parseInt(str)){
+					JSONObject objTemp = new JSONObject() ;
+					objTemp.put(field.getName()+"@"+field.getSqu()+"@"+field.getDictypesqu()+"@"+field.getType(), field.getTitle()) ;
+					array.add(objTemp);
+				}
+			}
+			//保存结果
+			obj.put("entity_"+str, array) ;
+		}
+		return obj ;
+	}
+	/**
+	 * @description 
+	 * 	  查询所有已经注册 的字段
+	 * 	  提供页面上，设置查询条件 下拉列表值
+	 * @return list
+	 */
+	public List getField4Combo(String entitySqu){
+		// 保存结果
+		List list = new ArrayList() ;
+		// 获取已经注册字段
+		List<RegField> listTemp = entityDao.findRegField(entitySqu) ;
+		// 封装数据
+		for(RegField field : listTemp){
+			if(field.getAsCondition() == 1){ // 如果是检索条件，则添加该条记录
+				ComboVo combo = new ComboVo();
+				combo.setId(field.getName()+"@"+field.getTitle()+"@"+field.getSqu()+"@"+field.getType()+"@"+field.getDictypesqu()) ;
+				combo.setText(field.getTitle()) ;
+				list.add(combo) ;
+			}
+		}
+		return list ;
+	}
+	// -------getters and setters
+	/** 
+	 * @return queryDao 
+	 */
+	public IRegQueryDao getQueryDao() {
+		return queryDao;
+	}
+
+	/** 
+	 */
+	
+	public void setQueryDao(IRegQueryDao queryDao) {
+		this.queryDao = queryDao;
+	}
+	/** 
+	 * @return entityDao 
+	 */
+	public IEntityDao getEntityDao() {
+		return entityDao;
+	}
+	/** 
+	 */
+	
+	public void setEntityDao(IEntityDao entityDao) {
+		this.entityDao = entityDao;
+	}
+
+	
+}

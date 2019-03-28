@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">  
+	<!-- 数据源处理Service -->
+	<bean id="dataSourceService" class="monitor.registry.service.impl.DataSourceServiceImpl" scope="prototype">
+		<property name="dao" ref="dataSourceDao"/>
+	</bean> 
+	<!-- 实体 处理 Service -->
+	<bean id="entityService" class="monitor.registry.service.impl.EntityServiceImpl" scope="prototype">
+		<property name="dao" ref="entityDao"/>
+	</bean>
+	<!-- 字段 处理 Service -->
+	<bean id="fieldService" class="monitor.registry.service.impl.FieldServiceImpl" scope="prototype">
+		<property name="entityDao" ref="entityDao"/>
+		<property name="fieldDao" ref="fieldDao"/>
+	</bean>
+	<!-- 查询 处理 Service -->
+	<bean id="regQueryService" class="monitor.registry.service.impl.RegQueryServiceImpl" scope="prototype">
+		<property name="queryDao" ref="regQueryDao"/>
+		<property name="entityDao" ref="entityDao"/>
+	</bean>
+	<!-- 实体关系 注册 Service -->
+	<bean id="relationService" class="monitor.registry.service.impl.RelationServiceImpl" scope="prototype">
+		<property name="relationDao" ref="relationDao"/>
+		<property name="entityDao" ref="entityDao"/>
+	</bean>
+</beans>

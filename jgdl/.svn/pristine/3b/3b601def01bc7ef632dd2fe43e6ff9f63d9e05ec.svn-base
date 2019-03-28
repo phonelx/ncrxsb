@@ -1,0 +1,66 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:TableDto.java
+ * Date:2016-3-17下午1:48:27
+ ***/
+package monitor.manage.bean.dto;
+
+/**
+ * @ClassName:TableDto
+ * @dateTime: 2016-3-17 下午1:48:27
+ * @Description: TODO
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class TableDto {
+	private int squ;
+	private int dataSourceSqu;
+	private String name;
+	private String title;
+	private int count;
+
+	public int getSqu() {
+		return squ;
+	}
+
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+
+	public int getDataSourceSqu() {
+		return dataSourceSqu;
+	}
+
+	public void setDataSourceSqu(int dataSourceSqu) {
+		this.dataSourceSqu = dataSourceSqu;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+	
+}

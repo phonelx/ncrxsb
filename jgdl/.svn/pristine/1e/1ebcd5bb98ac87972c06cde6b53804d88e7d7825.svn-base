@@ -1,0 +1,117 @@
+html {
+    scrollbar-face-color:#f6f6f6;
+    scrollbar-highlight-color:#fff;
+    scrollbar-shadow-color:#eeeeee;
+    scrollbar-3dlight-color:#eeeeee;
+    scrollbar-arrow-color:#000;
+    scrollbar-track-color:#fff;
+    scrollbar-darkshadow-color:#fff;
+    }
+body {
+	padding-bottom: 40px;
+}
+
+ul {
+	list-style: none;
+}
+
+.sidebar-nav {
+	padding: 9px 0;
+}
+
+i.icon.icon-color {
+	float: right;
+}
+
+span#addMenu {
+	display: block;
+	margin: 0px auto;
+}
+
+input.span3,textarea.span3,.uneditable-input.span3 {
+	width: 210px;
+}
+
+.nice-select ul {
+	width: 100%;
+	display: none;
+	position: absolute;
+	left: -26px;
+	top: 29px;
+	overflow: hidden;
+	background-color: #fff;
+	max-height: 150px;
+	overflow-y: auto;
+	border: 1px solid #999;
+	border-top: 0;
+	box-shadow: 0 3px 5px #999;
+	z-index: 9999;
+}
+
+.nice-select {
+	width: 200px;
+	padding: 0px;
+	height: 28px;
+	border-radius: 3px;
+	position: relative;
+	background: #fff url(resource/new/images/a2.jpg) no-repeat right center;
+	cursor: pointer;
+}
+
+#text_icon {
+	position: absolute;
+	top: 140px;
+	left: 540px;
+	display: none;
+}
+ 
+ .topnav {
+	padding: 40px 28px 25px 15px;
+    color:#3f9fd9;
+}
+
+ul.topnav {
+	padding: 0;
+	margin: 0;
+	line-height: 0.5em;
+	list-style: none;
+}
+
+
+
+ul.topnav li a:hover {
+	background-color:#ccc;    
+}
+
+ul.topnav ul {
+	margin: 0;
+	padding: 0;
+	display: none;
+}
+
+ul.topnav ul li {
+	margin: 0;
+	padding: 0;
+	clear: both;
+}
+
+
+ul.topnav ul li a:hover {
+	background-color:#D3C99C;
+	color:#675C7C;
+}
+
+
+ul.topnav ul ul li a:hover {
+	background-color:#D3CEB8;
+	color:#675C7C;
+}
+
+ul.topnav span{
+   float:left;
+}
+
+button.btn {
+  margin-top: -9px;
+  margin-left: -5px;
+}

@@ -1,0 +1,377 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 16, 2011 5:21:28 PM
+*/
+package monitor.registry.dao.impl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import monitor.common.exception.DaoException;
+import monitor.registry.bean.entity.RegDataSource;
+import monitor.registry.dao.IDataSourceDao;
+/**
+ */
+public class DataSourceDaoImpl extends RegistryDao implements IDataSourceDao {
+	/**
+	 * @description  注册数据源
+	 * @param  rds 数据源
+	 * @return void
+	 */
+	public void addRbs(RegDataSource rds) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// insert  sql
+			StringBuffer sql
+			= new StringBuffer("INSERT INTO SSP_TREGDATASOURCE(")
+			.append("DESCB,REGDATETIME,DBTYPE,DBINSTANCE,"
+			+ "DBIP,DBPORT,DBUSER,DBPWD,DBCLASS,DBURL,TITLE)")
+			.append("VALUES(?,sysdate,?,?,?,?,?,?,?,?,?)");
+			// 添加数据源
+			pstmt = conn.prepareStatement(sql.toString());
+			// 设置参数
+			pstmt.setString(1, rds.getDescb());
+			pstmt.setInt(2, rds.getDbType());
+			pstmt.setString(3, rds.getDbInstance());
+			pstmt.setString(4, rds.getDbIp());
+			pstmt.setInt(5, rds.getDbPort());
+			pstmt.setString(6, rds.getDbUser());
+			pstmt.setString(7, rds.getDbPwd());
+			pstmt.setString(8, rds.getDbClass());
+			pstmt.setString(9, rds.getDbUrl());
+			pstmt.setString(10, rds.getTitle());
+			pstmt.executeUpdate() ;
+		} catch (Exception e) {
+			throw new DaoException("数据库异常",e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * 返回数据源总数量
+	 * @return int  数据源总条数
+	 */
+	public int getAllCnts(String searchKey) {
+		int cnt = 0;
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// sql
+			String sql = "SELECT COUNT(*) FROM SSP_TREGDATASOURCE where title like '%"+searchKey+"%' ";
+			// 查询总条数
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) { cnt = rs.getInt(1); }
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return cnt;
+	}
+	/**
+	 * @description 分页查询数据源
+	 * @param pageSize 每页显示条数
+	 * @param pageNo 当页数
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> findDataSourceList(int pageSize,int pageNo,String searchKey){
+		List<RegDataSource> list = null;
+		String k = "d";
+		try {
+			//获取连接
+			conn = datasource.getConnection();
+			// sql
+			StringBuffer sql = new StringBuffer(
+			"SELECT * FROM (SELECT T.*,ROWNUM R1 FROM ");
+			sql.append(
+			"(SELECT * FROM SSP_TREGDATASOURCE where title like '%"+searchKey+"%')"
+			+ " T WHERE  ROWNUM < ? )");
+			sql.append(" WHERE R1 >= ?");
+			pstmt = conn.prepareStatement(sql.toString());
+			int startIndex = pageNo * pageSize + 1;
+			pstmt.setInt(1, pageSize + startIndex);
+			pstmt.setInt(2, startIndex);
+			// 执行查询
+			rs = pstmt.executeQuery();
+			list = new ArrayList<RegDataSource>();
+			while (rs.next()) {
+				// 封装实体bean
+				RegDataSource rds = new RegDataSource();
+				rds.setSqu(rs.getInt("squ"));
+				rds.setDescb(rs.getString("descb"));
+				rds.setDbType(rs.getInt("dbtype"));
+				rds.setDbInstance(rs.getString("dbinstance"));
+				rds.setDbIp(rs.getString("dbip"));
+				rds.setDbPort(rs.getInt("dbport"));
+				rds.setDbUser(rs.getString("dbuser"));
+				rds.setDbPwd(rs.getString("dbpwd"));
+				rds.setDbClass(rs.getString("dbclass"));
+				rds.setDbUrl(rs.getString("dburl"));
+				rds.setTitle(rs.getString("Title"));
+				rds.setRegDatetime(rs.getString("regdatetime"));
+				list.add(rds);
+			}
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return list;
+	}
+	/**
+	 * @description 删除squ对应的数据源
+	 * @param  squ 数据源 ID
+	 * @return void
+	 */
+	public boolean deleteDbs(int squ){
+		try {
+			conn = datasource.getConnection();
+			// 判断 当前数据源是否被使用 
+			pstmt = conn.prepareStatement(
+				"SELECT COUNT(*) FROM SSP_TREGENTITY "
+				+ " WHERE DATASOURCESQU = ?");
+			pstmt.setInt(1, squ);
+			rs = pstmt.executeQuery();
+			rs.next();
+			if (rs.getInt(1) > 0) { return false; } // 说明正在被使用 不能删除
+			//删除数据源
+			pstmt = conn.prepareStatement(
+				"DELETE FROM SSP_TREGDATASOURCE WHERE SQU = ?");
+			pstmt.setInt(1, squ);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return true;
+	}
+	/** 编辑数据源
+	 * @param rds
+	*/
+	public void editDbs(RegDataSource rds) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// insert  sql
+			StringBuffer sql = new StringBuffer(
+				"UPDATE SSP_TREGDATASOURCE ")
+			.append("SET DESCB = ?,")
+			.append(" DBTYPE = ?,")
+			.append(" DBINSTANCE = ?,")
+			.append(" DBIP = ?,")
+			.append(" DBPORT =?,")
+			.append(" DBUSER=?,")
+			.append(" DBPWD=?,")
+			.append(" DBCLASS=?,")
+			.append(" DBURL=?,")
+			.append(" TITLE =? ")
+			.append(" WHERE SQU = ?");
+			// 添加数据源
+			pstmt = conn.prepareStatement(sql.toString());
+			// 设置参数
+			pstmt.setString(1, rds.getDescb());
+			pstmt.setInt(2, rds.getDbType());
+			pstmt.setString(3, rds.getDbInstance());
+			pstmt.setString(4, rds.getDbIp());
+			pstmt.setInt(5, rds.getDbPort());
+			pstmt.setString(6, rds.getDbUser());
+			pstmt.setString(7, rds.getDbPwd());
+			pstmt.setString(8, rds.getDbClass());
+			pstmt.setString(9, rds.getDbUrl());
+			pstmt.setString(10, rds.getTitle());
+			pstmt.setInt(11, rds.getSqu());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * @description 测试数据源是否可用
+	 * @param  rds
+	 * @return boolean
+	 */
+	public boolean testConnection(RegDataSource rds){
+		//数据源可用标志  默认不可用
+		boolean flag = false;
+		try {
+			// 通过数据源获取 连接
+			conn = getConnByDbs(rds);
+			if (conn != null) {
+				flag = true; // 可用
+				conn.close(); // 关闭连接
+			}
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		}
+		return flag;
+	}
+	/**
+	 * 检测 数据源名称是否可用
+	 * @param dbsName 数据源名称
+	 * @return  boolean
+	*/
+	public boolean checkDbsName(String dbsName) {
+		boolean flag = true;
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+			"SELECT COUNT(*) FROM SSP_TREGDATASOURCE"
+			+ " WHERE TITLE = ?");
+			pstmt.setString(1, dbsName.trim());
+			rs = pstmt.executeQuery();
+			rs.next();
+			if (rs.getInt(1) > 0) {
+			 flag = false;
+			 } //存在相应记录说明 数据源名称已经被注册 不能使用
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return flag;
+	}
+	/**
+	 * 根据squ查询指定数据源bean
+	 * @author:  cl
+	 * @param
+	 * @return RegDataSource
+	 */
+	public RegDataSource findDataSourceBySqu(int squ){
+		RegDataSource regDataSource = null;
+		try {
+			//获取连接
+			conn = datasource.getConnection();
+			// sql
+			StringBuffer sql = new StringBuffer(
+			  "select * from Ssp_Tregdatasource where squ = ?");
+			pstmt = conn.prepareStatement(sql.toString());
+			pstmt.setInt(1, squ);
+			// 执行查询
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				// 封装实体bean
+				regDataSource = new RegDataSource();
+				regDataSource.setSqu(rs.getInt("squ"));
+				regDataSource.setDescb(rs.getString("descb"));
+				regDataSource.setDbType(rs.getInt("dbtype"));
+				regDataSource.setDbInstance(
+						rs.getString("dbinstance"));
+				regDataSource.setDbIp(rs.getString("dbip"));
+				regDataSource.setDbPort(rs.getInt("dbport"));
+				regDataSource.setDbUser(rs.getString("dbuser"));
+				regDataSource.setDbPwd(rs.getString("dbpwd"));
+				regDataSource.setDbClass(
+						rs.getString("dbclass"));
+				regDataSource.setDbUrl(rs.getString("dburl"));
+				regDataSource.setTitle(rs.getString("Title"));
+				regDataSource.setRegDatetime(
+						rs.getString("regdatetime"));
+			}
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return regDataSource;
+	}
+
+	/**
+	 * 列出所有数据源信息，不分页
+	 * @author: cl
+	 * @param
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> listDataSourceList() {
+		List<RegDataSource> list = new ArrayList<RegDataSource>();
+		try {
+			//获取连接
+			conn = datasource.getConnection();
+			// sql
+			StringBuffer sql = new StringBuffer(
+					"SELECT * FROM SSP_TREGDATASOURCE");
+			pstmt = conn.prepareStatement(sql.toString());
+			// 执行查询
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				// 封装实体bean
+				RegDataSource rds = new RegDataSource();
+				rds.setSqu(rs.getInt("squ"));
+				rds.setDescb(rs.getString("descb"));
+				rds.setDbType(rs.getInt("dbtype"));
+				rds.setDbInstance(rs.getString("dbinstance"));
+				rds.setDbIp(rs.getString("dbip"));
+				rds.setDbPort(rs.getInt("dbport"));
+				rds.setDbUser(rs.getString("dbuser"));
+				rds.setDbPwd(rs.getString("dbpwd"));
+				rds.setDbClass(rs.getString("dbclass"));
+				rds.setDbUrl(rs.getString("dburl"));
+				rds.setTitle(rs.getString("Title"));
+				rds.setRegDatetime(rs.getString("regdatetime"));
+				list.add(rds);
+			}
+		} catch (Exception e) {
+			throw new DaoException("数据库异常" , e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return list;
+	}
+}

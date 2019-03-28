@@ -1,0 +1,86 @@
+package monitor.manage.bean.entity;
+
+public class BKMessageEntity {
+	private int bid;
+	private String bkr;
+	private String bkhm;
+	private int bklx;
+	private String oprationtime;
+	private int oprationshow;
+	private int mess;
+	private String bt;
+	private String dxjsdh;
+
+	public int getBid() {
+		return bid;
+	}
+
+	public void setBid(int bid) {
+		this.bid = bid;
+	}
+
+	public String getBkr() {
+		return bkr;
+	}
+
+	public void setBkr(String bkr) {
+		this.bkr = bkr;
+	}
+
+	public String getBkhm() {
+		return bkhm;
+	}
+
+	public void setBkhm(String bkhm) {
+		this.bkhm = bkhm;
+	}
+
+	public int getBklx() {
+		return bklx;
+	}
+
+	public void setBklx(int bklx) {
+		this.bklx = bklx;
+	}
+
+	public String getOprationtime() {
+		return oprationtime;
+	}
+
+	public void setOprationtime(String oprationtime) {
+		this.oprationtime = oprationtime;
+	}
+
+	public int getOprationshow() {
+		return oprationshow;
+	}
+
+	public void setOprationshow(int oprationshow) {
+		this.oprationshow = oprationshow;
+	}
+
+	public int getMess() {
+		return mess;
+	}
+
+	public void setMess(int mess) {
+		this.mess = mess;
+	}
+
+	public String getBt() {
+		return bt;
+	}
+
+	public void setBt(String bt) {
+		this.bt = bt;
+	}
+
+	public String getDxjsdh() {
+		return dxjsdh;
+	}
+
+	public void setDxjsdh(String dxjsdh) {
+		this.dxjsdh = dxjsdh;
+	}
+
+}

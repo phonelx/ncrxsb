@@ -1,0 +1,207 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-4-28 下午03:38:24
+*/
+package monitor.common.service.impl;
+
+import java.util.List;
+
+import org.jdom.Document;
+import org.jdom.Element;
+
+import monitor.common.bean.entity.ErrorDataReportEntity;
+import monitor.common.bean.entity.OperationEntity;
+import monitor.common.bean.vo.DataSizeVo;
+import monitor.common.bean.vo.ResourceSummaryVo;
+import monitor.common.dao.ICommonDAO;
+import monitor.common.service.ICommonService;
+import monitor.common.util.JDomUtil;
+import monitor.registry.bean.entity.RegDataSource;
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.bean.entity.RegEntityType;
+import monitor.registry.dao.IDataSourceDao;
+import monitor.registry.dao.IEntityDao;
+
+/** 
+ * <description> 
+ * @author  cl
+ * @datetime  2011-4-28 下午03:38:24
+ */
+public class CommonServiceImpl implements ICommonService {
+	private ICommonDAO commonDAO = null;
+	private IEntityDao entityDAO = null;
+	private IDataSourceDao dataSourceDAO = null;
+	
+	public ICommonDAO getCommonDAO() {
+		return commonDAO;
+	}
+	public void setCommonDAO(ICommonDAO commonDAO) {
+		this.commonDAO = commonDAO;
+	}
+	public IEntityDao getEntityDAO() {
+		return entityDAO;
+	}
+	public void setEntityDAO(IEntityDao entityDAO) {
+		this.entityDAO = entityDAO;
+	}
+	public IDataSourceDao getDataSourceDAO() {
+		return dataSourceDAO;
+	}
+	public void setDataSourceDAO(IDataSourceDao dataSourceDAO) {
+		this.dataSourceDAO = dataSourceDAO;
+	}
+	/**
+	 * 记录用户操作信息，存入数据库
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String recordOperationType(OperationEntity opEntity) {
+		return commonDAO.recordOperationType(opEntity);
+	}
+	
+	/**
+	 * 首页统计所有要素的数据总记录数信息
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 * @deprecated 暂未使用
+	 */
+	@SuppressWarnings("unchecked")
+	public String generatePieChartOfAllFactorsCounts() {
+		List<RegEntityType> entityTypeList = (List<RegEntityType>)entityDAO.getAllType(-1);
+		
+		Element rootElement = new Element("pie");
+		Document document = new Document(rootElement);
+		for(RegEntityType entityType:entityTypeList){
+			//根据传入的实体类别表squ，查询所有属于该指定类别的实体的数据总量
+			long factorySum = queryFactoryTableCountsSum(entityType.getSqu());
+			
+			Element sliceElement = new Element("slice");
+			sliceElement.setAttribute("title",entityType.getTypeName());
+			sliceElement.setText(""+factorySum);
+			rootElement.addContent(sliceElement);
+		}
+		
+//		Document document = JDomUtil.buildFromFile("f:/ampie_data.xml");
+		return JDomUtil.outputDocumentAsString(document, "utf-8");
+	}
+	
+	/**
+	 * 根据传入的实体类别表squ，查询所有属于该指定类别的实体的数据总量
+	 * @author:  cl 
+	 * @param 
+	 * @return long
+	 * @deprecated 暂未使用
+	 */
+	private long queryFactoryTableCountsSum(int typeSqu){
+		long sum = 0;
+		
+		//根据entityTypeSqu查询所有符合实体
+		List<RegEntity> entityList = entityDAO.listEntitiesByEntityType(typeSqu);
+		
+		for(RegEntity entity:entityList){
+			//根据entityBean查询数据源bean
+			RegDataSource regDataSource = dataSourceDAO.findDataSourceBySqu(entity.getDatasourceSqu());
+			
+			//根据entityBean和数据源bean统计
+			long tableCounts = commonDAO.queryTableRecordSum(entity.getName(),regDataSource);
+			sum+=tableCounts;
+		}
+		
+		return sum;
+	}
+	
+	/**
+	 * 首页统计所有要素的数据总记录数信息--从SSP_TResourceSummaryStatistic表中读数据
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String generatePieChartOfAllFactorsCounts2(String statType) {
+		List<ResourceSummaryVo> summaryVoList = commonDAO.querySummaryTable(statType);
+		
+		Element rootElement = new Element("pie");
+		Document document = new Document(rootElement);
+		for(ResourceSummaryVo summaryVo:summaryVoList){
+			Element sliceElement = new Element("slice");
+			sliceElement.setAttribute("title",summaryVo.getEntityType().getTypeName());
+			sliceElement.setText(""+summaryVo.getCounts()/10000);
+			rootElement.addContent(sliceElement);
+		}
+		
+//		// 生成 柱状图的 xml 流
+//		Element rootElement = new Element("chart");
+//		Document document = new Document(rootElement);
+//		Element series = new Element("series");
+//		Element graphs = new Element("graphs");
+//		Element graph = new Element("graph");
+//		rootElement.addContent(series);
+//		rootElement.addContent(graphs);
+//		graphs.addContent(graph) ;
+//		for(int i=0;i<summaryVoList.size();i++){
+//			// 生成 series 
+//			Element val4series = new Element("value");
+//			val4series.setAttribute("xid",i+"");
+//			val4series.setText(summaryVoList.get(i).getEntityType().getTypeName());
+//			series.addContent(val4series) ;
+//			// 生成 graph
+//			Element val4graph = new Element("value");
+//			val4graph.setAttribute("xid",i+"");
+//			val4graph.setText(summaryVoList.get(i).getCounts()+"") ;
+//			graph.addContent(val4graph) ;
+//		}
+		return JDomUtil.outputDocumentAsString(document, "utf-8");
+	}
+
+	/**
+	 * 统计数据库中所有资源的记录总数 
+	 * @author: cl 
+	 * @param 
+	 * @return String
+	 */
+	public String calculateAllFactourCounts(){
+		return commonDAO.calculateAllFactourCounts();
+	}
+	
+	/**
+	 * 统计资源库中所有资源占用的数据空间情况 
+	 * @author: cl 
+	 * @param 
+	 * @return DataSizeVo
+	 */
+	public DataSizeVo calculateAllDataSize() {
+		return commonDAO.calculateAllDataSize();
+	}
+	
+	/**
+	 * 首页保存错误数据信息 
+	 * @author: yl 
+	 * @param rer
+	 * @return null
+	 */
+	public void saveErrorData(ErrorDataReportEntity rer) {
+		 commonDAO.saveErrorData(rer);
+	}
+	
+	/**
+	 * 进行同名验证
+	 * @param tableName 表名
+	 * @param fileName 字段名
+	 * @param filedName 需要验证的名字
+	 * @return boolean(true|false)
+	 */
+	public boolean sameNameJudge(String tableName,String filedName,String nowUseName,String dbid,String tabid){
+		return commonDAO.sameNameJudge(tableName,filedName,nowUseName,dbid,tabid);
+	}
+    /* (non-Javadoc)
+     * @see ssp.common.service.ICommonService#checkSysStatus()
+     */
+    @Override
+    public String checkSysStatus() {
+        return commonDAO.checkSysStatus();
+    }
+	
+}

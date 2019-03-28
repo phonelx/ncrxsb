@@ -1,0 +1,483 @@
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ include file="/pages/head.jsp"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>组合部件</title>
+	<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+	<link rel="stylesheet" type="text/css" href="resource/new/css/iconfont/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="pages/ality/css/set.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/addStyle.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/level/levelStyle.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/level/levelStyle1.css" />
+	<link rel="stylesheet" type="text/css" href="resource/extjs/resources/css/ext-all.css">
+	<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+	<script type="text/javascript" src="resource/extjs/ext-base.js"></script>
+	<script type="text/javascript" src="resource/extjs/ext-all.js"></script>
+	<script type="text/javascript" src="resource/extjs/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="resource/js/common/multiSelect.js"></script>
+	
+	
+	<style>
+	.add-style1{
+		background-color: #f5f5f5;
+	}
+	.container-fluid {
+	    padding-right: 10px;
+	    padding-left: 10px;
+	}
+	.topnav li:last-child{
+		border-bottom:none;
+	}
+	.form-horizontal .control-group {
+    margin-bottom: 8px;
+	}
+	.control-group h4{
+	    margin-top:4px;
+	}
+	.td{height: 60px;width: 130px;text-align: center;}
+	.td1{height: 60px;text-align: center;vertical-align: middle;}
+	.td3{text-align:left;vertical-align: middle;}
+	.td2{height: 60px;width: 230px;text-align: center;vertical-align: middle;}
+	.td4{height: 60px;text-align: center;vertical-align: middle;}
+	.td6{text-align:left;vertical-align: middle;}
+	.td5{height: 60px;width: 230px;text-align: center;vertical-align: middle;}
+	.td7{height: 60px;text-align: center;width: 130px;vertical-align: middle;}
+	.td0{height: 60px;text-align: center;width: 130px;vertical-align: middle;}
+	/* .tr{border-top:1px solid #dddddd;} */
+	.dashboard-avatar{height: 60px;width: 60px;}
+	.select-box1 {
+    border: solid 1px #efefef;
+    }
+  .select-box {
+    border: solid 1px #efefef;
+    }
+      .figcaption  
+        {           
+            width: 230px;           
+            margin: 1em;  
+        }  
+     .figcaption p{overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap}
+  /* .figcaption p::after{ position: absolute; bottom: 0; right: 0; padding-left: 40px; 
+background: -webkit-linear-gradient(left, transparent, #fff 55%);
+background: -o-linear-gradient(right, transparent, #fff 55%);
+background: -moz-linear-gradient(right, transparent, #fff 55%);
+background: linear-gradient(to right, transparent, #fff 55%);
+} */
+	</style>
+	
+</head>
+
+<body onkeydown="keyDown(event);">
+	
+	<ul class="breadcrumb" id="" style="list-style:none;">
+		<li id="titleName1" style="color: #369BD7;">
+			当前页面：物资产品库&nbsp;&gt;
+			<span> 
+				<a href="javascript:void(0)"> 
+					组合部件配置
+				</a>
+			</span>
+		</li>
+	</ul>
+	
+	<!--查询父级菜单所有参数放入list  -->
+	<c:forEach items="${list}" var="t" varStatus="status">
+		<c:if test="${status.index == 0 }">
+			<input type="hidden" name="mainSqu" id="mainSqu" value="${t.SQU }"><!-- 获取功能编号squ作为下一级菜单的父级菜单编号 -->
+		</c:if>
+	</c:forEach>
+	
+	<input type="hidden" id="typeId">
+	<input type="hidden" id="doType">
+	<input type="hidden" id="doSqu" />
+	<input type="hidden" id="level" value="1">
+	<input type="hidden" id="root" value="<%=basePath%>">
+ 
+   <div class="container-fluid">
+	<div class="row-fluid">
+	<!-- 左边菜单 start-->
+		<div class="leftSideBar span3">
+			<ul style="width:100%;" class="parNav">
+				<li class="nav-header hidden-tablet border-bottom">
+					<a class="ajax-link" style="padding-left:10px;"
+						href="javascript:void(0);" flag="1" id="0" tier="0" title="功能目录"
+						isend="1" onclick="parentload(this);"><b>功能目录</b>
+					</a>
+				</li>
+				<li>
+					<ul class="topnav">
+						<li class="border-bottom">
+							<span id="span" style="padding-left:20px;">[+] </span>
+									<a href="javascript:void(0);" flag="2" id="" tier="" title="" isend="" 
+									onclick="parentload(this)">&nbsp; 组合部件</a>
+							
+							<ul id="topnav1" class="topnav">
+								<%-- <li class="border-bottom">
+									<span style="padding-left:20px;"> </span>
+									<a href="javascript:void(0);" flag="1" id="" tier="" title="" isend="" onclick="">&nbsp; 
+									吊杆锚栓</a>
+								</li> --%>
+								<%-- <li class="border-bottom">
+									<span style="padding-left:20px;"> </span>
+									<a href="javascript:void(0);" flag="1" id="" tier="" title="" isend="" onclick="">&nbsp; 
+									吊杆调节</a>
+								</li> --%>
+							</ul>
+						</li>						
+					</ul>
+				</li>
+			</ul>
+		</div>
+	<!-- 左边菜单 end-->	
+	
+	<!-- 右边内容 start-->	
+		<div class="span9">
+		   <div>
+			
+			<ul class="breadcrumb" id="">
+				<li id="titleName1" style="color: #369BD7;">
+					<span> 
+						<a href="javascript:void(0)"> 
+							组合部件
+						</a>
+					</span>
+					<span> 
+						<a href="javascript:void(0)" id="zhbjmc"> 
+							
+						</a>
+					</span>
+				</li>
+				<li style="float: right;display: none" id="abj">
+					<a style="margin-top:-3px;" title="新增部件" class="btn btn-primary" onclick="appRegisterBj();" href="javascript:void(0);">
+					<i class="icon-plus-sign icon-white"></i> 新增部件</a>
+				</li>&nbsp;
+				<li style="float: right;margin-right: 5px;" id="azhbj">
+					<a style="margin-top:-3px;" title="新增组合部件" class="btn btn-primary" onclick="appRegister();" href="javascript:void(0);">
+					<i class="icon-plus-sign icon-white"></i> 新增组合部件</a>
+				</li>
+				<li id="ss" style="float:right;margin-right: 5px;">
+					<input id="input_search" type="text" style="width:200px;color:#ccc;" value="关键字搜索"
+					onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+					<a style="margin-top:-10px;" class="btn" onclick="searchWord();" href="javascript:void(0);">
+					<i class="icon-search"></i> 检索</a>
+				</li>
+			</ul>
+		
+			<!-- <table class="table table-striped table-bordered bootstrap-datatable datatable" id="uiGrid-uigrid" style="display: none">
+				<tbody id="box_body">
+			     </tbody>
+				
+			</table> -->
+			<div class="row-fluid tooltip-demo" id="zhqx"  style="display: none">
+					     <!--左边图片-->
+					     <div class="span2">
+					     	<div class="photoBox" id="Img" align="center" style="margin-bottom:10px;">
+								<img  src="resource/images/1208160.png" />
+							</div>
+					     </div>
+					      <!--左边图片-->
+					     
+					      <!--右边内容-->
+					     <div class="span10" >
+					     	<div class="box-content">
+								<form class="form-horizontal">
+									<fieldset>
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">支架名称：</label>
+										<div class="controls">
+											 <h4 id = "ZHDXMC"></h4>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">管道类型：</label>
+										<div class="controls">
+											  <h4 id = "ZHGDLX"></h4>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">安装方式：</label>
+										<div class="controls">
+											  <h4 id = "ZHAZFS"></h4>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">支架形式：</label>
+										<div class="controls">
+											  <h4 id= "ZHZJXS"></h4>
+										</div>
+									  </div>
+									 </fieldset>
+								</form>
+					     </div>
+					   </div>
+				 </div>
+			<table id="uiGrid-uigrid" class="table" style="display: none">
+				<tbody id="box_body">
+			     </tbody>
+				
+			</table>
+			<div id="pageDiv"></div>
+			
+		</div>
+	<!-- 右边内容 end-->		
+	</div>
+</div>
+</div>
+	
+	<!-- 弹出框内容 -->	
+	<div class="container" style="width: 780px;height: 440px;margin-top: 10">
+		<div id="example" class="modal hide fade in windowBoxBig" style="display: none;width: 740px;height: 440px;left: 700px">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a> 		
+				<h3 id="secondTitle">新增组合部件明细</h3>
+			</div>
+			
+			<div class="modal-body">
+			<!-- 隐藏结果内容 -->
+			  <div id="hideConBox" style="display1:none;">
+				<!-- <p>
+					<h4><b>选择结果如下：</b></h4>
+				</p> -->
+				
+				 <div class="container-fluid">
+					 <div class="row-fluid tooltip-demo" style="margin-left:-5px;">
+					  
+					     <form id="uploadForm" action=""  method="post" enctype="multipart/form-data">
+					      <!--右边内容-->
+					     <div class="span12">
+					     	<div class="box-content">
+					     	<input type="hidden" name="zhVo.ZBJSQU" id="ZBJSQU">
+					     	<input type="hidden" id="ZHSQU1" name="zhVo.ZHSQU"/>
+					     <!-- 	/<input type="hidden" name="zhVo.ZBJSQU" id="ZHJSQU"> -->
+							<!-- 	<form class="form-horizontal"> -->
+							<table  class="table table-bordered">
+								  
+								  		<tr>
+								  		<td>组合部件名称：</td>
+								  		<td><input type="text" placeholder="请输入组合部件名称..." id="DXZHMC1" name="zhVo.DXZHMC"   /></td>
+								  		<td>支架形式：</td>
+								  		<td> <input type="text" placeholder="请输入支架类型..." id="ZJXS1" name="zhVo.ZJXS"  /></td>
+								  		</tr>
+								  		<tr>
+								  		<td>管道类型：</td>
+								  		<td><input type="hidden" id="hfexample1" name="zhVo.GDLX"  />
+								  		
+								  		<div style="margin-top: 5px;"><div id="gdlx" style="border:none;" class="multiselect"></div> 
+											</div>
+								  		</td>
+								  		<td>安装方式：</td>
+								  		<td> <input type="hidden" id="hfexample"  name="zhVo.AZFS"  />
+								  		
+											<div style="margin-top: 5px;"><div id="azfs" style="border:none;" class="multiselect"></div> 
+											</div>
+										</td>
+								  		</tr>								  		
+								  		<td colspan="2">上传图片：</td>
+								  		<td colspan="2"><input type="file" name="zhfile" /></td>
+								  		</tr>					
+					 		</table> 
+									
+								
+					     </div>
+					   </div>
+					</form>   
+					</div>
+				</div>
+			 </div>
+		  <!-- 隐藏结果内容 -->		
+								
+		<!-- 弹出框内容 -->						
+			</div>
+			
+			<div class="bottomBtnBox">
+				<a title="确定" href="javaScript:void(0);" class="btn btn-success"  id="appBtn" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+				<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;"> 
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div>			
+		</div>
+		
+	</div>
+	<%-- <div id="example2" class="modal hide fade in  windowBoxMiddle" style="display: none;overflow: hidden;">
+			
+				<input type="hidden" id="rsqu" name="rtype.parSqu" />
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a>
+					<h3 id="secondTitle">修改组合部件</h3>
+				</div>
+				<div class="modal-body">
+				<form id="uploadForm2" method="post" action="" enctype="multipart/form-data">
+					<div>
+						
+						<div class="box-content" id="sort_table" align="center">
+						<input type="hidden" id="ZHSQU1" name="zhVo.ZHSQU"/>
+							<div><span class="right-padding">组合部件名称：</span><input type="text" id="DXZHMC1" name="zhVo.DXZHMC"/></div>
+							<div><span class="right-padding">管道类型：</span><input type="text" id="GDLX1" name="zhVo.GDLX"/></div>
+							<div><span class="right-padding">支架形式：</span><input type="text" id="ZJXS1" name="zhVo.ZJXS"/></div>
+							<div><span class="right-padding">安装方式：</span><input type="text" id="AZFS1" name="zhVo.AZFS"/></div>
+							<div><span class="right-padding">图片：</span><input type="file" name="zhfile" /></div>
+							<table  class="table table-bordered">
+								  
+								  		<tr>
+								  		<td>组合部件名称：</td>
+								  		<td><input type="text"  id="DXZHMC1" name="zhVo.DXZHMC"   /></td>
+								  		<td>支架形式：</td>
+								  		<td> <input type="text" id="ZJXS1" name="zhVo.ZJXS"  /></td>
+								  		</tr>
+								  		<tr>
+								  		<td>管道类型：</td>
+								  		<td><input type="hidden" id="hfexample1" name="zhVo.GDLX"  />
+								  		<input type="hidden" id="hfexample1dm" name="zhVo.GDLXDM"  />
+								  		<div style="margin-top: 5px;"><div id="gdlx" style="border:none;" class="multiselect"></div> 
+											</div>
+								  		</td>
+								  		<td>安装方式：</td>
+								  		<td> <input type="hidden" id="hfexample"  name="zhVo.AZFS"  />
+								  		<input type="hidden" id="hfexampledm"  name="zhVo.AZFSDM"  />
+											<div style="margin-top: 5px;"><div id="azfs" style="border:none;" class="multiselect"></div> 
+											</div>
+										</td>
+								  		</tr>	  										  		
+								  		<td colspan="2">上传图片：</td>
+								  		<td colspan="2"><input type="file" name="zhfile" /></td>
+								  		</tr>					
+					 		</table> 
+						</div>														     
+					 </div>					
+					</form>
+					<span id="msg"></span>
+				</div>
+				
+				<div class="modal-footer">
+					<a href="javaScript:void(0);" class="btn btn-success" id="sortBtn">
+					<i class="icon-ok icon-white"></i> 确定</a>
+					<a href="javaScript:void(0);" class="btn" data-dismiss="modal"
+						id="closeWin" ><i class="icon-remove"></i> 取消</a>
+				</div>
+				
+	</div> --%>
+	<!-- 弹出框内容 11111111-->	
+	<div class="container" style="width: 1210px;height: 650px;margin-top: 10">
+		<div id="example3" class="modal hide fade in windowBoxBig" style="display: none;width: 1170px;height: 650px;left: 520px">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a> <h3>新增组合部件明细</h3>
+			</div>
+			
+			<div class="modal-body">
+							
+				<div class="select-res1" align="center" style="margin-top1:10px;">
+					<span>
+						<button class="btn btn-large ">产品明细选择</button>
+					</span>
+				</div>
+				
+				<div class="select-box1" align="center" style="margin-top:10px;width: 1070px;margin-left: 5px;height: 300px">
+					<span class="close-btn">
+						<i class="icon-remove"></i>
+					</span>
+					<div class="wrap">
+						<ul class="first1"></ul>
+						<ul class="second1"></ul>
+						<ul class="third1"></ul>
+						<ul class="foure1"></ul>
+						<ul class="five1"></ul>
+					</div>
+					<div class="bottomBtnBox" >
+						<a title="确定" href="javaScript:void(0);" class="btn btn-success"  id="bjBtn1" style="margin:14px 0;">
+							<i class="icon-ok icon-white"></i> 确定
+						</a> 
+						<a title="取消" href="javaScript:void(0);" class="btn" id="qx" style="margin:14px;" onclick="qx1()"> 
+							<i class="icon-remove"></i> 取消
+						</a>
+					</div>
+				</div> 
+				
+			<!-- 隐藏结果内容 -->
+			  <div id="hideConBox" style="display1:none;">
+				<p>
+					<h4><b>选择结果如下：</b></h4>
+				</p>
+				
+				 <div class="container-fluid">
+					 <div class="row-fluid tooltip-demo" style="margin-left:-5px;">
+					     <!--左边图片-->
+					     <div class="span2">
+					     	<div class="photoBox" id="photoBox1" align="center" style="margin-bottom:10px;">
+								<img src="resource/images/product/product_SDDZ1_65.jpg" />
+							</div>
+					     </div>
+					      <!--左边图片-->
+					     <form id="uploadForm3" action=""  method="post" >
+					      <!--右边内容-->
+					     <div class="span10">
+					     	<div class="box-content">
+					     	<input type="hidden" name="zhVo.ZBJSQU" id="ZBJSQU1">
+					  <input type="hidden" name="zhVo.ZZHSQU" id="ZHSQU2">
+							<!-- 	<form class="form-horizontal"> -->
+							<table  class="table table-bordered">
+								  
+								  		<tr>
+								  		<td>常用名称：</td>
+								  		<td> <input type="text" class="disabled" id="cymc1" readonly="readonly"/></td>
+								  		<td>产品编号：</td>
+								  		<td> <input type="text" class="disabled" id="cpmb1"   readonly="readonly"/></td>		  		
+								  		</tr>
+								  		<tr>
+								  		<td>产品型号：</td>
+								  		<td><input type="text" class="disabled" id="cpxh1"  readonly="readonly"/></td>
+								  		<td>成本单价：</td>
+								  		<td> <input type="text" class="disabled" id="cbdj1"  readonly="readonly"/></td>
+								  		</tr>
+								  		<tr>
+								  		<td>计量单位：</td>
+								  		<td><input type="text" class="disabled" id="jldw1"  readonly="readonly"/></td>
+										<td>数量：</td>
+								  		<td><input type="text" placeholder="请输部件入数量..." name="zhVo.SJ" /></td>
+								  		</tr>
+								  				
+					 		</table> 
+									
+								
+					     </div>
+					   </div>
+					</form>   
+					</div>
+				</div>
+			 </div>
+		  <!-- 隐藏结果内容 -->		
+								
+		<!-- 弹出框内容 -->						
+			</div>
+			
+			<div class="bottomBtnBox">
+				<a title="确定" href="javaScript:void(0);" class="btn btn-success"  id="appBtnBj" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+				<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;" > 
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div>			
+		</div>
+		
+	</div>
+<input type="hidden" id="shul">
+<input type="hidden" id="flag">
+<input type="hidden" id="fsdm">
+	<script type="text/javascript" src="resource/js/goodsHouse/zhbj.js"></script>
+	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+  	<%-- <script type="text/javascript" src="resource/js/level/levelStyle.js"></script>  --%>
+  <script type="text/javascript" src="resource/js/level/levelStyle1.js"></script> 
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="user" extends="monitor-struts-default" >
+		<action name="showMainIndex">
+			<result name="success">/selectListIndex.do</result>
+		</action>
+		
+		<!-- role actions -->
+		<action name="showRoleIndex" class="roleAction" method="showRoleIndex">
+			<result name="success">/pages/user/roleIndex.jsp</result>
+		</action>
+		<action name="listRolesInPage" class="roleAction" method="listRolesInPage">
+		</action>
+		<action name="listRolesInCombo" class="roleAction" method="listRolesInCombo">
+		</action>
+		<action name="fetchAuthTree" class="roleAction" method="fetchAuthTree">
+		</action>
+		<action name="fetchGrantedAuthTree" class="roleAction" method="fetchGrantedAuthTree">
+		</action>
+		<action name="addRole" class="roleAction" method="addRole">
+		</action>
+		<action name="editRole" class="roleAction" method="editRole">
+		</action>
+		<action name="deleteRole" class="roleAction" method="deleteRole">
+		</action>
+		<action name="fetchGrantedEntityTree" class="roleAction" method="fetchGrantedEntityTree">
+		</action>
+		<action name="saveGrantedEntities" class="roleAction" method="saveGrantedEntities">
+		</action>
+		<action name="fetchGrantedQueryTreeByRole" class="roleAction" method="fetchGrantedQueryTreeByRole">
+		</action>
+		<action name="saveGrantedQueries" class="roleAction" method="saveGrantedQueries">
+		</action>
+		<action name="listGrantedEntityesInJson" class="roleAction" method="listGrantedEntityesInJson">
+		</action>
+		<!-- 
+		<action name="fetchEntityTree" class="roleAction" method="fetchEntityTree">
+			<result name="success">/pages/user/roleIndex.jsp</result>
+		</action>
+		-->
+		<!-- 
+		<action name="fetchQueryTreeByRole" class="roleAction" method="fetchQueryTreeByRole">
+			<result name="success">/pages/user/roleIndex.jsp</result>
+		</action>-->
+		
+		
+		<!-- userActions -->
+		<action name="login" class="userAction" method="login">
+		<result name="success" >/pages/main.jsp</result> 
+		<result name="backStage" >/pages/backStage.jsp</result> 
+		</action>
+		<action name="index" class="userAction" method="index">
+		<result name="success">/pages/main.jsp</result>
+		</action>
+		<action name="type" class="userAction" method="type">
+		<result name="success">/pages/type.jsp</result>
+		</action>
+		<action name="deployed" class="userAction" method="deployed">
+		<result name="success">/pages/deployed.jsp</result>
+		</action>
+		<action name="logout" class="userAction" method="logout">
+			<result name="success" type="redirect">/accessPage.do</result>
+			<result name="login" type="redirect">/accessPage.do</result>
+<!--			<result name="success" type="redirect">/login</result>-->
+		</action>
+		<action name="listModules" class="userAction" method="listModules">
+			<result name="success" >/pages/left.jsp</result>
+		</action>
+		<action name="showUserIndex" class="userAction" method="showUserIndex">
+			<result name="success">/pages/user/userIndex.jsp</result>
+		</action>
+		<action name="listUsersInPage" class="userAction" method="listUsersInPage">
+		</action>
+		<action name="addUser" class="userAction" method="addUser">
+		</action>
+		<action name="editUser" class="userAction" method="editUser">
+		</action>
+		<action name="deleteUser" class="userAction" method="deleteUser">
+		</action>
+		<action name="loginOther" class="userAction" method="loginOther" >
+			<result name="success" type="redirect">/pages/main.jsp</result>
+		</action>
+		<!--已部署  -->
+		<!-- <action name="showManageIndex" class="userAction" method="yibushuList">
+			<result name="success">/pages/yibushu.jsp</result>
+		</action> -->
+		<!--完成注册功能  跳转到相应页面  -->
+		<action name="register" class="userAction" method="register">
+		   <result name="success" >/pages/login.jsp</result> 
+		   <result name="error" >/pages/register.jsp</result> 
+		</action>
+		
+		<action name="goloutout" class="userAction" method="goloutout">
+			<result name="success">/pages/login.jsp</result>
+		</action>
+	</package>	
+</struts>

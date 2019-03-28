@@ -1,0 +1,160 @@
+package monitor.projectConfig.service.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import monitor.common.service.BaseServicce;
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.projectConfig.dao.impl.ProjectConfigDaoImpl;
+import monitor.projectConfig.service.IProjectConfigService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectConfigImpl
+ * @dateTime: 2017-10-14 下午3:22:52
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectConfigServiceImpl extends BaseServicce implements IProjectConfigService {
+	
+	private Connection conn = null;
+	
+	private ProjectConfigDaoImpl projectDao;
+	
+	/**
+	  * selectProjectPageInfo:分页查询项目列表
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param pageVo
+	  * @return 
+	*/
+	@Override
+	public PageInfoVo selectProjectPageInfo(PageInfoVo pageVo) {
+		try {
+			conn = datasource.getConnection();
+			//项目总数
+			pageVo.setTotal(projectDao.selectCountProject(conn));
+			
+			pageVo.setStartIndex((pageVo.getPageNumber() - 1) * pageVo.getPageSize() + 1);
+			pageVo.setEndIndex(pageVo.getStartIndex() + pageVo.getPageSize());
+			//项目列表
+			pageVo.setRows(projectDao.selectProjectPageInfo(pageVo, conn));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return pageVo;
+	}
+
+	/**
+	  * selectProjectBySqu:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ
+	  * @return 
+	*/
+	@Override
+	public T_Project selectProjectBySqu(String squ) {
+		T_Project pro = new T_Project();
+		try {
+			conn = datasource.getConnection();
+			pro = projectDao.selectProjectBySqu(squ, conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return T_Project;
+	}
+
+	/**
+	  * insertProject:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param project 
+	*/
+	@Override
+	public void insertProject(T_Project project) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	  * updateProjectBySqu:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ 
+	*/
+	@Override
+	public void updateProjectBySqu(String squ) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	  * deleteProjectBySqu:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ 
+	*/
+	@Override
+	public void deleteProjectBySqu(String squ) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
+	public ProjectConfigDaoImpl getProjectDao() {
+		return projectDao;
+	}
+
+	/**
+	  * closed:(关闭数据库连接).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:29:43
+	  * @param rs
+	  * @param ps
+	  * @param conn void
+	  * @since JDK 1.7
+	*/
+	private void closed(ResultSet rs, PreparedStatement ps, Connection conn){
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

@@ -1,0 +1,82 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:DBSourceEntity.java
+ * Date:2016-3-16下午4:52:05
+ ***/
+package monitor.manage.bean.entity;
+
+/**
+ * @ClassName:DBSourceEntity
+ * @dateTime: 2016-3-16 下午4:52:05
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class DBSourceEntity {
+	private int squ;
+	private String title;
+	private String dbclass;
+	private String dburl;
+	private String dbuser;
+	private String dbpwd;
+	private String sql;
+
+	public int getSqu() {
+		return squ;
+	}
+
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getSql() {
+		return sql;
+	}
+
+	public void setSql(String sql) {
+		this.sql = sql;
+	}
+
+	public String getDbclass() {
+		return dbclass;
+	}
+
+	public void setDbclass(String dbclass) {
+		this.dbclass = dbclass;
+	}
+
+	public String getDburl() {
+		return dburl;
+	}
+
+	public void setDburl(String dburl) {
+		this.dburl = dburl;
+	}
+
+	public String getDbuser() {
+		return dbuser;
+	}
+
+	public void setDbuser(String dbuser) {
+		this.dbuser = dbuser;
+	}
+
+	public String getDbpwd() {
+		return dbpwd;
+	}
+
+	public void setDbpwd(String dbpwd) {
+		this.dbpwd = dbpwd;
+	}
+}

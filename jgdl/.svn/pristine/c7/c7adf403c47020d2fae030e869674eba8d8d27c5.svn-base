@@ -1,0 +1,187 @@
+package monitor.projectConfig.service.impl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.annotation.Resource;
+import monitor.common.service.BaseServicce;
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.projectConfig.dao.impl.ProjectConfigDaoImpl;
+import monitor.projectConfig.service.IProjectConfigService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectConfigImpl
+ * @dateTime: 2017-10-14 下午3:22:52
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectConfigServiceImpl extends BaseServicce implements IProjectConfigService {
+	
+	private Connection conn = null;
+	
+	@Resource(name="projectDao")
+	private ProjectConfigDaoImpl projectDao;
+	
+	/**
+	  * selectProjectPageInfo:分页查询项目列表
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param pageVo
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public PageInfoVo selectProjectPageInfo(PageInfoVo pageVo) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			//项目总数
+			pageVo.setTotal(projectDao.selectCountProject(conn));
+			
+			pageVo.setStartIndex((pageVo.getPageNumber() - 1) * pageVo.getPageSize() + 1);
+			pageVo.setEndIndex(pageVo.getStartIndex() + pageVo.getPageSize());
+			//项目列表
+			pageVo.setRows(projectDao.selectProjectPageInfo(pageVo, conn));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+		return pageVo;
+	}
+
+	/**
+	  * selectProjectBySqu:查询单个项目
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public T_Project selectProjectBySqu(String squ) throws SQLException {
+		T_Project pro = new T_Project();
+		try {
+			conn = datasource.getConnection();
+			pro = projectDao.selectProjectBySqu(squ, conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+		return pro;
+	}
+
+	/**
+	  * insertProject:新增项目
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param project 
+	 * @throws SQLException 
+	*/
+	@Override
+	public void insertProject(T_Project project) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectDao.insertProject(project, conn);
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	/**
+	  * updateProjectBySqu:修改项目基本信息
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ 
+	 * @throws SQLException 
+	*/
+	@Override
+	public void updateProjectBySqu(T_Project project) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectDao.updateProjectBySqu(project, conn);
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	/**
+	  * deleteProjectBySqu:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:55:54
+	  * @param squ 
+	 * @throws SQLException 
+	*/
+	@Override
+	public void deleteProjectBySqu(String squ) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectDao.deleteProjectBySqu(squ, conn);
+			conn.commit();
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+	
+	
+	public ProjectConfigDaoImpl getProjectDao() {
+		return projectDao;
+	}
+
+	/**
+	  * closed:(关闭数据库连接).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:29:43
+	  * @param rs
+	  * @param ps
+	  * @param conn void
+	  * @since JDK 1.7
+	*/
+	private void closed(Connection conn){
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

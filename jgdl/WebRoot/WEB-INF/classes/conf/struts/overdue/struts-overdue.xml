@@ -1,0 +1,22 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="overdue" extends="monitor-struts-default" >
+	
+		<!-- 跳转已过期页面 -->
+		<action name="gotoOverdueIndex" class="overdueAction" method="gotoOverdueIndex">
+			<result name="success" >/pages/bk/overdue/overdueIndex.jsp</result>
+		</action>
+			
+		<action name="updateOverdue" class="overdueAction" method="updateOverdue">
+		</action>
+		<!-- 查询已过期列表 -->
+		<action name="listOverdueInPage" class="overdueAction" method="listOverdueInPage">
+		</action>
+		<!-- 跳转续期页面-->
+		<action name="toOverdueIndex" class="overdueAction" method="toOverdueIndex">
+			<result name="success" >/pages/bk/overdue/overdue.jsp</result>
+		</action>
+	</package>	
+</struts>

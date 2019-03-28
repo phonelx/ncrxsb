@@ -1,0 +1,149 @@
+
+/**
+ * 2018-2-6下午6:08:46
+ * TODO 列表层级标识符
+ */
+var level = 0
+
+$().ready(function(){
+	//默认加载项目树菜单
+	loadTree(0, "");
+	
+	//表单验证绑定
+	$("#objectForm").Validform({
+		tiptype : function(msg, o, cssctl) {
+			var objtip = $("#projectMsg");
+			cssctl(objtip,o.type);
+			objtip.text(msg);
+		},
+		callback : function(form) {	
+			//验证后回调
+			//执行自定义表单提交
+			addOrUpdateProject();
+			//默认提交关闭
+			return false;
+		}
+	});
+	
+	$("#childForm").Validform({
+		tiptype : function(msg, o, cssctl) {
+			var objtip = $("#childMsg");
+			cssctl(objtip, o.type);
+			objtip.text(msg);
+		},
+		callback : function(form) {	
+			//验证后回调
+			//执行自定义表单提交
+			addOrUpdateChild();
+			//默认提交关闭
+			return false;
+		}
+	});
+	
+	$("#siteForm").Validform({
+		tiptype : function(msg, o, cssctl) {
+			var objtip = $("#siteMsg");
+			cssctl(objtip, o.type);
+			objtip.text(msg);
+		},
+		callback : function(form) {	
+			//验证后回调
+			//执行自定义表单提交
+			addOrUpdateSite();
+			//默认提交关闭
+			return false;
+		}
+	});
+});
+
+/**
+  * loadTree:(加载树菜单)
+  * TODO(加载项目树时需要分页)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午2:41:29
+  * @param: 
+  * @return: void
+ */
+function loadTree(treeLevel, object) {
+	//获取当前级数
+	level = treeLevel;
+	
+	if (treeLevel == 0) {
+		//调用project.js加载项目树
+		loadProjectTree(1);
+		$(".topnav").accordion({
+			accordion : false,
+			speed : 500,
+			closedSign : '[+]',
+			openedSign : '[-]'
+		});
+		//隐藏项目列表
+		$('.list_div').hide();
+		$('.project_list').show();
+		//调用project.js加载项目信息
+		$('.msg_div').hide();
+		//调用project.js加载项目列表
+		listProject("");
+	} else if (treeLevel == 1) {
+		//隐藏项目列表
+		$('.list_div').hide();
+		$('.child_list').show();
+		//调用project.js加载项目信息
+		console.log(object);
+		
+		$('.msg_div').hide();
+		$('.project_msg').show();
+		$('.count_msg').show();
+		
+		//调用child.js加载子项目列表和树
+		loadChildTreeAndList(object.project_squ);
+	} else if (treeLevel == 2) {
+		//隐藏列表
+		$('.list_div').hide();
+		$('.site_list').show();
+		//调用child.js加载项目信息
+		console.log(object);
+		
+		$('.msg_div').hide();
+		$('.project_msg').show();
+		$('.child_msg').show();
+		$('.count_msg').show();
+		
+		//调用child.js加载子项目列表和树
+		loadSiteTreeAndList(object.child_squ);
+	}
+}
+
+/**
+  * showAddModal:(新增)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午6:07:21
+  * @param: 
+  * @return: void
+ */
+function showAddModal() {
+	if (level == 0) {
+		//弹出新增项目模态框
+		showAddProjectModal();
+	} else if (level == 1) {
+		showAddChildModal();
+	} else if (level == 2) {
+		showAddSiteModal();
+	} else if (level == 3) {
+		showAddHolderModal();
+	}
+}
+
+
+/**
+  * subBtnClick:(提交按钮点击传递)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午6:17:10
+  * @param: 
+  * @return: void
+ */
+function subBtnClick(str){
+	$("#" + str + "SubBtn").click();
+}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- 布控配置管理 -->
+	<bean id="controlDao" class="monitor.manage.dao.impl.ControlDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource" />
+	</bean>
+
+	<!-- 布控查询 -->
+	<bean id="selectDao" class="monitor.manage.dao.impl.SelectCMDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	
+	<!-- 布控消息提示 -->
+	<bean id="bkMessageDao" class="monitor.manage.dao.impl.BKMessageDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+
+	 <!-- 预警配置管理 -->   
+	<bean id="ManageDao" class="monitor.manage.dao.impl.ManageDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource" />
+	</bean>
+	<!-- 短信配置管理 -->
+	<bean id="SmsDao" class="monitor.manage.dao.impl.SmsDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"/>
+	</bean>
+	<bean id="QueryDao" class="monitor.manage.dao.impl.QueryDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"/>
+	</bean>
+</beans>

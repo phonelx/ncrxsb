@@ -1,0 +1,48 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 19, 2011 1:08:04 PM
+*/
+package monitor.registry.dao.impl;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import javax.sql.DataSource;
+
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.registry.bean.entity.RegDataSource;
+
+/**
+ * 数据资源注册 DAO 基类
+ * @author  liangxj
+ * @datetime  Apr 19, 2011 1:08:04 PM
+ */
+public class RegistryDao extends BaseDAO{
+	protected Connection conn = null ;
+	protected PreparedStatement pstmt = null ;
+	protected ResultSet rs = null ;
+	/**
+	 * @description 获取指定数据源的 连接
+	 * @param rds
+	 * @return void
+	 */
+	protected Connection getConnByDbs(RegDataSource rds){
+		Connection conn = null ;
+		try {
+			// 实例化数据库驱动类
+			Class.forName(rds.getDbClass());
+			// 获取连接
+			conn = DriverManager.getConnection(
+			rds.getDbUrl().trim() , rds.getDbUser().trim() ,
+			rds.getDbPwd().trim());
+		} catch (Exception e) {
+			throw new DaoException(e);
+		}
+		return conn;
+	}
+}

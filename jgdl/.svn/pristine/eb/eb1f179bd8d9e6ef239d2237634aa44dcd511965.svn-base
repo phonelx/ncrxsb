@@ -1,0 +1,24 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 20, 2011 4:39:18 PM
+*/
+package monitor.registry.dao;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.RegField;
+
+/** 
+ * 字段处理接口 
+ * @author  liangxj
+ * @datetime  Apr 20, 2011 4:39:18 PM
+ */
+public interface IFieldDao {
+	public int addField(RegField field);
+	public void editField(RegField field);
+	public void deleteField(int squ);
+	public List getFieldByEntityName(String entitySqu,String entityName,String dbsSqu);
+    public String getFieldComments(String filedName,String entityName,String dbsSqu);
+}

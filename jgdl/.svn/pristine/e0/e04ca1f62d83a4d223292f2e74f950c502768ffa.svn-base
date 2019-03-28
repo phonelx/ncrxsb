@@ -1,0 +1,184 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 16, 2011 5:28:44 PM
+*/
+package monitor.registry.bean.entity;
+
+/** 
+ * 数据源实体Bean
+ * @author  liangxj
+ * @datetime  Apr 16, 2011 5:28:44 PM
+ *  
+ */
+public class RegDataSource {
+	// 序列号
+	private Integer squ ;
+	// 数据源标题
+	private String title ;
+	// 数据源描述
+	private String descb ;
+	// 注册时间
+	private String regDatetime ;
+	// 类型
+	private Integer dbType ;
+	// 实例名称
+	private String dbInstance ;
+	// 数据源IP
+	private String dbIp ;
+	// 端口
+	private Integer dbPort ;
+	// 用户
+	private String dbUser ;
+	// 密码
+	private String dbPwd ;
+	// 数据库驱动类
+	private String dbClass ;
+	// 数据URL
+	private String dbUrl ;
+	/** 
+	 * @return squ 
+	 */
+	public Integer getSqu() {
+		return squ;
+	}
+	/** 
+	 */
+	
+	public void setSqu(Integer squ) {
+		this.squ = squ;
+	}
+	/** 
+	 * @return title 
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/** 
+	 */
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/** 
+	 * @return descb 
+	 */
+	public String getDescb() {
+		return descb;
+	}
+	/** 
+	 */
+	
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	/** 
+	 * @return regDatetime 
+	 */
+	public String getRegDatetime() {
+		return regDatetime;
+	}
+	/** 
+	 */
+	
+	public void setRegDatetime(String regDatetime) {
+		this.regDatetime = regDatetime;
+	}
+	/** 
+	 * @return dbType 
+	 */
+	public Integer getDbType() {
+		return dbType;
+	}
+	/** 
+	 */
+	
+	public void setDbType(Integer dbType) {
+		this.dbType = dbType;
+	}
+	/** 
+	 * @return dbInstance 
+	 */
+	public String getDbInstance() {
+		return dbInstance;
+	}
+	/** 
+	 */
+	
+	public void setDbInstance(String dbInstance) {
+		this.dbInstance = dbInstance;
+	}
+	/** 
+	 * @return dbIp 
+	 */
+	public String getDbIp() {
+		return dbIp;
+	}
+	/** 
+	 */
+	
+	public void setDbIp(String dbIp) {
+		this.dbIp = dbIp;
+	}
+	/** 
+	 * @return dbPort 
+	 */
+	public Integer getDbPort() {
+		return dbPort;
+	}
+	/** 
+	 */
+	
+	public void setDbPort(Integer dbPort) {
+		this.dbPort = dbPort;
+	}
+	/** 
+	 * @return dbUser 
+	 */
+	public String getDbUser() {
+		return dbUser;
+	}
+	/** 
+	 */
+	
+	public void setDbUser(String dbUser) {
+		this.dbUser = dbUser;
+	}
+	/** 
+	 * @return dbPwd 
+	 */
+	public String getDbPwd() {
+		return dbPwd;
+	}
+	/** 
+	 */
+	
+	public void setDbPwd(String dbPwd) {
+		this.dbPwd = dbPwd;
+	}
+	/** 
+	 * @return dbClass 
+	 */
+	public String getDbClass() {
+		return dbClass;
+	}
+	/** 
+	 */
+	
+	public void setDbClass(String dbClass) {
+		this.dbClass = dbClass;
+	}
+	/** 
+	 * @return dbUrl 
+	 */
+	public String getDbUrl() {
+		return dbUrl;
+	}
+	/** 
+	 */
+	
+	public void setDbUrl(String dbUrl) {
+		this.dbUrl = dbUrl;
+	}
+}

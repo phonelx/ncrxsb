@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <display-name>SharedServicePro</display-name>
+  <distributable/>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+        	classpath:/conf/spring/springApplicationContext.xml,
+        	classpath:/conf/spring/common/spring-common-action.xml,
+        	classpath:/conf/spring/common/spring-common-aop.xml,
+        	classpath:/conf/spring/common/spring-common-dao.xml,
+        	classpath:/conf/spring/common/spring-common-service.xml,
+        	
+        	classpath:/conf/spring/log/spring-log-action.xml,
+        	classpath:/conf/spring/log/spring-log-service.xml,
+        	classpath:/conf/spring/log/spring-log-dao.xml,
+        	
+        	classpath:/conf/spring/user/spring-user-action.xml,
+        	classpath:/conf/spring/user/spring-user-service.xml,
+        	classpath:/conf/spring/user/spring-user-dao.xml,
+        	
+        	classpath:/conf/spring/dept/spring-dept-action.xml,
+        	classpath:/conf/spring/dept/spring-dept-dao.xml,
+        	classpath:/conf/spring/dept/spring-dept-service.xml,
+        	
+        	classpath:/conf/spring/ality/spring-ality-action.xml,
+        	classpath:/conf/spring/ality/spring-ality-dao.xml,
+        	classpath:/conf/spring/ality/spring-ality-service.xml,
+     		
+        	<!-- 项目配置 -->
+        	classpath:/conf/spring/projectConfig/spring-projectConfig.xml,
+        	
+        	classpath:/conf/spring/goodsHouse/spring-parts-action.xml,
+        	classpath:/conf/spring/goodsHouse/spring-parts-dao.xml,
+        	classpath:/conf/spring/goodsHouse/spring-parts-service.xml,
+        	
+       <!--  	classpath:/conf/spring/goodsHouse/spring-stents-action.xml,
+        	classpath:/conf/spring/goodsHouse/spring-stents-dao.xml,
+        	classpath:/conf/spring/goodsHouse/spring-stents-service.xml -->
+        </param-value>
+  </context-param>
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>jspFilter</filter-name>
+    <filter-class>
+			org.springframework.web.filter.DelegatingFilterProxy
+		</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>jspFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>
+        	struts-default.xml,
+        	struts-plugin.xml,
+        	conf/struts/struts.xml
+        	</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>*.do</url-pattern>
+  </filter-mapping>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>JspSupportServlet</servlet-name>
+    <servlet-class>
+            org.apache.struts2.views.JspSupportServlet
+        </servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+  <servlet>
+    <servlet-name>Kaptcha</servlet-name>
+    <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+    <init-param>
+      <param-name>kaptcha.border</param-name>
+      <param-value>yes</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.font.color</param-name>
+      <param-value>black</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.textproducer.char.space</param-name>
+      <param-value>5</param-value>
+    </init-param>
+    <init-param>
+      <param-name>kaptcha.noise.impl</param-name>
+      <param-value>com.google.code.kaptcha.impl.NoNoise</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Kaptcha</servlet-name>
+    <url-pattern>/fetchRandomCode</url-pattern>
+  </servlet-mapping>
+  <mime-mapping>
+    <extension>doc</extension>
+    <mime-type>application/msword</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>xls</extension>
+    <mime-type>application/x-msexcel</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>zip</extension>
+    <mime-type>application/octet-stream</mime-type>
+  </mime-mapping>
+  <mime-mapping>
+    <extension>rar</extension>
+    <mime-type>application/octet-stream</mime-type>
+  </mime-mapping>
+  <welcome-file-list>
+    <welcome-file>/pages/login.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

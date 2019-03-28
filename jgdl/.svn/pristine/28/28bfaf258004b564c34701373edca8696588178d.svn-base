@@ -1,0 +1,34 @@
+package monitor.registry.dao;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.bean.entity.RegEntityType;
+
+public interface IEntityDao {
+	public List getAllDbs();
+	public List findEntityByDbs(String dbsSqu,String dbsName,int[] page);
+	public List findRegEntity(String squ) ;
+	public List findRegField(String entitySqu);
+	public int addEntity(RegEntity entity) ;
+	public boolean deleteEntity(int squ) ;
+	public void editEntity(RegEntity entity);
+	public List getAllType(long pid);
+	public List listDicType();
+	/**
+	 * 根据实体类别squ查询指定所有实体
+	 * @author:  cl
+	 * @param
+	 * @return List<RegEntity>
+	 */
+	public List<RegEntity> listEntitiesByEntityType(int typeSqu);
+	/**
+	 * 根据RegEntityType的squ查找详细的RegEntityType信息
+	 * @author:  cl
+	 * @param
+	 * @return RegEntityType
+	 */
+	public RegEntityType findEntityTypeBySqu(int entityTypeSqu);
+
+    public String getEntityComments(String entityName,String dbsSqu);
+}

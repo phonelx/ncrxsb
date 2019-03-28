@@ -1,0 +1,341 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:jgdl
+ * @since：JDK1.7
+ * @version：1.0
+ * File Name:ProjectChildSiteDaoImpl.java
+ * Date:2018-2-6上午11:06:50   
+ ***/
+package monitor.projectConfig.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.projectConfig.dao.IProjectChildSiteDao;
+
+/**
+ * @ClassName:ProjectChildSiteDaoImpl
+ * @dateTime: 2018-2-6 上午11:06:50
+ * @Description: TODO
+ * @version
+ * @author: 黄月
+ * @since JDK 1.7 History： Editor version Time Operation
+ */
+public class ProjectChildSiteDaoImpl implements IProjectChildSiteDao {
+
+	/**
+	 * 
+	 * closed:(关闭连接). TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	 * 
+	 * @author: 唐青
+	 * @dateTime: 2018-2-6 下午2:54:35
+	 * @param rs
+	 * @param ps
+	 *            void
+	 * @since JDK 1.7
+	 */
+	private void closed(ResultSet rs, PreparedStatement ps) {
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private PreparedStatement ps = null;
+
+	/**
+	 * addChildSite:接口实现
+	 * 
+	 * @author 黄月
+	 * @date 2018-2-6 上午11:40:18
+	 * @param site
+	 */
+	@Override
+	public void addChildSite(Connection conn, Project_Child_Site site)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT PROJECT_CHILD_SITE INTO(BWMC,AZDG,BWBG,GJLX,GDCZ,GDLX,GDGG,CHILD_SQU)");
+		sql.append(" VALUES(?,?,?,?,?,?,?,?)");
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, site.getBwmc());
+			ps.setDouble(2, site.getAzdg());
+			ps.setDouble(3, site.getBwbg());
+			ps.setInt(4, site.getGjlx());
+			ps.setString(5, site.getGdcz());
+			ps.setString(6, site.getGdlx());
+			ps.setString(7, site.getGdgg());
+			ps.setString(8, site.getChild_squ());
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public void delChildSite(Connection conn, String siteSqu)
+			throws SQLException {
+		String sql = "DELETE FROM PROJECT_CHILD_SITE WHERE SITE_SQU = ?";
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, siteSqu);
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public void updateChildSite(Connection conn, Project_Child_Site site)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE PROJECT_CHILD_SITE SET BWMC=?,AZDG=?,BWBG=?,GJLX=?,GDCZ=?,)");
+		sql.append(" GDLX=?,GDGG=? WHERE CHILD_SQU=?");
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, site.getBwmc());
+			ps.setDouble(2, site.getAzdg());
+			ps.setDouble(3, site.getBwbg());
+			ps.setInt(4, site.getGjlx());
+			ps.setString(5, site.getGdcz());
+			ps.setString(6, site.getGdlx());
+			ps.setString(7, site.getGdgg());
+			ps.setString(8, site.getSite_squ());
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public List<Project_Child_Site> listChildSite(Connection conn,
+			String childSqu) throws SQLException {
+		List<Project_Child_Site> list = new ArrayList<Project_Child_Site>();
+		;
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SITE_SQU, BWMC,AZDG,BWBG,GJLX,GDCZ,GDLX,");
+		sql.append(" GDGG,CHILD_SQU FROM PROJECT_CHILD_SITE WHERE CHILD_SQU = '"
+				+ childSqu + "' ");
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
+			Project_Child_Site site = null;
+			while (rs.next()) {
+				site = new Project_Child_Site();
+				site.setSite_squ(rs.getString("SITE_SQU"));
+				site.setBwmc(rs.getString("BWMC"));
+				site.setAzdg(rs.getDouble("AZDG"));
+				site.setBwbg(rs.getDouble("BWBG"));
+				site.setGjlx(rs.getInt("GJLX"));
+				site.setGdcz(rs.getString("GDCZ"));
+				site.setGdlx(rs.getString("GDLX"));
+				site.setGdgg(rs.getString("GDGG"));
+				site.setChild_squ(rs.getString("CHILD_SQU"));
+				list.add(site);
+			}
+		} finally {
+			closed(rs, ps);
+		}
+
+		return list;
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public void addDxInfo(Connection conn, T_Project_Zj proZj)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("INSERT T_PROJECT_ZJ INTO(PSQU,ZJSQU,SL)");
+		sql.append(" VALUES(?,?,?)");
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, proZj.getPssqu());
+			ps.setString(2, proZj.getZjsqu());
+			ps.setInt(3, proZj.getSl());
+
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public void delDxInfo(Connection conn, String proZjSqu) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM T_PROJECT_ZJ WHERE SQU = ?");
+
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, proZjSqu);
+
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public void updateDxInfo(Connection conn, T_Project_Zj proZj)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append("UPDATE T_PROJECT_ZJ SET SL=? WHERE SQU=?");
+
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, proZj.getSl());
+			ps.setString(2, proZj.getSqu());
+			ps.executeUpdate();
+		} finally {
+			closed(null, ps);
+		}
+
+	}
+
+	/**
+	 * 
+	 * delChildSite:接口实现
+	 * 
+	 * @author 唐青
+	 * @date 2018-2-6 下午2:38:13
+	 * @param siteSqu
+	 * @throws SQLException
+	 */
+	@Override
+	public List<Project_DXInfo> listDxInfo(Connection conn, String siteSqu)
+			throws SQLException {
+		List<Project_DXInfo> list = new ArrayList<Project_DXInfo>();
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT D.DXSQU,D.GDLX,D.AZFS,D.ZJXS,D.DXMC,D.ZP,D.CJSJ,D.LXCS,Z.SL FROM ");
+		sql.append(" PROJECT_DXINFO D,T_PROJECT_ZJ Z WHERE D.DXSQU=Z.ZJSQU AND Z.PSQU = '"
+				+ siteSqu + "'");
+		ResultSet rs = null;
+		try {
+			Project_DXInfo dxInfo = null;
+			ps = conn.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				dxInfo = new Project_DXInfo();
+				dxInfo.setDxsqu(rs.getString("DXSQU"));
+				dxInfo.setGdlx(rs.getString("GDLX"));
+				dxInfo.setAzfs(rs.getString("AZFS"));
+				dxInfo.setZjxs(rs.getString("ZJXS"));
+				dxInfo.setDxmc(rs.getString("DXMC"));
+				dxInfo.setZp(rs.getString("ZP"));
+				dxInfo.setLxcs(rs.getString("LXCS"));
+				dxInfo.setSl(rs.getInt("SL"));
+				list.add(dxInfo);
+			}
+			closed(rs, ps);
+			for (int i = 0; i < list.size(); i++) {
+				String[] gdlx = list.get(i).getGdlx().split(",");
+				String[] azfs = list.get(i).getAzfs().split(",");
+				StringBuffer stgdlx = new StringBuffer();
+				StringBuffer stazfs = new StringBuffer();
+				for (int j = 0, len = gdlx.length; j < len; j++) {
+
+					String sqlgl = " SELECT XH FROM PROJECT_GDLX WHERE SQU='"
+							+ gdlx[j] + "' AND FL='0'";
+
+					ps = conn.prepareStatement(sqlgl);
+					rs = ps.executeQuery();
+					while (rs.next()) {
+						stgdlx.append(rs.getString("XH") + ",");
+					}
+
+				}
+
+				closed(rs, ps);
+				for (int n = 0, len = azfs.length; n < len; n++) {
+					String sqlaz = " SELECT MS FROM PROJECT_GDLX WHERE SQU='"
+							+ azfs[n] + "' AND FL='1'";
+					ps = conn.prepareStatement(sqlaz);
+					rs = ps.executeQuery();
+					while (rs.next()) {
+						stazfs.append(rs.getString("MS") + ",");
+					}
+				}
+				closed(rs, ps);
+				list.get(i).setAzfs_name(stazfs.toString());
+				list.get(i).setGdlx_name(stgdlx.toString());
+			}
+		} finally{
+			closed(rs, ps);
+		}
+		return list;
+	}
+
+}

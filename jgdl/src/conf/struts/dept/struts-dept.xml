@@ -1,0 +1,44 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="dept" extends="monitor-struts-default">
+		<!-- 跳转到应用管理页面 -->
+		<action name="showDeptIndex" class="deptAction" method="showDeptIndex">
+			<result name="success">pages/dept/deptmanager.jsp</result>
+		</action>
+
+		<!-- 部门列表 -->
+		<action name="listDept" class="deptAction" method="listDept"></action>
+
+		<!-- 新增部门 -->
+		<action name="addDept" class="deptAction" method="addDept"></action>
+
+		<!-- 编辑部门 -->
+		<action name="editDept" class="deptAction" method="editDept"></action>
+
+		<!-- 删除部门 -->
+		<action name="delDept" class="deptAction" method="delDept"></action>
+
+		<!-- 加载用户列表 -->
+		<action name="findAllUser" class="deptAction" method="findAllUser"></action>
+
+		<!-- 加载用户列表 -->
+		<action name="findUserBySqu" class="deptAction" method="findUserBySqu"></action>
+
+		<!-- 部门接口数据更新 -->
+		<action name="deptDataUpdate" class="deptAction" method="deptDataUpdate"></action>
+
+		<!-- 根据部门代码查询 -->
+		<action name="listDeptByBmdm" class="deptAction" method="listDeptByBmdm"></action>
+
+		<!-- 加载所有部门列表 -->
+		<action name="loadAllDeptList" class="deptAction" method="loadAllDeptList"></action>
+
+		<!-- 为部门添加用户显示用户列表 -->
+		<action name="loadUserGrld" class="deptAction" method="loadUserGrld"></action>
+
+		<!-- 新增\编辑\删除部门下面的用户 -->
+		<action name="addUserToDept" class="deptAction" method="addUserToDept"></action>
+	</package>
+</struts>

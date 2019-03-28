@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="ssp-common" location="223,10" size="715,423">
+    <action name="generatePieChartOfAllFactorsCounts" location="310,268" size="150,40" />
+    <action name="calculateAllFactourCounts" location="310,373" size="150,40" />
+    <action name="submitError" location="555,373" size="150,40" />
+    <action name="showWelcome" location="555,57" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="welcome.jsp" />
+      </result>
+    </action>
+    <action name="sameNameJudge" location="310,58" size="150,40" />
+    <action name="fetchResourceTypesByParentSQU" location="310,163" size="150,40" />
+    <action name="fetchParentResourceTypesSqu" location="65,163" size="150,40" />
+    <action name="genResourceTypeTree" location="70,70" size="150,40" />
+    <action name="accessPage" location="65,267" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="login.jsp" />
+      </result>
+    </action>
+    <action name="loginOtherSsp" location="30,120" size="150,40" />
+    <action name="checkSysStatus" location="36,363" size="150,40" />
+  </package>
+  <webResource name="welcome.jsp" path="/pages/welcome.jsp" location="1028,30" size="150,55" />
+</Struts2Diagram>
+

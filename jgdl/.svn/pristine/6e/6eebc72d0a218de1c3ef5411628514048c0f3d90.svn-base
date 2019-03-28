@@ -1,0 +1,301 @@
+//用户模块授权树對象
+$(function() {
+	searchWord();
+});
+
+/**
+ * HSM
+*/
+var query="";
+var checkValue=null;
+var checksql=null;
+function searchWord(){
+	checkValue=$("#input_search").attr("value").toUpperCase();    //搜索条件
+	checksql=checkValue=="关键字搜索"? "":" AND T.DXMC LIKE '%"+checkValue+"%' OR T.GDLX LIKE '%"+checkValue+"%'";
+    query=checksql;
+	gridload(pager);
+}
+
+var records=0;
+var currentPage=0;
+var total=0;
+var pageShowPage=5;//显示多少个人分页标签
+var pageRowNum=7;//每页显示记录数
+var pager=1;
+
+//加载表格
+function gridload(pager){
+	var html="";
+$.ajax( {
+	type : 'post',
+	url : 'listKzzj.do',
+	dataType : 'json',
+	async : false,
+	data : {
+		rows:pageRowNum,
+		page:pager,
+		searchKey:query
+	},
+	success : function(data) {
+		records=data.total;
+		currentPage=data.pageNumber;
+		total = data.pageCnt;
+		pageRowNum=data.pageSize;
+		
+		if(data.rows.length==0){
+			$("#box_body").html("");
+			top=1;
+		}
+	for(var i = 0;i<data.rows.length;i++){
+			html+=" <tr>";
+			html+=" <td class='box_img'>";
+			html+=" <img class='dashboard-avatar' src='/upload/"+data.rows[i].ZP+"'></td>";
+			html+=" <td class='box_desc'><h4>"+data.rows[i].DXMC+"</h4>";
+			html+=" <p>"+data.rows[i].AZFS+"</p></td>";
+			
+			html+=" <td class='box_desc'>管道类型："+data.rows[i].GDLX;
+			html+=" <p>支架型式："+data.rows[i].ZJXS+"</p></td>";
+			
+			html+=" <td class='box_desc'><input type='hidden' name ='id' id = 'dxsqu' value ='"+data.rows[i].DXSQU+"'/></td>";
+			
+			html+=" <td class='box_desc'><a href='javascript:void(0);'>";
+			
+			html+=" <a title='编辑'  onclick='showEditKzzj("+JSON.stringify(data.rows[i])+");'><i class='icon-edit icon-black'></i></a>";
+			
+			html+=" <a title='删除' href='javascript:void(0)' onclick='deleteKzzj(\""+data.rows[i].DXSQU+"\");'><i class='icon-trash icon-black'></i></a>";
+			
+			html+=" </td></tr>"; 
+			
+			$("#box_body").html(html);
+			pageDiv(records,total,currentPage);
+		}
+	
+	},
+	error : function() {
+		Modal.alert(
+		  {
+		    msg: '应用加载出错',
+		    title: '消息提示',
+		    btnok: '确定',
+		    btncl:'取消'
+		    	
+		  });
+	}
+});
+}
+
+function pageDiv(records,total,currentPage){
+	var pageTotal=total;// 总共多少页
+	var pageCurrentPage=currentPage;//当前页
+	var pageRecords=records;//总记录数
+	var countt="";
+	var outstr="";
+	pageTotal=parseInt(pageRecords/pageRowNum);
+	if(pageRecords%pageRowNum>0){
+		pageTotal=pageTotal+1;
+	}
+        if(pageTotal<=pageShowPage){
+                for (var count=1;count<=pageTotal;count++){
+                        if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                        if(count!=pageCurrentPage){
+                             outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }else{
+                        	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }
+                }
+        }
+        if(pageTotal>pageShowPage){
+                if(parseInt((pageCurrentPage-1)/pageShowPage) == 0){
+                        outstr = outstr + "<li><a><<</a></li> ";
+                        for (var count=1;count<=pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a  href='javascript:void(0);'>"+countt+"</a></li>";
+                                	
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr+"<li tag='"+count+"' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+                }else if(parseInt((pageCurrentPage-1)/pageShowPage) == parseInt(pageTotal/pageShowPage)){
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt(pageTotal/pageShowPage)*pageShowPage+1;count<=pageTotal;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+                }else{
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+1;count<=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	
+                                        outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+                }
+    }    
+        //共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum +"个　
+   $("#pageDiv").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+    outstr = "";
+    $(".pageCk").unbind();
+    $(".pageCk").bind('click',function(){
+    	gridload($(this).attr("tag"));
+	});
+    
+    $(".pagePk").unbind();
+    $(".pagePk").bind('click',function(){
+    	gridload($(this).attr("tag"));
+	});
+}	
+
+
+function showAddKzzj(){
+	
+	$("#clearForm").click();
+	document.getElementById("userTitleName").innerHTML = "添加支架";
+	document.getElementById("imghead").src = "resource/images/1208160.png";
+	
+	$("#userDiv").modal();
+	
+	$('#kzzjBtn').unbind();
+	$('#kzzjBtn').click(function() {
+		
+	var ZJMC = $('#focusedInput').val();
+	
+	if(ZJMC == null || ZJMC == ""){
+		alert("支架名称不能为空！");
+		return false;
+	}else{
+		$("#kzzjForm").form("submit",{ 
+	    	url:"addKzzj.do",
+	    	success : function(data) {
+				alert('添加成功！');
+				$('#closeUserBox').click();
+				searchWord();
+			},
+			error : function() {
+				alert('添加出错！');
+			}
+	    });
+
+	}
+	});
+}
+
+
+/*
+ * 删除支架 ------------- start
+ */
+function deleteKzzj(row) {
+	if (confirm('确认删除吗？')) {
+		$.ajax({
+			type : 'post',
+			url : 'deleteKzzj.do',
+			timeout : 1321231232131213123,
+			data : {
+				'dxSqu' : row,
+			},
+			success : function(data) {
+				if (data == 'delSuccess') {
+					alert("删除成功！");
+					searchWord();
+				} else {
+					alert("删除支架信息出错！");
+				}
+			},
+			error : function() {
+				alert('删除支架信息出错！');
+			}
+		});
+	}
+}
+/*
+ * 删除支架 ------------- end
+ */
+
+
+/*
+ * 编辑支架 ------------- start
+ */
+/*
+ * 显示编辑支架BOX
+ */
+function showEditKzzj(row){
+	
+	$("#clearForm").click();
+	// 设置文本参数
+	document.getElementById("userTitleName").innerHTML = "编辑支架";	
+	document.getElementById("kzzjDxsqu").value=row.DXSQU;
+	document.getElementById("focusedInput").value=row.DXMC;
+	document.getElementById("selectError3").value=row.GDLX;
+	document.getElementById("selectError4").value=row.AZFS;
+	document.getElementById("zjxs").value=row.ZJXS;
+	//图片展示
+	document.getElementById("imghead").src ="/upload/"+row.ZP;
+	//图片名
+	document.getElementById("image").value=row.ZP;
+	
+	$("#userDiv").modal();
+	$('#kzzjBtn').unbind();
+
+	$('#kzzjBtn').click(function() {
+		
+		var ZJMC = $('#focusedInput').val();
+		
+		if(ZJMC == null || ZJMC == ""){
+			alert("支架名称不能为空！");
+			return false;
+		}else{
+			$("#kzzjForm").form("submit",{ 
+		    	url:"editKzzj.do",
+		    	success : function(data) {
+					alert('编辑成功！');
+					$('#closeUserBox').click();
+					searchWord();
+				},
+				error : function() {
+					alert('编辑出错！');
+				}
+		    });
+
+		}
+		});
+}
+
+
+/*
+ * 编辑支架 ------------- end
+ */
+
+/**
+ * 查看支架
+ */
+function showViewKzzj(row){
+	// 设置文本参数
+	document.getElementById("userTitleName").innerHTML = "查看支架";
+	document.getElementById("kzzjDxsqu").value=row.DXSQU;
+	document.getElementById("focusedInput").value=row.DXMC;
+	document.getElementById("selectError3").value=row.GDLX;
+	document.getElementById("selectError4").value=row.AZFS;
+	document.getElementById("zjxs").value=row.ZJXS;
+	//图片展示
+	document.getElementById("imghead").src ="/upload/"+row.ZP;
+	
+	$("#userDiv").modal();
+	$('#userBtn').unbind();
+
+	$('#kzzjBtn').click(function() {
+		
+		$('#closeUserBox').click();
+		
+		});
+}
+

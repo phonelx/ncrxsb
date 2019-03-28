@@ -1,0 +1,126 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 17, 2011 4:36:02 PM
+*/
+package monitor.registry.service.impl;
+
+import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.bean.entity.Relation;
+import monitor.registry.dao.IEntityDao;
+import monitor.registry.dao.IRelationDao;
+import monitor.registry.service.IRelationService;
+
+/** 
+ * 实体关系注册 service 实现类 
+ * @author  liangxj
+ * @datetime  May 17, 2011 4:36:02 PM
+ */
+public class RelationServiceImpl implements IRelationService {
+	// 注入 实体关系dao
+	private IRelationDao relationDao ;
+	// 注入 实体dao
+	private IEntityDao entityDao ;
+	/** 
+	 * @return relationDao 
+	 */
+	public IRelationDao getRelationDao() {
+		return relationDao;
+	}
+	/** 
+	 */
+	public void setRelationDao(IRelationDao relationDao) {
+		this.relationDao = relationDao;
+	}
+	/** 
+	 * @return entityDao 
+	 */
+	public IEntityDao getEntityDao() {
+		return entityDao;
+	}
+	/** 
+	 */
+	public void setEntityDao(IEntityDao entityDao) {
+		this.entityDao = entityDao;
+	}
+//------------------------------------------------------------
+	/** 
+	 * @param relation 
+	 */
+	public void addRelation(Relation relation) {
+		relationDao.addRelation(relation) ;
+	}
+
+	/** 
+	 * @param relaSqu 
+	 */
+	public void deleteRelation(int relaSqu) {
+		relationDao.deleteRelation(relaSqu) ;
+	}
+
+	/** 
+	 * @param relation 
+	 */
+	public void editRelation(Relation relation) {
+		relationDao.editRelation(relation) ;
+	}
+
+	/** 
+	 * @param pageNo 当前访问页
+	 * @param pageSize 页大小
+	 * @param dbsSqu 数据源编号
+	 */
+	public String listRelations(int pageNo,int pageSize,int dbsSqu) {
+		JSONObject obj = new JSONObject() ;
+		List list = relationDao.listRelations(pageNo, pageSize,dbsSqu) ;
+		obj.put("total", list.get(0)) ;
+		obj.put("rows", list.get(1)) ;
+		return obj.toString();
+	}
+	/** 
+	 * @param dbsSqu
+	 * @return 
+	*/
+	public String fetchEntity(int dbsSqu) {
+		JSONArray array = new JSONArray() ;
+		//查询所有实体对象
+		List<RegEntity> listTemp = entityDao.findRegEntity(dbsSqu+"") ;
+		for(RegEntity entity : listTemp){
+			//过滤视图
+			if(entity.getIsView() == 0) array.add(entity) ;
+		}
+		return array.toString();
+	}
+	/** 
+	 * @param entitySqu
+	 * @param dataType
+	 * @return 
+	*/
+	public String fetchField(int entitySqu, String dataType) {
+		JSONArray array = new JSONArray() ;
+		//查询所有字段
+		List<RegField> listTemp = entityDao.findRegField(entitySqu+"") ;
+		if(dataType==null || "".equals(dataType)){//主表 字段
+			for(RegField field : listTemp){
+				// 主表字段 只能是  主键 如果没有注册主键  则使用唯一键 代替
+				//if(field.getIsUnique() == 1 || field.getIsKey() == 1)
+					array.add(field) ;
+			}
+		}else{// 从表字段
+			for(RegField field : listTemp){
+				// 选择和 主表选中字段数据类型一致的 字段
+				if(dataType.equals(field.getType())){
+					array.add(field) ;
+				}
+			}
+		}
+		return array.toString();
+	}
+
+}

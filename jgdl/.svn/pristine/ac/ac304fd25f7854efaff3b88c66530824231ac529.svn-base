@@ -1,0 +1,152 @@
+package monitor.registry.service.impl;
+
+import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import monitor.registry.bean.entity.RegDataSource;
+import monitor.registry.dao.IDataSourceDao;
+import monitor.registry.service.IDataSourceService;
+
+public class DataSourceServiceImpl implements IDataSourceService {
+	// 注入DAO
+	private IDataSourceDao dao ;
+	/**
+	 * 
+	 * @param rds  数据源
+	 */
+	public void addDataSource(RegDataSource rds) {
+		// 生成URL 和 DriverClass
+		genUrlAndDriver(rds);
+		dao.addRbs(rds) ;
+	}
+	/**
+	 * 返回数据源总数
+	 * @return
+	 */
+	public int getAllCnt(String searchKey) {
+		return dao.getAllCnts(searchKey);
+	}
+	public List<RegDataSource> findDataSourceList(int pageSize,int pageNo, String searchKey){
+		return dao.findDataSourceList(pageSize, pageNo,searchKey);
+	}
+	/**
+	 * 删除squ对应的数据源
+	 * @param squ
+	 */
+	public boolean deleteDbs(int squ){
+		return dao.deleteDbs(squ) ;
+	}
+	
+
+	/** 
+	 * 编辑数据源
+	 * @param rds 
+	*/
+	public void editDbs(RegDataSource rds) {
+		// 生成URL 和 DriverClass
+		genUrlAndDriver(rds);
+		// 调用Dao修改 数据源
+		dao.editDbs(rds);
+		
+	}
+	/**
+	 * 私有方法，根据 IP ，数据源类型、端口 
+	 * 生成数据源的驱动类和URL
+	 * 		1:	oracle8
+			2:	oracle9i
+			3:	oracle10g
+			4:	oracle11g
+			5:	sqlserver2000
+			6:	sqlserver2005
+
+	 */
+	private void genUrlAndDriver(RegDataSource rds){
+		//获取数据源类型
+		int iType = rds.getDbType();
+		switch(iType){
+		// oracle
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			rds.setDbClass("oracle.jdbc.driver.OracleDriver");
+			String url="jdbc:oracle:thin:@"+rds.getDbIp()+":"+rds.getDbPort()+":"+rds.getDbInstance();
+			rds.setDbUrl(url);
+			break ;
+		// sqlserver
+		case 5:
+		case 6:
+			rds.setDbClass("net.sourceforge.jtds.jdbc.Driver");
+			String url1="jdbc:jtds:sqlserver://"+rds.getDbIp()+":"+rds.getDbPort()+"/"+rds.getDbInstance();
+			rds.setDbUrl(url1);
+			break ;
+		default:
+			break ;
+		}
+
+	}
+	/**
+	 * 测试数据源是否可用
+	 * @param rds
+	 * @return boolean
+	 */
+	public boolean testConnection(RegDataSource rds){
+		return dao.testConnection(rds) ;
+	}
+	
+	/** 
+	 * 检测 数据源名称是否可用
+	 * @param dbsName
+	 * @return boolean
+	*/
+	public boolean checkDbsName(String dbsName) {
+		return dao.checkDbsName(dbsName);
+	}
+	//---getters and setters
+	/** 
+	 * @return dao 
+	 */
+	public IDataSourceDao getDao() {
+		return dao;
+	}
+	/** 
+	 */
+	
+	public void setDao(IDataSourceDao dao) {
+		this.dao = dao;
+	}
+
+	/**
+	 * 根据squ查询指定数据源bean
+	 * @author:  cl 
+	 * @param 
+	 * @return RegDataSource
+	 */
+	public RegDataSource findDataSourceBySqu(int squ){
+		return dao.findDataSourceBySqu(squ);
+	}
+
+	/**
+	 * 列出所有数据源信息，不分页 
+	 * @author: cl 
+	 * @param 
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> listDataSourceList() {
+		return dao.listDataSourceList() ;
+	}
+	@Override
+	public JSONArray ChangetoJSON(List<RegDataSource> regDataSources) {
+		JSONArray json  =new  JSONArray();
+		for(RegDataSource source:regDataSources){
+			JSONObject object = new JSONObject();
+			object.put("name", source.getTitle());
+			object.put("id", source.getSqu());
+			json.add(object);
+		}
+		return json;
+	}
+	
+}

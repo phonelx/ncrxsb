@@ -1,0 +1,37 @@
+table{
+	font-family:verdana;
+	font-size:9pt;
+	/*color:#696969;*/
+}
+
+.icon-save{
+	background:url('../../resource/images/exportBlack.png') no-repeat;
+}
+
+.icon-save2{
+	background:url('../../resource/easyui/themes/icons/filesave.png') no-repeat;
+}
+select{
+	font-family:verdana;
+	font-size:9pt;
+	color:black;
+}
+/*
+input[type="button"]{
+	font-family:verdana;
+	font-size:9pt;
+	color:red;
+	height: 129px;
+	width:310px;
+}
+*/
+
+#scrollList{
+	height: 70px;
+	width: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-top: 0px;
+	padding: 0px;
+	background-position: right;
+}

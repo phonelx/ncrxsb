@@ -1,0 +1,116 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/pages/head.jsp" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<base href="<%=basePath%>">
+
+	<title>项目配置页面</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="resource/css/addStyle.css">
+</head>
+  
+<body>
+	<ul class="breadcrumb" style="list-style:none;">
+		<li id="titleName" style="color: #369BD7;">
+			当前页面：
+			<span id="home"> 
+				<a id="head_title" href="javascript:void(0)"> 
+					项目明细配置
+				</a>
+			</span>
+		</li>
+		
+		<li style="float: right;">
+			<a style="margin-top:-3px;" title="新增" class="btn btn-primary" onclick="showAddModal();" href="javascript:void(0);">
+			<i class="icon-plus-sign icon-white"></i> 新增</a>
+		</li>
+		<li id="ss" style="float:right;margin-right: 5px;">
+			<input id="input_search" type="text" class="inputText" value="关键字搜索" onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'"/>
+			&nbsp;&nbsp; 
+			<a style="margin-top:-10px;" class="btn" onclick="searchWord();" href="javascript:void(0);">
+			<i class="icon-search"></i> 检索</a>
+		</li>
+	</ul>
+	
+	<div style="margin: 30px;text-align: center;">
+		<div id=""></div>
+	</div>
+	
+	<!-- 新增或者修改模态框 -->
+	<div class="container">
+		<form method="post" id="objectForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="objectModal" class="modal hide fade in" style="display: none;width: 560px;height: 425px;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a> 
+					<h3 id="htmlTitle">新增项目</h3>
+				</div>
+				<div class="modal-body">
+				<div>
+					<input type="hidden" id="squ" name="squ" placeholder="id" value=""/>
+					<table>
+						<tr>
+						<td>工程名称</td>
+						<td>
+						<input type="text" id="gcmc" class="span2" name="gcmc" placeholder="工程名称"
+						nullmsg="请输入工程名称" datatype="s1-18" errormsg="工程名称至少1个字符,最多18个字符！"/>
+						</td>
+						<td>工程地址</td><td> <input type="text" id="gcdz" class="span2" name="gcdz" placeholder="工程地址"/></td>
+						</tr>
+						<tr>
+						<td>建筑类别</td><td><input type="text" id="jzlb" class="span2" name="jzlb" placeholder="建筑类别"></td>
+						<td>建筑高度</td><td><input type="text" id="jzgd" class="span2" name="jzgd" placeholder="建筑高度"></td>
+						</tr>
+						<tr>
+						<td>地区设防烈度</td><td><input type="text" id="dqsfld" class="span2" name="dqsfld" placeholder="地区设防烈度"/></td>
+						<td>地震加速度</td><td><input type="text" id="dzjsd" class="span2" name="dzjsd" placeholder="地震加速度"></td>
+						</tr>
+						<tr>
+						<td>地震类型</td><td><input type="text" id="dzlx" class="span2" name="dzlx" placeholder="地震类型"></td>
+						<td>安装标高</td><td><input type="text" id="azbg" class="span2" name="azbg" placeholder="安装标高"></td>
+						</tr>
+						<tr>
+						<td>安装部位</td><td><input type="text" id="azbw" class="span2" name="azbw" placeholder="安装部位"></td>
+						<td>编号</td><td><input type="text" id="bh" class="span2" name="bh" placeholder="编号"></td>
+						</tr>
+						<tr>
+						<td>服务系统</td><td><input type="text" id="fwxt" class="span2" name="fwxt" placeholder="服务系统"></td>
+						<td>管道材质</td><td><input type="text" id="gdcz" class="span2" name="gdcz" placeholder="管道材质"></td>
+						</tr>
+						<tr>
+						<td>管道规格</td><td><input type="text" id="gdgg" class="span2" name="gdgg" placeholder="管道规格"></td>
+						<td>管道类型</td><td><input type="text" id="gdlx" class="span2" name="gdlx" placeholder="管道类型"></td>
+						</tr>
+						<tr>
+						<td>结构连接方式</td><td><input type="text" id="jgljfs" class="span2" name="jgljfs" placeholder="结构连接方式"></td>
+						<td>抗震支撑数量</td><td><input type="text" id="kzzcsl" class="span2" name="kzzcsl" placeholder="抗震支撑数量"></td>
+						</tr>
+						<tr>
+						<td>设置状态</td><td><input type="text" id="szzt" class="span2" name="szzt" placeholder="设置状态"></td>
+						<td>斜撑角度</td><td><input type="text" id="xcjd" class="span2" name="xcjd" placeholder="斜撑角度"></td>
+						</tr>
+						<tr>
+						<td>型号</td><td><input type="text" id="xh" class="span2" name="xh" placeholder="型号"></td>
+						<td>约束方式及规格</td><td><input type="text" id="ysfsjgg" class="span2" name="ysfsjgg" placeholder="约束方式及规格"></td>
+					</table>
+			</div>
+			</div>
+			<div class="modal-footer">
+				<span id="msg" style="margin-left:30px;"></span>
+						<input type="submit" value="确定" class="btn btn-success"/>
+			</div>  
+			<!-- <div class="bottomBtnBox" style="float: right;">
+				<a href="javaScript:void(0);" class="btn btn-success" onclick="addOrUpdateProject();" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+			</div> -->
+		</form>
+	</div>
+</body><!-- 
+<script type="text/javascript" src="resource/js/projectConfig/projectConfigIndex.js"></script> -->
+</html>

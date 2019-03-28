@@ -1,0 +1,80 @@
+#pageul { 
+ font:12px verdana, arial, sans-serif; 
+}
+#pageul, #pageul li {
+ list-style:none;
+ padding:0;
+ margin:0;
+}
+#pageul li a {
+ display:block;
+ /* 如果是中英文混排的文字，建议用固定宽度
+ width:150px;
+ height:30px;
+ line-height:30px;
+ text-align:center;
+ */
+ padding:1px 8px 1px 8px;
+ background:#3A4953;
+ color:#fff;
+ text-decoration:none;
+ border-right:1px solid #000;
+ width: 20%;
+}
+#pageul li a:hover {
+ background:#146C9C;
+ color:#fff;
+ text-decoration:none;
+ border-right:1px solid #000;
+}
+#pageul li a.last {
+ border-right:0; /* 去掉左侧边框 */
+}
+
+DIV.jogger .top A {
+	display: inline;
+	margin: 0px 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+DIV.jogger { 
+PADDING-RIGHT: 2px; PADDING-LEFT: 2px; PADDING-BOTTOM: 2px; MARGIN: 7px;
+ PADDING-TOP: 2px; FONT-FAMILY: "Lucida Sans Unicode",
+ "Lucida Grande", LucidaGrande, "Lucida Sans", Geneva, Verdana, sans-serif 
+} 
+DIV.jogger A{ 
+PADDING-RIGHT: 0.64em; PADDING-LEFT: 0.64em; PADDING-BOTTOM: 0.43em;
+ MARGIN: 2px; COLOR: #fff; PADDING-TOP: 0.5em; 
+BACKGROUND-COLOR: #c5c0c0; TEXT-DECORATION: none;
+width: 10%;float: left;
+
+}
+DIV.jogger .last{
+	width: 40%;
+	float: left;
+} 
+DIV.jogger A:hover { 
+PADDING-RIGHT: 0.64em; PADDING-LEFT: 0.64em; PADDING-BOTTOM: 0.43em;
+ MARGIN: 2px; COLOR: #fff; PADDING-TOP: 0.5em; BACKGROUND-COLOR: #bfbbb5;
+} 
+DIV.jogger A:active { 
+PADDING-RIGHT: 0.64em; PADDING-LEFT: 0.64em; PADDING-BOTTOM: 0.43em;
+ MARGIN: 2px; COLOR: #fff; PADDING-TOP: 0.5em; BACKGROUND-COLOR: #695c5c; 
+} 
+DIV.jogger SPAN.current { 
+PADDING-RIGHT: 0.64em; PADDING-LEFT: 0.64em; PADDING-BOTTOM: 0.43em;
+ MARGIN: 2px; COLOR: #6d643c; PADDING-TOP: 0.5em; BACKGROUND-COLOR: #f6efcc;
+} 
+DIV.jogger SPAN.disabled { 
+DISPLAY: none 
+}
+

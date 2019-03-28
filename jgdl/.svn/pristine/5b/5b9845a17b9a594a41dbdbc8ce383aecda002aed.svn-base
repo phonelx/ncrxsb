@@ -1,0 +1,99 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 20, 2011 4:21:14 PM
+*/
+package monitor.registry.service.impl;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.dao.IEntityDao;
+import monitor.registry.dao.IFieldDao;
+import monitor.registry.service.IFieldService;
+
+/** 
+ * 字段注册 service  
+ * @author  liangxj
+ * @datetime  Apr 20, 2011 4:21:14 PM
+ */
+public class FieldServiceImpl implements IFieldService {
+	private IFieldDao fieldDao ;
+	private IEntityDao entityDao ;
+	/** 
+	 * @return fieldDao 
+	 */
+	public IFieldDao getFieldDao() {
+		return fieldDao;
+	}
+	/** 
+	 */
+	public void setFieldDao(IFieldDao fieldDao) {
+		this.fieldDao = fieldDao;
+	}
+	/** 
+	 * @return entityDao 
+	 */
+	public IEntityDao getEntityDao() {
+		return entityDao;
+	}
+	/** 
+	 */
+	public void setEntityDao(IEntityDao entityDao) {
+		this.entityDao = entityDao;
+	}
+	//--------------------------------
+	
+	/**
+	 * @description 通过实体ID 查询已经注册的字段
+	 * @param entitySqu 实体ID
+	 * @return List
+	 */
+	public List getRegistedField(String entitySqu){
+		return  entityDao.findRegField(entitySqu);
+	}
+	
+	/**  
+	 * @description 通过实体ID 查询未注册的字段
+	 * @param entityName
+	 * @param dbsSqu 数据源编号
+	 * @return 
+	*/
+	public List getFieldByEntityName(String entitySqu,String entityName, String dbsSqu) {
+		return fieldDao.getFieldByEntityName(entitySqu,entityName, dbsSqu);
+	}
+	/** 
+	 * 添加字段
+	 * @param field 
+	*/
+	public int addField(RegField field) {
+		return fieldDao.addField(field) ;
+		
+	}
+	/** 
+	 * 删除字段
+	 * @param squ 
+	*/
+	public void deleteField(int squ) {
+		fieldDao.deleteField(squ) ;
+		
+	}
+	/** 编辑字段
+	 * @param field 
+	*/
+	public void editField(RegField field) {
+		fieldDao.editField(field) ;	
+	}
+
+    /**
+     *获取字段注释
+     * @param filedName
+     * @param entityName
+     * @param dbsSqu
+     * @return
+     */
+    public String getFieldComments(String filedName,String entityName,String dbsSqu){
+        return fieldDao.getFieldComments(filedName,entityName,dbsSqu);
+    }
+}

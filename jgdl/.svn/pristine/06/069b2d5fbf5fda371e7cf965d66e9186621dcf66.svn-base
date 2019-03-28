@@ -1,0 +1,81 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:SelectCMServiceImpl.java
+ * Date:2016-3-14下午2:59:33
+ ***/
+package monitor.manage.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.manage.bean.dto.CMDto;
+import monitor.manage.dao.ISelectCMDao;
+import monitor.manage.service.ISelectCMService;
+
+/**
+ * @ClassName:SelectCMServiceImpl
+ * @dateTime: 2016-3-14 下午2:59:33
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class SelectCMServiceImpl implements ISelectCMService {
+	private ISelectCMDao iSelectDao;
+
+	public ISelectCMDao getiSelectDao() {
+		return iSelectDao;
+	}
+
+	public void setiSelectDao(ISelectCMDao iSelectDao) {
+		this.iSelectDao = iSelectDao;
+	}
+
+	/**
+	 * @see monitor.manage.service.ISelectCMService#selectCount()
+	 */
+	@Override
+	public int selectCount(CMDto cmDto) {
+		return iSelectDao.selectCount(cmDto);
+	}
+
+	/**
+	 * @see monitor.manage.service.ISelectCMService#selectCM(monitor.manage.bean.dto.CMDto)
+	 */
+	@Override
+	public List<?> selectList(CMDto cmDto) {
+		return iSelectDao.selectList(cmDto);
+	}
+
+	/**
+	 * @see monitor.manage.service.ISelectCMService#selectDetail(monitor.manage.bean.dto.CMDto)
+	 */
+	@Override
+	public List<Map<String, Object>> selectDetail(CMDto cmDto) {
+		return iSelectDao.selectDetail(cmDto);
+	}
+
+	@Override
+	public List<?> detialTabPage(CMDto cmDto) {
+		return iSelectDao.detialTabPage(cmDto);
+	}
+	
+	@Override
+	public int detialTabCount(CMDto cmDto) {
+		return iSelectDao.detialTabCount(cmDto);
+	}
+
+	public List<?> chooseSource(CMDto cmDto) {
+		return iSelectDao.chooseSource(cmDto);
+	}
+
+	public List<?> chooseTable(CMDto cmDto) {
+		return iSelectDao.chooseTable(cmDto);
+	}
+	
+	public List<?> chooseBKHM(CMDto cmDto){
+		return iSelectDao.chooseBKHM(cmDto);
+	}
+}

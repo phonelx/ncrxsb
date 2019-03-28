@@ -1,0 +1,62 @@
+$(function(){
+	//计算报告书中的项目信息
+	proInReport()
+})
+
+
+/**
+ * 打印
+ */
+function print(){
+	$(".tab-content").jqprint({
+		 debug: false,            
+         importCSS: true,         
+         printContainer: true,    
+         operaSupport: false 
+	})
+	
+}
+
+/**
+ * 
+  * proInReport:(计算报告书中的项目信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 唐青
+  * @dateTime: 2018-4-11 下午2:24:12
+  * @param: 
+  * @return: void
+ */
+function proInReport(){
+	
+//	alert(xm)
+	$.ajax({
+		type : 'post',
+		url : 'getProjectInfo.do',
+		timeout : 1321231232131213123,
+		dataType:"json",
+		async : false,
+		data:{
+			prosqu:xmsqu,
+		},
+		success : function(data) {
+			
+			var list = data.map;
+		
+			$("#bgmc").html(list.XMMC);
+			//$("#jzlb").val(list.)
+			$("#gcdz").val(list.XMDZ)
+			$("#sfld").val(list.DZSFLD)
+			$("#dzjst").val(list.DZJSD)
+			$("#dzlx").val(list.DZLX)
+		
+		},
+		/*error : function() {
+			Modal.alert({
+			    msg: '子项目列表加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			  });
+		}*/
+	});
+}

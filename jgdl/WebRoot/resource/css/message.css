@@ -1,0 +1,273 @@
+@CHARSET "UTF-8";
+
+
+.HuiFuPartentDivJianGe{
+width:1022px;
+height:10px;	
+*height: 5px;
+}
+
+
+.HuiFuPartentDiv{
+width: 1024px;
+height: 270px;
+}
+
+.HuiFuLDiv{
+width: 180px;
+height:100%;
+float: left;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+background-color: #F6F9FE;
+}
+
+.HuiFuLDivInfo{
+margin-left:5px;
+margin-top:5px;
+width: 150px;
+height:90%;
+float: left;
+}
+
+.HuiFuLDivInfo_head{
+margin-left:1px;
+margin-top:1px;
+width: 120px;
+height:128px;
+float: left;
+background-image: url("../../resource/images/message/manHeader.gif");
+}
+
+.HuiFuLDivInfo_text{
+text-align:left;
+margin-top:3px;
+width: 150px;
+height:20px;
+float: left;
+}
+
+.HuiFuLDivInfo_textSpan{
+font-family: '宋体';
+font-weight: bolder;
+font-size: 13px;
+float: left;
+}
+
+.HuiFuRDiv{
+width: 841px;
+*width: 842px;
+height:100%;
+float: left;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+border-left: none;
+}
+
+
+.HuiFuRDivTop{
+width: 842px;
+height:20px;
+float: left;
+border-bottom-style: solid;
+border-bottom-width: 1px;
+border-bottom-color: #A9CBEE;
+}
+
+.HuiFuRDivTop_Time{
+font-family: '宋体';
+font-weight: bolder;
+font-size: 13px;
+margin-top:3px;
+float: left;
+}
+
+.HuiFuRDivMiddle{
+width: 842px;
+height:230px;
+float: left;
+overflow: scroll;
+}
+
+.HuiFuRDivBottom{
+width: 841px;
+height:18px;
+*height:20px;
+*width: 842px;
+float: left;
+border-top-style: solid;
+border-top-width: 1px;
+border-top-color: #A9CBEE;
+background-color: #F6F9FE;
+}
+
+.HuiFuRDivBottom_MsgTitle{
+font-family: '宋体';
+font-weight: bolder;
+font-size: 13px;
+}
+
+.HuiFuRDivBottom_Msg{
+font-family: '宋体';
+font-weight: normal;
+font-size: 12px;
+width: 440px;
+overflow: hidden;
+display: inline-block;
+}
+
+.msgRevertPartentDiv{
+width: 1024px;
+height: 330px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+background-color: #F6F9FE;
+}
+
+.msgRevertLDiv{
+width: 180px;
+height: 330px;
+float:left;
+}
+
+.msgRevertLDiv_XuZhiParent{
+margin:2px;
+width: 176px;
+height: 170px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+}
+
+.msgRevertLDiv_XuZhiHead{
+width: 176px;
+height: 30px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+padding-top: 8px;
+background-color: fuchsia;
+}
+
+.msgRevertLDiv_XuZhiHeadSpan{
+font-family: '宋体';
+font-weight: bolder;
+font-size: 15px;
+}
+
+.msgRevertLDiv_XuZhiP{
+font-family: '宋体';
+font-weight: bolder;
+font-size: 12px;
+}
+
+.msgRevertLDiv_XuZhiTUBIAO{
+margin-top:80px;	
+*margin-top:11px;
+height:72px;
+width:176px;
+background-image: url("../../resource/images/message/heli_logo.gif");
+}
+
+.msgRevertRDiv{
+float:left;
+width: 840px;
+height: 330px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+}
+
+.msgRevertRDivTop{
+float:left;
+width: 835px;
+height: 30px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+padding-top: 15px;
+font-family: '宋体';
+font-weight: bolder;
+font-size: 13px;
+}
+
+.msgRevertRDivTop_Span1{
+margin-left: 7px;
+}
+
+.msgRevertRDivTop_Span2{
+margin-left: 7px;
+}
+
+.msgRevertRDivTop_Span3{
+color:red;
+font-family: '宋体';
+font-weight:normal;
+font-size: 13px;
+margin-left: 7px;
+}
+
+
+.msgRevertRDivMiddle{
+float:left;
+width: 835px;
+height: 240px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+font-family: '宋体';
+font-weight: bolder;
+font-size: 13px;
+padding-left: 7px;
+}
+
+.msgRevertRDivBottom{
+float:left;
+width: 835px;
+height: 35px;
+margin-top:7px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+padding-left: 7px;
+}
+
+.msgBtuBgImg{
+width:50px;
+height:10px;
+background-image: url("../../resource/images/message/bgButton.gif");
+}
+
+.msgTiJiaoHuiFuDiv{
+}
+
+.section{
+	padding:3px 0px;
+}
+
+.msgListPerDivPat{
+width: 1022px;
+}
+
+.HuiFunPartentDivTitle{
+width:1012px;
+*width: 1023px;
+height: 35px;
+font-family: '宋体';
+font-weight: bolder;
+font-size: 20px;
+border-style: solid;
+border-width: 1px;
+border-color: #A9CBEE;
+background-color: #A9CBEE;
+padding-top: 8px;
+padding-left: 10px;
+}
+
+.fengYeDivParent{
+width: 1023px;
+height: 15px;
+}

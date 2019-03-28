@@ -1,0 +1,25 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 20, 2011 4:39:35 PM
+*/
+package monitor.registry.service;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.RegField;
+
+/** 
+ * 字段处理 service 接口
+ * @author  liangxj
+ * @datetime  Apr 20, 2011 4:39:35 PM
+ */
+public interface IFieldService {
+	public List getRegistedField(String entitySqu) ;
+	public List getFieldByEntityName(String entitySqu,String entityName,String dbsSqu) ;
+	public int addField(RegField field);
+	public void deleteField(int squ);
+	public void editField(RegField field);
+    public String getFieldComments(String filedName,String entityName,String dbsSqu);
+}

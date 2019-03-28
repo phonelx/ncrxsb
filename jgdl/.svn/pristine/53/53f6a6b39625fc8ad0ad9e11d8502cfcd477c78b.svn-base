@@ -1,0 +1,68 @@
+package monitor.goodsHouse.action;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.BaseAction;
+import monitor.goodsHouse.bean.entity.Cpmxb;
+import monitor.goodsHouse.service.IStentsService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:44:29
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class StentsAction extends BaseAction{
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.7
+	*/
+	private static final long serialVersionUID = 1L;
+	private IStentsService stentsService;
+	private PageInfoVo pageVo = new PageInfoVo();
+
+	private Cpmxb cp; 
+	
+	public PageInfoVo getPageVo() {
+		return pageVo;
+	}
+
+	public void setPageVo(PageInfoVo pageVo) {
+		this.pageVo = pageVo;
+	}
+	public String goStentsIndex(){
+		List<Map<String, String>> listMenu;
+		try {
+			listMenu = stentsService.getStentsMenu("");
+			getRequest().setAttribute("list", listMenu);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "success";
+	}
+	
+	
+	
+	public Cpmxb getCp() {
+		return cp;
+	}
+
+	public void setCp(Cpmxb cp) {
+		this.cp = cp;
+	}
+
+	public IStentsService getStentsService() {
+		return stentsService;
+	}
+
+	public void setStentsService(IStentsService stentsService) {
+		this.stentsService = stentsService;
+	}
+	
+	
+}

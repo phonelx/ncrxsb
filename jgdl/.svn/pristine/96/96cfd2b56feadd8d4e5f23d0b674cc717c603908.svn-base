@@ -1,0 +1,183 @@
+package monitor.projectConfig.action;
+
+import java.sql.SQLException;
+
+import javax.annotation.Resource;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+import net.sf.json.JSONObject;
+
+import monitor.common.BaseAction;
+import monitor.common.util.Constant;
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.projectConfig.service.impl.ProjectConfigServiceImpl;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectConfigAction 项目基本配置
+ * @dateTime: 2017-10-14 下午3:03:51
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectConfigAction extends BaseAction implements ModelDriven<T_Project> {
+
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.7
+	*/
+	private static final long serialVersionUID = 1L;
+	
+	@Resource(name="pro")
+	private T_Project pro;
+
+	@Resource(name="projectService")
+	private ProjectConfigServiceImpl projectService;
+
+	@Resource(name="pageVo")
+	private PageInfoVo pageVo;
+
+	/**
+	  * toProjectBasicIndex:(跳转项目基本配置页面).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:05:27
+	  * @return String
+	  * @since JDK 1.7
+	*/
+	public String toProjectBasicIndex(){
+		return SUCCESS;
+	}
+	/**
+	 * toProjectBasicIndex:(跳转项目明细配置页面).<br/>
+	 * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	 * @author: 黄月
+	 * @dateTime: 2017-10-14 下午3:05:27
+	 * @return String
+	 * @since JDK 1.7
+	 */
+	public String toProjectIndex(){
+		return SUCCESS;
+	}
+	
+	/**
+	  * selectProjectPageInfo:(分页查询项目列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:58:13 void
+	  * @since JDK 1.7
+	*/
+	public void selectProjectPageInfo() {
+		int pageSize = Integer.parseInt(getRequest().getParameter(Constant.STRROWS));
+		int pageNo = Integer.parseInt(getRequest().getParameter(Constant.STRPAGE));
+		this.pageVo.setPageNumber(pageNo);
+		this.pageVo.setPageSize(pageSize);
+		try {
+			pageVo = projectService.selectProjectPageInfo(pageVo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		JSONObject json = JSONObject.fromObject(pageVo);
+		writeJsonBack(json.toString());
+	}
+	/**
+	  * selectProjectBySqu:(查询单个项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:59:21 void
+	  * @since JDK 1.7
+	*/
+	public void selectProjectBySqu(){
+		//项目id
+		String squ = getRequest().getParameter("squ");
+		T_Project pro = new T_Project();
+		JSONObject json = new JSONObject();
+		try {
+			pro = projectService.selectProjectBySqu(squ);
+			json.accumulate("status", "success");
+			json.accumulate("result", pro);
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+			e.printStackTrace();
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	  * insertProject:(新增项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午4:00:01 void
+	  * @since JDK 1.7
+	*/
+	public void insertProject() {
+		JSONObject json = new JSONObject();
+		try {
+			projectService.insertProject(pro);
+			json.accumulate("status", "success");
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+			e.printStackTrace();
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	  * updateProjectBySqu:(修改项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午4:00:07
+	  * @since JDK 1.7
+	*/
+	public void updateProjectBySqu(){
+		JSONObject json = new JSONObject();
+		try {
+			projectService.updateProjectBySqu(pro);
+			json.accumulate("status", "success");
+			json.accumulate("result", pro);
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+			e.printStackTrace();
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	  * deleteProjectBySqu:(根据id删除项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:25:23
+	  * @since JDK 1.7
+	*/
+	public void deleteProjectBySqu(){
+		JSONObject json = new JSONObject();
+		String squ = getRequest().getParameter("squ");
+		try {
+			projectService.deleteProjectBySqu(squ);
+			json.accumulate("status", "success");
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+			e.printStackTrace();
+		}
+		writeJsonBack(json.toString());
+	}
+
+	/**
+	  * @author 黄月
+	  * @date  2017-10-14 下午5:21:06
+	  * @return 
+	*/
+	@Override
+	public T_Project getModel() {
+		return this.pro;
+	}
+
+}

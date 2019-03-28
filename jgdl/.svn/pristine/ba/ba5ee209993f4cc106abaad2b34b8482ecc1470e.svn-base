@@ -1,0 +1,165 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 18, 2011 11:00:55 AM
+*/
+package monitor.registry.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.common.exception.DaoException;
+import monitor.common.exception.SysException;
+import monitor.registry.bean.entity.RegDataSource;
+import monitor.registry.service.IDataSourceService;
+
+/** 
+ * 数据源处理action
+ * @author  liangxj
+ * @datetime  Apr 18, 2011 11:00:55 AM
+ */
+public class DataSourceAction extends BaseAction {
+
+	/**
+	 * @field serialVersionUID
+	*/
+	private static final long serialVersionUID = 1L;
+	// 注入 RegDataSource 实体 Bean
+	private RegDataSource rds;
+	// 注入 Service
+	private IDataSourceService service;
+	// 查询类型
+	private String option;
+	/**
+	 * @description:注册数据源
+	 * @return String
+	 */
+	public String addDataSource(){
+		service.addDataSource(rds);
+		setOperationDescb("数据源名称：" + rds.getTitle());
+		return null;
+	}
+	/**
+	 * @description Ajax请求，返回列表显示所有数据源
+	 * @return String
+	 */
+	public String listDataSource(){
+		JSONObject datas = new JSONObject();
+		try {
+    		PrintWriter out = getResponse().getWriter();
+    		if ("1".equals(option)) {
+    			out.print(service.ChangetoJSON(service.listDataSourceList()));
+    			out.close();
+    		} else {
+    			// 每页显示条数
+    			int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+    			// 当前页
+    			int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+    			//检索条件
+    			String searchKey = getRequest().getParameter("searchKey");
+    			datas.put("total", service.getAllCnt(searchKey));
+    			datas.put("rows",service.findDataSourceList(pageSize, pageNo - 1,searchKey));
+    			datas.put("pageSize", pageSize);
+    			datas.put("pageNumber", pageNo);
+    			out.print(datas);
+    			out.close();
+			}
+		} catch (IOException e) {
+			throw new SysException("系统异常" , e);
+		}
+
+		return null;
+	}
+	/**
+	 * @description 删除数据源
+	 * @return String
+	 */
+	public String deleteDbs(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.deleteDbs(rds.getSqu()));
+			out.close();
+			setOperationDescb("数据源名称：" + rds.getTitle());
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 编辑数据源
+	 * @return String
+	 */
+	public String editDbs(){
+		service.editDbs(rds);
+		setOperationDescb("数据源名称：" + rds.getTitle());
+		return null;
+	}
+	/**
+	 * @description 测试数据是否可用
+	 * @return String
+	 */
+	public String testConn(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.testConnection(rds));
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		} catch (DaoException de) {
+		}
+		return null;
+	}
+	/**
+	 * @description 跳转到数据源管理页面
+	 * @return String
+	 */
+	public String gotoDbsMgr(){
+		return SUCCESS;
+	}
+	/**
+	 * @description
+		检测数据源名称是否可用
+	 * @return String
+	 */
+	public String checkDbsName(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.checkDbsName(rds.getTitle()));
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	// ---------------gettets and setters
+	/**
+	 * @return rds
+	 */
+	public RegDataSource getRds() {
+		return rds;
+	}
+	/**
+	 */
+	public void setRds(RegDataSource rds) {
+		this.rds = rds;
+	}
+	/**
+	 * @return service
+	 */
+	public IDataSourceService getService() {
+		return service;
+	}
+	/**
+	 */
+	public void setService(IDataSourceService service) {
+		this.service = service;
+	}
+	public String getOption() {
+		return option;
+	}
+	public void setOption(String option) {
+		this.option = option;
+	}
+}

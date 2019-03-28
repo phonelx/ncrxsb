@@ -1,0 +1,108 @@
+package monitor.goodsHouse.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.goodsHouse.bean.entity.Cpmxb;
+import monitor.goodsHouse.bean.entity.Zhbj;
+import monitor.goodsHouse.bean.vo.CpmxbVo;
+import monitor.goodsHouse.dao.IStentsDao;
+import monitor.goodsHouse.service.IStentsService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:43:48
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class StentsServiceImpl implements IStentsService{
+	private IStentsDao stentsDao;
+
+	public IStentsDao getStentsDao() {
+		return stentsDao;
+	}
+
+	public void setStentsDao(IStentsDao stentsDao) {
+		this.stentsDao = stentsDao;
+	}
+
+	@Override
+	public List<Map<String, String>> getStentsMenu(String squ) throws Exception {
+		
+		return stentsDao.getStentsMenu(squ);
+	}
+
+	@Override
+	public PageInfoVo selectChildCp(PageInfoVo page, String squ,String key)
+			throws Exception {
+		try {
+			return  stentsDao.selectChildCp(page, squ,key);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public int addCp(Cpmxb cpmxb) throws Exception {
+		try {
+			return  stentsDao.addCp(cpmxb);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	@Override
+	public int editCp(Cpmxb cpmxb) throws Exception {
+		try {
+			return  stentsDao.editCp(cpmxb);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	@Override
+	public void deleteCp(String squ) throws Exception {
+		try {
+			 stentsDao.deleteCp(squ);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public List<Cpmxb> selectStentsBySqu(String squ) throws Exception {
+		
+		return stentsDao.selectStentsBySqu(squ);
+	}
+
+	@Override
+	public void addBatchStents(List<Cpmxb> list) throws Exception {
+		stentsDao.addBatchStents(list);
+		
+	}
+
+	@Override
+	public PageInfoVo selectZhbj(PageInfoVo page,String squ) throws Exception {
+		
+		return stentsDao.selectZhbj(page,squ);
+	}
+
+	@Override
+	public List<Zhbj> selectZhbjInfo(String squ) throws Exception {
+		
+		return stentsDao.selectZhbjInfo(squ);
+	}
+
+	@Override
+	public List<Map<String, String>> selectLbInfo(String id) throws Exception {
+		
+		return stentsDao.selectLbInfo(id);
+	}
+
+	
+	
+}

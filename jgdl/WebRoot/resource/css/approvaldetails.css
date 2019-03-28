@@ -1,0 +1,149 @@
+.qx{
+	width: 95%;
+  	color: #ffffff;
+    background-color: rgb(49, 146, 86);
+    margin-left: 2.5%;
+	margin-bottom:15px;
+	border-color: #a9b9b9;
+}
+.ssp{
+	width: 95%;
+    background-color: #3a669e;
+    color: #fbf8f7;
+    margin-left: 2.5%;
+	border-color: #a9b9b9;
+}
+.spdi{
+	background-color:rgb(251, 154, 116);
+	height:40px
+}
+.spnext{
+	width:10%;
+	height:40px;
+	float:right;
+	padding-top:10px;
+	padding-left:10px
+}
+.question{
+	width:78%;
+	height:40px;
+	float:left;
+	padding-top:10px;
+	padding-left:10px
+}
+.yy{
+	background-color:write;
+	height:40%;
+	border:0px solid red;
+}
+.reason{
+	height:300px;
+	width:100%;
+	resize: none;
+}
+.publish{
+	height:40px;
+	padding-top:10px;
+}
+.sp{
+	position:absolute;
+	top:48%;
+	left:0px;
+	border:0px solid red;
+	width:99%;
+	height:400px;
+	background-color:#FFFFFF;
+	display:none;
+}
+.check {
+	color: #FFF;
+	background-color: #E67E22;
+	width: 60px;
+}
+.text{
+	margin-top: 5px;
+	height: 40px;
+	font-size:15px;
+}
+
+#form{
+	margin-top: 20px;
+} 
+#bzz{
+	margin:0 auto;
+	width:290px;
+}
+#input{
+	margin:0 auto;
+	width: 240px;
+}
+#back{
+	float: left;
+	width: 20%;
+	margin-left: 12px;
+}
+#sure{
+	float: right;
+	width: 80%;
+	margin-right: 43px;
+}
+/*ȡ��ť  */
+#btnback{
+    width: 80px;
+	height: 40px;
+	font-weight: bold;
+	/* border: none;
+	color: #000;
+	font-weight: bold;
+	background: #fff; */
+}
+
+#btnbackcommit{
+    width: 80px;
+	height: 40px;
+	display:none;
+ /*  border: none;
+	color: #000;
+	font-weight: bold;
+	background: #fff;
+	   */
+	/* margin-top: -20px; */
+}
+
+/*����ť  */
+#btnsure{
+    width: 80px;
+	height: 40px;
+	font-weight: bold;
+	display:block;
+	float:left;
+	/* border: none;
+	color: #000;
+    background: #fff; */
+}
+/*�ύ��ť  */
+#btncommit{
+	width: 80px;
+	height: 40px;
+	font-weight: bold;
+   	display:none;
+   	float:left;
+	/* border: none;
+	color: #000;
+	background: #fff; */
+}
+#bz{
+	visibility:hidden;
+	border: 1px solid #3d3e42;
+	border-radius:3px;
+}
+
+#showMsg
+{
+	border-top:1px solid #3d3e42;
+	font-size: 15px;
+	width: 90%;
+	margin: 30px auto 10px auto;
+	padding:20px 0px 20px 20px;
+	text-align: left;
+}

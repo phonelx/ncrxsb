@@ -1,0 +1,234 @@
+package monitor.manage.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import monitor.common.BaseAction;
+import monitor.manage.bean.entity.Yjgz;
+import monitor.manage.service.ManageService;
+import monitor.manage.util.GetProperties;
+import monitor.user.bean.dto.UserDto;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+public class ManageAction extends BaseAction {
+
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 预警规则service
+	 */
+	private ManageService service;
+	/**
+	 * 预警实体类
+	 */
+	private Yjgz yjgz;
+	/**
+	 *预警id
+	 */
+	private String id;
+
+	/**
+	 * 跳转预警规则管理界面
+	 * @return
+	 */
+	public String showManage() {
+		return SUCCESS;
+	}
+
+	/**
+	 * listManage:(显示已添加规则,分页显示).<br/>
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午03:27:25
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String listManage() {
+		try {
+			PrintWriter writer = getResponse().getWriter();
+			JSONObject json = new JSONObject();
+			// 每页显示条数
+			String isquery = getRequest().getParameter("isquery");
+			int pageSize
+			 = Integer.parseInt(getRequest().getParameter("rows"));
+			// 当前页
+			int pageNo
+			= Integer.parseInt(getRequest().getParameter("page"));
+			json.put("total", service.GetRegManageCount());
+			json.put("rows", service.showManage(pageSize, pageNo,isquery));
+			json.put("pageSize", pageSize);
+	        json.put("pageNumber", pageNo);
+			writer.print(json);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 显示所有民族
+	 * @return
+	 */
+	public String showCNMZ() {
+		try {
+			PrintWriter writer = getResponse().getWriter();
+			JSONArray object = new JSONArray();
+			writer.print(object.fromObject(service.GetAllMz()));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	  * showCitys:(显示所有区县,默认加载100条).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-9 下午01:16:36
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String showCitys(){
+		PrintWriter writer;
+		try {
+			writer = getResponse().getWriter();
+			JSONArray object  = new JSONArray();
+			String option = getRequest().getParameter("q");
+			writer.print(object.fromObject(service.showCitys(option)));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	  * AddManage:(添加预警规则).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 上午11:12:55
+	  * @param: @return 
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String addManage() {
+		try {
+			PrintWriter writer = getResponse().getWriter();
+			userDto = (UserDto) getSession().getAttribute("user");
+			yjgz.setYjr(userDto.getSqu());
+			writer.print(service.addManage(yjgz));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	/**
+	  * EditManage:(编辑预警规则).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-10 下午04:00:13
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String editManage(){	
+		try {
+			yjgz.setSqu(id);
+			PrintWriter writer = getResponse().getWriter();
+			writer.print(service.EditManage(yjgz));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * 
+	  * DelManage:(删除预警配置).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-10 下午05:17:29
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String deleteManage(){
+		try {
+//			System.out.println(getRequest().getParameter("id"));
+			PrintWriter writer = getResponse().getWriter();
+			writer.print(service.delManage(id));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	  * EditPro:(更改比对系统时间间隔).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-16 下午01:53:17
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String editRunTime(){
+		String time = getRequest().getParameter("time");
+		int minute = Integer.parseInt(time);
+		GetProperties.Properties(String.valueOf(minute));
+		return null;
+	}
+	/*
+	 * 添加编辑预警前给予用户人数提示
+	 */
+	public String QueryCountSfz(){
+		try {
+//			System.out.println(getRequest().getParameter("id"));
+			PrintWriter writer = getResponse().getWriter();
+			//writer.print(service.QueryCountSfz(yjgz));
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public Yjgz getYjgz() {
+		return yjgz;
+	}
+
+	public void setYjgz(Yjgz yjgz) {
+		this.yjgz = yjgz;
+	}
+
+	public ManageService getService() {
+		return service;
+	}
+
+	public void setService(ManageService service) {
+		this.service = service;
+	}
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+}

@@ -1,0 +1,126 @@
+package monitor.goodsHouse.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.dao.BaseDAO;
+import monitor.goodsHouse.bean.entity.WZZDB;
+import monitor.goodsHouse.dao.IPartsDao;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:10:18
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class PartsDaoImpl extends BaseDAO implements IPartsDao{
+	
+	private void closeCon(Connection conn, PreparedStatement pstmt, ResultSet rs)
+			throws SQLException {
+		// 关闭连接
+		if (rs != null) {
+			rs.close();
+		}
+		if (pstmt != null) {
+			pstmt.close();
+		}
+		if (conn != null) {
+			conn.close();
+		}
+	}
+	/**
+	 * 加载部件目录
+	  * getPartsMenu:接口实现
+	  * @author 唐青
+	  * @date  2017-10-14 下午3:29:22
+	  * @param squ
+	  * @return
+	  * @throws SQLException
+	 */
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		// 获取连接
+		conn = datasource.getConnection();
+		StringBuffer sql = new StringBuffer();
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+		// 菜单查询条件判断
+		if(squ ==null|| squ.equals("")){
+			squ = "-1";
+		}
+		sql.append("SELECT * FROM PROJECT_WZZDB T WHERE PARENTSQU = '"+squ+"'  ORDER BY T.DMLB ");
+
+		pstmt = conn.prepareStatement(sql.toString());
+		rs = pstmt.executeQuery();
+		Map<String, String> map = null ;
+		while (rs.next()) {
+			map = new HashMap<String, String>();
+			map.put("SQU", rs.getString("SQU"));
+			map.put("DMLB", rs.getString("DMLB"));
+			map.put("LBMC", rs.getString("LBMC"));
+			map.put("PARENTSQU", rs.getString("PARENTSQU"));
+			map.put("JD", rs.getString("JD"));
+			map.put("ZHDM", rs.getString("ZHDM"));			
+			list.add(map);
+		}		
+		this.closeCon(conn, pstmt, rs);
+		return list;
+
+	}
+	@Override
+	public PageInfoVo selectChildMenu(PageInfoVo page,String squ) throws SQLException {
+	
+			List<WZZDB> list = new ArrayList<WZZDB>();
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			
+			String sql = "SELECT COUNT(*) FROM PROJECT_WZZDB";
+
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				page.setTotal(rs.getInt(1));
+			}
+
+			int startIndex = (page.getPageNumber() - 1) * page.getPageSize() + 1;
+			StringBuffer sbsql = new StringBuffer();
+			sbsql.append(" SELECT * FROM ( SELECT A.* ,ROWNUM RN FROM ( ");
+			sbsql.append(" SELECT * FROM PROJECT_WZZDB WHERE PARENTSQU ='"+squ+"')A) ");
+			sbsql.append("WHERE RN<"+startIndex + page.getPageSize()+" AND RN>"+startIndex);
+			System.out.println("sql："+sbsql.toString());
+			pstmt = conn.prepareStatement(sbsql.toString());
+			//System.out.println("sql："+sql.toString());
+			rs = pstmt.executeQuery();
+			WZZDB wzz = null;
+			while(rs.next()){
+				wzz = new WZZDB();
+				wzz.setDMLB(rs.getString("DMLB"));
+				wzz.setJD(rs.getString("JD"));
+				wzz.setLBMC(rs.getString("LBMC"));
+				wzz.setPARENTSQU(rs.getString("PARENTSQU"));
+				wzz.setSQU(rs.getString("SQU"));
+				wzz.setZHDM(rs.getString("ZHDM"));
+				list.add(wzz);
+			}
+			page.setRows(list);
+		return page;
+	}
+	
+
+
+	
+}

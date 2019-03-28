@@ -1,0 +1,81 @@
+package monitor.goodsHouse.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.goodsHouse.bean.entity.Wzzdb;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:41:37
+ *@version
+ *@author:唐青
+ *@since
+ */
+public interface IPartsService {
+	
+	/**
+	 * 
+	  * getPartsMenu:(加载部件目录).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午3:29:34
+	  * @param squ
+	  * @return
+	  * @throws Exception List<Map<String,String>>
+	  * @since JDK 1.7
+	 */
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws Exception;
+	
+	/**
+	 * 
+	  * selectChildMenu:(分页查询菜单).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午5:48:18
+	  * @param page
+	  * @return PageInfoVo
+	  * @since JDK 1.7
+	 */
+	public PageInfoVo selectChildMenu(PageInfoVo page,String squ,String key) throws Exception;
+	
+	/**
+	 * 
+	  * addMenu:(添加子目).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-16 下午6:33:40
+	  * @param wzz
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	public void addMenu(Wzzdb wzz) throws Exception;
+	
+	/**
+	 * 修改
+	  * updateMenu:(这里用一句话描述这个方法的作用).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-16 下午7:03:18
+	  * @param wzz
+	  * @throws Exception void
+	  * @since JDK 1.7
+	 */
+	public void updateMenu(Wzzdb wzz) throws Exception; 
+	
+	/**
+	 * 
+	  * delChildMenu:(删除).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-16 下午7:42:05
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	public void delChildMenu(String squ) throws Exception;
+	
+	public void addBatchParts(List<Wzzdb> list) throws Exception;
+}

@@ -1,0 +1,108 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ControlDaoImpl.java
+	* Date:2017-5-12上午10:48:05   
+	***/
+package monitor.manage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import monitor.common.dao.BaseDAO;
+import monitor.dispatched.bean.entity.DispatchedEntity;
+import monitor.manage.dao.ControlDao;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ControlDaoImpl
+ * @dateTime: 2017-5-12 上午10:48:05
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ControlDaoImpl extends BaseDAO implements ControlDao {
+
+	/**
+	  * listControlInPage:查询布控配置列表
+	  * @author 黄月
+	  * @date  2017-5-12 上午11:48:54
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public PageInfoVo listControlInPage(String searchKey, PageInfoVo page) throws SQLException {
+		Connection conn = null;
+		ResultSet rs = null;
+		PreparedStatement pstmt = null;
+		int startIndex = (page.getPageNumber() - 1) * page.getPageSize() + 1;
+		String countSql = "SELECT COUNT(GMSFHM) AS C FROM T_BKRY";
+		conn = datasource.getConnection();
+		pstmt = conn.prepareStatement(countSql);
+		rs = pstmt.executeQuery();
+		if (rs.next()) {
+			page.setTotal(rs.getInt("C"));
+		}
+		StringBuffer sbSql = new StringBuffer();
+		sbSql.append(" SELECT * FROM (SELECT GMSFHM,BKSY,BKZT,BZ,TO_CHAR(CJSJ,'yyyy/MM/dd hh24:mi:ss') CJSJ,HJDZ,ISNEW");
+		sbSql.append(",LRRSQU,MZDM,RYLX,SPRSQU,TO_CHAR(SXSJ,'yyyy/MM/dd hh24:mi:ss') SXSJ,XM,ROWNUM RN FROM T_BKRY ORDER BY CJSJ DESC");
+		sbSql.append(") WHERE RN < " + (startIndex + page.getPageSize()));
+		sbSql.append(" AND RN >= " + startIndex);
+		conn = datasource.getConnection();
+		pstmt = conn.prepareStatement(sbSql.toString());
+		rs = pstmt.executeQuery();
+		List<DispatchedEntity> list = new ArrayList<DispatchedEntity>();
+		DispatchedEntity en = null;
+		while (rs.next()) {
+			en = new DispatchedEntity();
+			en.setGmsfhm(rs.getString("GMSFHM"));
+			en.setBkzt(rs.getInt("BKZT"));
+			en.setRylx(rs.getInt("RYLX"));
+			en.setCjsj(rs.getString("CJSJ"));
+			en.setHjdz(rs.getString("HJDZ"));
+			en.setSxsj(rs.getString("SXSJ"));
+			en.setXm(rs.getString("XM"));
+			list.add(en);
+		} 
+		page.setRows(list);
+		close(conn, rs, pstmt);
+		return page;
+	}
+	
+	private void close(Connection conn, ResultSet rs, PreparedStatement pstmt){
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (pstmt != null) {
+			try {
+				pstmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

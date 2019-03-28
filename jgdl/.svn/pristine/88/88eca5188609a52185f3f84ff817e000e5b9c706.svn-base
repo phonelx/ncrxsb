@@ -1,0 +1,154 @@
+package monitor.manage.service.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.util.TimeUtil;
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.bean.entity.Yjgz;
+import monitor.manage.dao.ManageDao;
+import monitor.manage.dao.impl.ManageDaoImpl;
+import monitor.manage.service.ManageService;
+
+public class ManageServiceImpl implements ManageService {
+	/**
+	 * 预警配置dao
+	 */
+	private ManageDao daoImpl;
+	/**
+	 * 拼接日期
+	 */
+	private static String TimeEnd="-01-01";
+	/**
+	 * 当前时间
+	 */
+	private static int NowTime;	
+
+	/** 
+	 * TODO 显示已添加规则 分页显示
+	 */
+	@Override
+	public List<Yjgzdto> showManage(int pageSize,int pageNo,String isquery) {
+		List<Yjgzdto> list = daoImpl.showManage(pageSize, pageNo,isquery);
+		NowTime = Integer.parseInt(TimeUtil.getTime("yyyy"));
+		for (Yjgzdto yjgzdto :list){
+			if (!"0".equals(yjgzdto.getIstime())){
+				//20-30时间段会变成1996-1986 为了预警比对查询互换为1986-1996
+				String time1
+				= yjgzdto.getCsrq2().substring(0, 4);
+				String time2
+				= yjgzdto.getCsrq1().substring(0, 4);
+				yjgzdto.setCsrq1(String.valueOf(
+				(NowTime - Integer.parseInt(time1))));
+				yjgzdto.setCsrq2(String.valueOf(
+				(NowTime - Integer.parseInt(time2))));
+			}
+		}
+		return list;
+	}
+	/** 
+	 * TODO 获取已添加配置总数
+	 */
+	@Override
+	public int GetRegManageCount() {
+		// TODO Auto-generated method stub
+		return daoImpl.getregmanagecount();
+	}
+	/**
+	 * TODO 获取所有民族
+	 */
+	@Override
+	public List GetAllMz() {	
+		return daoImpl.getallmz();
+	}
+
+	/** 
+	 * TODO 添加预警配置
+	 */
+	@Override
+	public String addManage(Yjgz yjgz) {
+		// TODO Auto-generated method stub
+		if ("1".equals(yjgz.getIstime())){
+			changeTime(yjgz);
+		}
+		return daoImpl.addManage(yjgz);
+	}
+	/** 
+	 * TODO 编辑预警配置
+	 */
+	@Override
+	public String EditManage(Yjgz yjgz) {
+		if ("1".equals(yjgz.getIstime())){
+			changeTime(yjgz);
+		}
+		return daoImpl.editmanage(yjgz);
+	}
+
+	/** 
+	 * TODO 根据输入模糊查询加载数据
+	 */
+	@Override
+	public List showCitys(String option) {
+		// TODO Auto-generated method stub
+		return daoImpl.showcitys(option);
+	}
+
+	/** 
+	 * TODO 删除预警配置
+	 */
+	@Override
+	public String delManage(String yjID) {
+		// TODO Auto-generated method stub
+		return daoImpl.delManage(yjID);
+	}
+
+	/** 
+	 * TODO 分页查询身份证进行比对查询
+	 * @see monitor.manage.service.ManageService#GetYJSFZS(int, int)
+	 */
+	@Override
+	public String GetYJSFZS(int pageSize, int pageNo) {
+		return daoImpl.GetYJSFZS(pageSize, pageNo);
+	}
+	
+
+	@Override
+	public int QueryCountSfz(Yjgz run) {
+		Map<String, String > yjmap = new HashMap<String, String>();
+		String [] yjcoulumn = {"NAME" , "SEX" , "MZ"
+				, "HJD" , "ZZ" , "CSRQ1"};
+		// TODO Auto-generated method stub
+		if ("1".equals(run.getIstime())){
+			changeTime(run);
+		}
+		Object [] yjvalue ={run.getName(), run.getSex(),
+				run.getMz().replaceAll("请输入任意民族", ""),
+				run.getHjd(), run.getZz()
+				, run.getCsrq1().replaceAll(",","").replaceAll(" ", "")
+				+ "," + run.getCsrq2().replaceAll(",","").replaceAll(" ", "")};
+		for(int j = 0; j < yjcoulumn.length; j++){
+			yjmap.put(yjcoulumn[j], yjvalue[j].toString());
+		}
+		return daoImpl.getyjsfzcount(run,yjmap);
+	}
+	
+
+	public ManageDao getDaoImpl() {
+		return daoImpl;
+	}
+	public void setDaoImpl(ManageDao daoImpl) {
+		this.daoImpl = daoImpl;
+	}
+	public void changeTime(Yjgz yjgz){
+		//20-30时间段会变成1996-1986 为了预警比对查询互换为1986-1996
+		NowTime = Integer.parseInt(TimeUtil.getTime("yyyy"));
+		String time1 = String.valueOf(
+			(NowTime - Integer.parseInt(yjgz.getCsrq2().replaceAll(",", "").trim())));
+		String time2 = String.valueOf(
+			(NowTime - Integer.parseInt(yjgz.getCsrq1().replaceAll(",", "").trim())));
+		yjgz.setCsrq1(time1 + TimeEnd);
+		yjgz.setCsrq2(time2 + TimeEnd);
+	}
+	
+}

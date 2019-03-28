@@ -1,0 +1,75 @@
+package monitor.projectConfig.bean.entity;
+
+/**
+ * @ClassName:Project_DXInfo 项目支架关联表
+ * @dateTime: 2017-10-23 下午7:43:37
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class T_Project_Zj {
+	
+	/**
+	  * @Fields  squ:TODO(支架_项目中间表id)
+	  * @since JDK1.7
+	*/
+	private String squ;
+	
+	/**
+	 * 部位id
+	 */
+	private String psqu;
+	
+	/**
+	  * @Fields  dxsqu:TODO(支架id)
+	  * @since JDK1.7
+	*/
+	private String zjsqu;
+	
+	/**
+	 * 支架数量
+	 */
+	private Integer sl;
+	
+	/**
+	  * @Fields  serialNumber:TODO(流水号)
+	  * @since JDK1.7
+	*/
+	private String serialNumber;
+	
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
+	public String getSqu() {
+		return squ;
+	}
+	public void setSqu(String squ) {
+		this.squ = squ;
+	}
+	
+	public String getPsqu() {
+		return psqu;
+	}
+	public void setPsqu(String psqu) {
+		this.psqu = psqu;
+	}
+	public String getZjsqu() {
+		return zjsqu;
+	}
+	public void setZjsqu(String zjsqu) {
+		this.zjsqu = zjsqu;
+	}
+	public Integer getSl() {
+		return sl;
+	}
+	public void setSl(Integer sl) {
+		this.sl = sl;
+	}
+	
+}

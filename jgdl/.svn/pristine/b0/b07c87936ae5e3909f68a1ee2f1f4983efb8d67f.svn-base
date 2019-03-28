@@ -1,0 +1,57 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 17, 2011 2:50:48 PM
+*/
+package monitor.registry.service;
+
+import monitor.registry.bean.entity.Relation;
+
+/** 
+ * 实体关系注册 service接口
+ * @author  liangxj
+ * @datetime  May 17, 2011 2:50:48 PM
+ */
+public interface IRelationService {
+	/**
+	 * @description 
+	 * 以JSON格式字符串返回当前资源下已经注册的实体关系
+	 * @param pageNo 当前访问页
+	 * @param pageSize 页大小
+	 * @param dbsSqu 数据源编号
+	 * @return String
+	 */
+	public String listRelations(int pageNo,int pageSize,int dbsSqu) ;
+	/**
+	 * @description 注册实体关系
+	 * @param  relation
+	 * @return void
+	 */
+	public void addRelation(Relation relation) ;
+	/**
+	 * @description 编辑实体关系
+	 * @param  relation
+	 * @return void
+	 */
+	public void editRelation(Relation relation) ;
+	/**
+	 * @description 删除关系
+	 * @param relaSqu 关系编号
+	 * @return void
+	 */
+	public void deleteRelation(int relaSqu) ;
+	/**
+	 * @description 获取数据源下所有的表
+	 * @param dbsSqu 数据源编号
+	 * @return String
+	 */
+	public String fetchEntity(int dbsSqu) ;
+	/**
+	 * @description 查询指定实体下所有注册的，数据类型为 dataType的字段
+	 * @param entitySqu 实体编号
+	 * @param dataType 字段数据类型
+	 * @return String
+	 */
+	public String fetchField(int entitySqu,String dataType) ;
+}

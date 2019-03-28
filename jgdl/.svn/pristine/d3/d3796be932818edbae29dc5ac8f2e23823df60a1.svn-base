@@ -1,0 +1,32 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-5-30 下午03:40:40
+*/
+package monitor.common.bean.vo;
+
+import monitor.registry.bean.entity.RegEntityType;
+
+/** 
+ * 首页资源概况统计vo
+ * @author  cl
+ * @datetime  2011-5-30 下午03:40:40
+ */
+public class ResourceSummaryVo {
+	private RegEntityType entityType = null;
+	private long counts = 0;
+	public RegEntityType getEntityType() {
+		return entityType;
+	}
+	public void setEntityType(RegEntityType entityType) {
+		this.entityType = entityType;
+	}
+	public long getCounts() {
+		return counts;
+	}
+	public void setCounts(long counts) {
+		this.counts = counts;
+	}
+	
+}

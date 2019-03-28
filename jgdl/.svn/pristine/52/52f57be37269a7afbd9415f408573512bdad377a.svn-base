@@ -1,0 +1,104 @@
+
+function addOrUpdateChild(){
+	
+}
+
+/**
+  * loadChildTree:(根据项目id加载子项目列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午3:35:42
+  * @param: 
+  * @return: void
+ */
+function loadChildTreeAndList(project_squ) {
+	$.ajax({
+		type : 'post',
+		url : 'listChildProjectByProjectSqu.do',
+		timeout : 1321231232131213123,
+		dataType:"json",
+		async : false,
+		data:{
+			project_squ:project_squ,
+		},
+		success : function(data) {
+			if (data.length > 0) {
+				loadChildTree(data, project_squ);
+			}
+			loadChildList(data);
+		},
+		error : function() {
+			Modal.alert({
+			    msg: '子项目列表加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			  });
+		}
+	});
+}
+
+/**
+  * loadChildList:(加载子项目列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午4:17:56
+  * @param: 
+  * @return: void
+ */
+function loadChildList(data){
+	//子项目列表
+	var html = "<table class='table table-bordered'>";
+	html += "<tr><th>子项目名称</th><th>建筑高度</th><th>操作</th></tr>";
+	if (data.length <= 0) {
+		html += "<tr><td colspan='3'>未查询到数据</td></tr>";
+	} else {
+		for ( var i = 0; i < data.length; i++) {
+			html += "<tr><td>" + data[i].zdwxmmc + "</td><td>" + data[i].jzgd + "</td><td></td></tr>";
+		}
+	}
+	html += "</table>";
+	$('#childGrid').html(html);
+}
+
+/**
+  * loadChildTree:(加载子项目树)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午4:17:30
+  * @param: @param data
+  * @return: void
+ */
+function loadChildTree(data, project_squ){
+	//子项目树
+	var html = "";
+	for (var i = 0; i < data.length; i++) {
+		html+=" <li class='nav-header hidden-tablet border-bottom' style='display:block; padding-left:15px;'>";
+		html+=" <a href='javascript:void(0);' style='color:#3f9fd9;' class='ajax-link'  flag='1' onclick='loadTree(2," + JSON.stringify(data[i]) + ")' >";
+		html+=" <i class='icon-darkgray '></i>&nbsp;" + data[i].zdwxmmc + "</a>";
+		html+=" <ul class='topnav'>";
+		html+=" </ul>";
+		html+=" </li>";
+	}
+	$("#" + project_squ + "").parent().find("ul").html(html);
+	$("#" + project_squ + "").next("ul").accordion({
+			accordion:false,
+			speed: 300,
+			closedSign: '[+]',
+			openedSign: '[-]'
+		});
+}
+
+/**
+ * showAddChildModal:(新增项目模态框)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-10-17 下午8:47:16
+ * @param: 
+ * @return: void
+*/
+function showAddChildModal(){
+	$('#childHtmlTitle').html("新增子项目");
+	$('#childForm')[0].reset();
+	$('#childModal').modal();
+}

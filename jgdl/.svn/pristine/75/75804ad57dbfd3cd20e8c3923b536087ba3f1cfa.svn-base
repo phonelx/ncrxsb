@@ -1,0 +1,42 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 10, 2011 1:49:09 PM
+*/
+package monitor.registry.bean.vo;
+
+/** 
+ * <description> 
+ * @author  liangxj
+ * @datetime  May 10, 2011 1:49:09 PM
+ */
+public class DicTypeVo {
+	private String bmlb ;
+	private String bmmc;
+
+	/** 
+	 * @return bmlb 
+	 */
+	public String getBmlb() {
+		return bmlb;
+	}
+	/** 
+	 */
+	
+	public void setBmlb(String bmlb) {
+		this.bmlb = bmlb;
+	}
+	/** 
+	 * @return bmmc 
+	 */
+	public String getBmmc() {
+		return bmmc;
+	}
+	/** 
+	 */
+	
+	public void setBmmc(String bmmc) {
+		this.bmmc = bmmc;
+	}
+}

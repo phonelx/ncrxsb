@@ -1,0 +1,25 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 21, 2011 3:02:28 PM
+*/
+package monitor.registry.dao;
+
+import java.util.List;
+
+import monitor.registry.bean.dto.RegQueryDto;
+import monitor.registry.bean.entity.RegQuery;
+
+/** 
+ * 查询管理  DAO 接口
+ * @author  liangxj
+ * @datetime  Apr 21, 2011 3:02:28 PM
+ */
+public interface IRegQueryDao {
+	public List getAllQuerys(int pageSize ,int pageNo);
+	public void addQuery(RegQueryDto queryDto);
+	public void editQuery(RegQuery query);
+	public void deleteQuery(int squ);
+	public List getAllDbs();
+}

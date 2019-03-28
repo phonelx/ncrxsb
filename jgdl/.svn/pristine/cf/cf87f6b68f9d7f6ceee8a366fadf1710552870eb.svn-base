@@ -1,0 +1,207 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 17, 2011 5:26:15 PM
+*/
+package monitor.registry.dao.impl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.exception.DaoException;
+import monitor.registry.bean.dto.RelationDto;
+import monitor.registry.bean.entity.Relation;
+import monitor.registry.dao.IRelationDao;
+
+/** 
+ * 实体关系注册DAO 实现类
+ * @author  liangxj
+ * @datetime  May 17, 2011 5:26:15 PM
+ */
+public class RelationDaoImpl extends RegistryDao implements IRelationDao {
+
+	/**
+	 * @param relation
+	*/
+	public void addRelation(Relation relation) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+			  "INSERT INTO SSP_TREGRELATION_ONE2MANY("
+			  + "name,descb,entitysqu, ref_entitysqu, fieldsqu,"
+			  + " ref_fieldsqu) VALUES(?,?,?,?,?,?)");
+			//设置参数
+			pstmt.setString(1, relation.getName());
+			pstmt.setString(2, relation.getDescb());
+			pstmt.setInt(3, relation.getEntitySqu());
+			pstmt.setInt(4, relation.getRefEntitySqu());
+			pstmt.setInt(5, relation.getFieldSqu());
+			pstmt.setInt(6, relation.getRefFieldSqu());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * @param relaSqu
+	*/
+	public void deleteRelation(int relaSqu) {
+		try {
+			//获取连接
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+				"DELETE FROM SSP_TREGRELATION_ONE2MANY"
+				+ " WHERE SQU = ?");
+			pstmt.setInt(1, relaSqu);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * @param relation
+	*/
+	public void editRelation(Relation relation) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+			   "UPDATE SSP_TREGRELATION_ONE2MANY SET "
+			   + "name =?,descb = ?,entitysqu = ?, "
+			   + "ref_entitysqu = ?, fieldsqu=?, ref_fieldsqu=?"
+			   + " WHERE SQU = ?");
+			//设置参数
+			pstmt.setString(1, relation.getName());
+			pstmt.setString(2, relation.getDescb());
+			pstmt.setInt(3, relation.getEntitySqu());
+			pstmt.setInt(4, relation.getRefEntitySqu());
+			pstmt.setInt(5, relation.getFieldSqu());
+			pstmt.setInt(6, relation.getRefFieldSqu());
+			pstmt.setInt(7, relation.getSqu());
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * @param pageNo
+	 * @param pageSize
+	 * @return 
+	*/
+	public List listRelations(int pageNo,int pageSize,int dbsSqu) {
+		List list = null;
+		try {
+			conn = datasource.getConnection();
+			// 查询当前数据源下 的实体
+			pstmt = conn.prepareStatement(
+				"SELECT SQU,TITLE FROM SSP_TREGENTITY"
+				+ " WHERE DATASOURCESQU = ? AND ISVIEW = 0 ");
+			pstmt.setInt(1, dbsSqu);
+			rs = pstmt.executeQuery();
+			//保存 dbsSqu对应的实体编号
+			String entitySqus = "( 0";
+			Map<Integer , String> entityMap = new HashMap();
+			int cnt = 0; //保存满足条件的总记录数
+			while (rs.next()) {
+				entitySqus += "," + rs.getInt(1);
+				entityMap.put(rs.getInt(1), rs.getString(2));
+			}
+			entitySqus += " )";
+			pstmt = conn.prepareStatement(
+			  "SELECT COUNT(*) FROM SSP_TREGRELATION_ONE2MANY"
+			  + " WHERE ENTITYSQU IN " + entitySqus);
+			rs = pstmt.executeQuery();
+			rs.next();
+			cnt = rs.getInt(1);
+			// 查询所有的字段
+			pstmt = conn.prepareStatement(
+					"SELECT SQU,TITLE FROM SSP_TREGFIELD"
+					+ " WHERE ENTITYSQU IN " + entitySqus);
+			rs = pstmt.executeQuery();
+			Map<Integer , String> filedMap = new HashMap();
+			while (rs.next()) {
+				filedMap.put(rs.getInt(1), rs.getString(2));
+			}
+			list = new ArrayList();
+			//添加总记录数
+			list.add(cnt);
+			//查询分页数据
+			pstmt = conn.prepareStatement(
+				"SELECT * FROM (SELECT T.*,ROWNUM R1 FROM"
+				+ " (SELECT * FROM SSP_TREGRELATION_ONE2MANY"
+				+ " WHERE ENTITYSQU IN " + entitySqus + " )"
+				+ " T WHERE ROWNUM < ?)WHERE R1 >= ?");
+			//设置参数
+			int startIndex = pageNo * pageSize + 1;
+			pstmt.setInt(1, pageSize + startIndex);
+			pstmt.setInt(2, startIndex);
+			rs = pstmt.executeQuery();
+			List list1 = new ArrayList();
+			while (rs.next()) {
+				RelationDto relation = new RelationDto();
+				relation.setSqu(rs.getInt("squ"));
+				relation.setName(rs.getString("name"));
+				relation.setDescb(rs.getString("descb"));
+				relation.setEntity(
+					entityMap.get(rs.getInt("entitysqu"))
+					+ "@" + rs.getInt("entitysqu"));
+				relation.setRefEntity(
+				   entityMap.get(rs.getInt("ref_entitysqu"))
+					+ "@" + rs.getInt("ref_entitysqu"));
+				relation.setField(
+					filedMap.get(rs.getInt("fieldSqu"))
+					+ "@" + rs.getInt("fieldSqu"));
+				relation.setRefField(
+					filedMap.get(rs.getInt("ref_fieldsqu"))
+					+ "@" + rs.getInt("ref_fieldsqu"));
+				list1.add(relation);
+			}
+			list.add(list1);
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return list;
+	}
+
+}

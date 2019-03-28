@@ -1,0 +1,898 @@
+package monitor.projectConfig.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import monitor.projectConfig.bean.entity.Project;
+import monitor.projectConfig.bean.entity.Project_Child;
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.projectConfig.dao.IProjectConfigDao;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectConfigDaoImpl
+ * @dateTime: 2017-10-14 下午3:06:55
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectConfigDaoImpl implements IProjectConfigDao {
+	
+	
+	private PreparedStatement ps = null;
+
+	/**
+	  * selectProjectPageInfo:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:21:34
+	  * @param pageVo
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public List<Project> selectProjectPageInfo(PageInfoVo pageVo, Connection conn) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM (SELECT ROWNUM RN,T.PROJECT_SQU,T.XMBH,T.XMDZ,T.XMLX,T.XMMC, ");
+		sql.append(" T.XMMJ,T2.LBMC AS DZSFLD,T3.LBMC AS DZJSD,T4.LBMC AS DZLX FROM PROJECT T ");
+		sql.append(" LEFT JOIN PROJECT_WZZDB T2 ON T.DZSFLD=T2.SQU ");
+		sql.append(" LEFT JOIN PROJECT_WZZDB T3 ON T.DZJSD=T3.SQU ");
+		sql.append(" LEFT JOIN PROJECT_WZZDB T4 ON T.DZLX=T4.SQU ");
+		sql.append(" ) WHERE RN >= ? AND RN < ?");
+		List<Project> list = new ArrayList<Project>();
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, pageVo.getStartIndex());
+			ps.setInt(2, pageVo.getEndIndex());
+			rs = ps.executeQuery();
+			
+			Project pro = null;
+			while (rs.next()) {
+				pro = new Project();
+				pro.setProject_squ(rs.getString("PROJECT_SQU"));
+				pro.setDzjsd(rs.getString("DZJSD"));
+				pro.setDzlx(rs.getString("DZLX"));
+				pro.setDzsfld(rs.getString("DZSFLD"));
+				
+				pro.setXmbh(rs.getString("XMBH"));
+				pro.setXmdz(rs.getString("XMDZ"));
+				pro.setXmlx(rs.getString("XMLX"));
+				pro.setXmmc(rs.getString("XMMC"));
+				pro.setXmmj(rs.getString("XMMJ"));
+				list.add(pro);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return list;
+	}
+	
+	/**
+	 * selectProjectPageInfoBySearch:
+	 * @author 黄月
+	 * @date  2017-10-14 下午3:21:34
+	 * @param pageVo
+	 * @return 
+	 * @throws SQLException 
+	 */
+	@Override
+	public List<T_Project> selectProjectPageInfoBySearch(PageInfoVo pageVo, Connection conn,
+			String searchWord) throws SQLException {
+		StringBuilder searchSql = new StringBuilder(" WHERE ");
+		searchSql.append(" GCMC LIKE '%" + searchWord + "%' ");
+		searchSql.append(" OR JZLB LIKE '%" + searchWord + "%' ");
+		searchSql.append(" OR GCDZ LIKE '%" + searchWord + "%' ");
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM ( SELECT ROWNUM RN,T.* FROM T_PROJECT T " + searchSql.toString() + " ) WHERE RN >= ? AND RN < ?");
+		List<T_Project> list = new ArrayList<T_Project>();
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, pageVo.getStartIndex());
+			ps.setInt(2, pageVo.getEndIndex());
+			rs = ps.executeQuery();
+			
+			T_Project pro = null;
+			while (rs.next()) {
+				pro = new T_Project();
+				pro.setAzbg(rs.getDouble("AZBG"));
+				pro.setAzbw(rs.getString("AZBW"));
+				pro.setBh(rs.getString("BH"));
+				pro.setDqsfld(rs.getDouble("DQSFLD"));
+				pro.setDzjsd(rs.getDouble("DZJSD"));
+				pro.setDzlx(rs.getString("DZLX"));
+				pro.setFwxt(rs.getString("FWXT"));
+				pro.setGcdz(rs.getString("GCDZ"));
+				pro.setGcmc(rs.getString("GCMC"));
+				pro.setGdcz(rs.getString("GDCZ"));
+				pro.setGdgg(rs.getString("GDGG"));
+				pro.setGdlx(rs.getString("GDLX"));
+				pro.setJgljfs(rs.getString("JGLJFS"));
+				pro.setJzgd(rs.getDouble("JZGD"));
+				pro.setJzlb(rs.getString("JZLB"));
+				pro.setKzzcsl(rs.getInt("KZZCSL"));
+				pro.setSqu(rs.getString("SQU"));
+				pro.setSzzt(rs.getString("SZZT"));
+				pro.setXcjd(rs.getDouble("XCJD"));
+				pro.setXh(rs.getString("XH"));
+				pro.setYsfsjgg(rs.getString("YSFSJGG"));
+				list.add(pro);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return list;
+	}
+
+	/**
+	  * selectCountProject:查询项目总数
+	  * @author 黄月
+	  * @date  2017-10-14 下午4:11:27
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public Integer selectCountProject(Connection conn) throws SQLException {
+		int sum = 0;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(" SELECT COUNT(PROJECT_SQU) FROM PROJECT ");
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				sum = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			throw new SQLException(e);
+		} finally {
+			closed(rs, ps);
+		}
+		return sum;
+	}
+	
+	/**
+	 * selectCountProject:查询项目总数
+	 * @author 黄月
+	 * @date  2017-10-14 下午4:11:27
+	 * @return 
+	 * @throws SQLException 
+	 */
+	@Override
+	public Integer selectCountProjectBySearch(Connection conn, String searchWord) throws SQLException {
+		StringBuilder searchSql = new StringBuilder(" WHERE ");
+		searchSql.append(" GCMC LIKE '%" + searchWord + "%' ");
+		searchSql.append(" OR JZLB LIKE '%" + searchWord + "%' ");
+		searchSql.append(" OR GCDZ LIKE '%" + searchWord + "%' ");
+		int sum = 0;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(" SELECT COUNT(SQU) FROM T_PROJECT " + searchSql.toString());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				sum = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return sum;
+	}
+	
+	/**
+	  * selectProjectBySqu:查询单个项目
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:27:19
+	  * @param squ
+	  * @return 
+	*/
+	@Override
+	public T_Project selectProjectBySqu(String squ, Connection conn) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM T_PROJECT WHERE SQU = ? ");
+		ResultSet rs = null;
+		T_Project pro = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, squ);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				pro = new T_Project();
+				pro.setAzbg(rs.getDouble("AZBG"));
+				pro.setAzbw(rs.getString("AZBW"));
+				pro.setBh(rs.getString("BH"));
+				pro.setDqsfld(rs.getDouble("DQSFLD"));
+				pro.setDzjsd(rs.getDouble("DZJSD"));
+				pro.setDzlx(rs.getString("DZLX"));
+				pro.setFwxt(rs.getString("FWXT"));
+				pro.setGcdz(rs.getString("GCDZ"));
+				pro.setGcmc(rs.getString("GCMC"));
+				pro.setGdcz(rs.getString("GDCZ"));
+				pro.setGdgg(rs.getString("GDGG"));
+				pro.setGdlx(rs.getString("GDLX"));
+				pro.setJgljfs(rs.getString("JGLJFS"));
+				pro.setJzgd(rs.getDouble("JZGD"));
+				pro.setJzlb(rs.getString("JZLB"));
+				pro.setKzzcsl(rs.getInt("KZZCSL"));
+				pro.setSqu(rs.getString("SQU"));
+				pro.setSzzt(rs.getString("SZZT"));
+				pro.setXcjd(rs.getDouble("XCJD"));
+				pro.setXh(rs.getString("XH"));
+				pro.setYsfsjgg(rs.getString("YSFSJGG"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(rs, ps);
+		}
+		return pro;
+	}
+
+	/**
+	  * insertProject:新增基本项目
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:27:19
+	  * @param project 
+	*/
+	@Override
+	public void insertProject(Project pro, Connection conn) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" INSERT INTO PROJECT( ");
+		sql.append(" PROJECT_SQU,ALPHAMAX,DZJSD,DZLX,DZSFLD,XMBH,XMDZ,XMLX,XMMC,XMMJ) ");
+		sql.append(" VALUES(SYS_GUID(),?,?,?,?,?,?,?,?,?) ");
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setDouble(1, pro.getAlphaMax());
+			ps.setString(2, pro.getDzjsd());
+			ps.setString(3, pro.getDzlx());
+			ps.setString(4, pro.getDzsfld());
+			ps.setString(5, pro.getXmbh());
+			ps.setString(6, pro.getXmdz());
+			ps.setString(7, pro.getXmlx());
+			ps.setString(8, pro.getXmmc());
+			ps.setString(9, pro.getXmmj());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(rs, ps);
+		}
+	}
+
+	/**
+	  * updateProjectBySqu:修改基础信息
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:27:19
+	  * @param squ 
+	*/
+	@Override
+	public void updateProjectBySqu(Project pro, Connection conn) {
+		StringBuilder sql = new StringBuilder();
+		
+		sql.append(" UPDATE PROJECT SET ALPHAMAX=?,DZJSD=?,DZLX=?,DZSFLD=?,XMBH=?,XMDZ=?, ");
+		sql.append(" XMLX=?,XMMC=?,XMMJ=? WHERE PROJECT_SQU=? ");
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setDouble(1, pro.getAlphaMax());
+			ps.setString(2, pro.getDzjsd());
+			ps.setString(3, pro.getDzlx());
+			ps.setString(4, pro.getDzsfld());
+			ps.setString(5, pro.getXmbh());
+			ps.setString(6, pro.getXmdz());
+			ps.setString(7, pro.getXmlx());
+			ps.setString(8, pro.getXmmc());
+			ps.setString(9, pro.getXmmj());
+			ps.setString(10, pro.getProject_squ());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(null, ps);
+		}
+	}
+
+	/**
+	  * deleteProjectBySqu:接口实现
+	  * @author 黄月
+	  * @date  2017-10-14 下午3:27:19
+	  * @param squ 
+	*/
+	@Override
+	public void deleteProjectBySqu(String squ, Connection conn) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" DELETE FROM PROJECT WHERE PROJECT_SQU=? ");
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, squ);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(null, ps);
+		}
+	}
+
+	/**
+	  * closed:(关闭数据库连接).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:29:43
+	  * @param rs
+	  * @param ps
+	  * @param conn void
+	  * @since JDK 1.7
+	*/
+	private void closed(ResultSet rs, PreparedStatement ps){
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	/**
+	  * selectProjectAll:查询所有项目
+	  * @author 黄月
+	  * @date  2017-10-23 下午6:34:17
+	  * @param conn
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public List<T_Project> selectProjectAll(Connection conn)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM T_PROJECT ");
+		List<T_Project> list = new ArrayList<T_Project>();
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
+			
+			T_Project pro = null;
+			while (rs.next()) {
+				pro = new T_Project();
+				pro.setAzbg(rs.getDouble("AZBG"));
+				pro.setAzbw(rs.getString("AZBW"));
+				pro.setBh(rs.getString("BH"));
+				pro.setDqsfld(rs.getDouble("DQSFLD"));
+				pro.setDzjsd(rs.getDouble("DZJSD"));
+				pro.setDzlx(rs.getString("DZLX"));
+				pro.setFwxt(rs.getString("FWXT"));
+				pro.setGcdz(rs.getString("GCDZ"));
+				pro.setGcmc(rs.getString("GCMC"));
+				pro.setGdcz(rs.getString("GDCZ"));
+				pro.setGdgg(rs.getString("GDGG"));
+				pro.setGdlx(rs.getString("GDLX"));
+				pro.setJgljfs(rs.getString("JGLJFS"));
+				pro.setJzgd(rs.getDouble("JZGD"));
+				pro.setJzlb(rs.getString("JZLB"));
+				pro.setKzzcsl(rs.getInt("KZZCSL"));
+				pro.setSqu(rs.getString("SQU"));
+				pro.setSzzt(rs.getString("SZZT"));
+				pro.setXcjd(rs.getDouble("XCJD"));
+				pro.setXh(rs.getString("XH"));
+				pro.setYsfsjgg(rs.getString("YSFSJGG"));
+				list.add(pro);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return list;
+	}
+
+
+	/**
+	  * selectHolderOfProjectPageInfo:接口实现
+	  * @author 黄月
+	  * @date  2017-10-23 下午7:49:54
+	  * @param pageVo
+	  * @param squ
+	  * @param conn
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public List<Project_DXInfo> selectHolderOfProjectPageInfo(
+			PageInfoVo pageVo, String squ, Connection conn) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM ( SELECT ROWNUM RN,B.*,A.SL,A.SQU FROM T_PROJECT_ZJ A ");
+		sql.append(" LEFT JOIN PROJECT_DXINFO B ON A.ZJSQU = B.DXSQU WHERE A.PSQU = ? ");
+		sql.append(" ) WHERE RN >= ? AND RN < ? ");
+		List<Project_DXInfo> list = new ArrayList<Project_DXInfo>();
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, squ);
+			ps.setInt(2, pageVo.getStartIndex());
+			ps.setInt(3, pageVo.getEndIndex());
+			rs = ps.executeQuery();
+			
+			Project_DXInfo holder = null;
+			while (rs.next()) {
+				holder = new Project_DXInfo();
+				holder.setSqu(rs.getString("SQU"));
+				holder.setZp(rs.getString("ZP"));
+				holder.setAzfs(rs.getString("AZFS"));
+				holder.setDxmc(rs.getString("DXMC"));
+				holder.setDxsqu(rs.getString("DXSQU"));
+				holder.setGdlx(rs.getString("GDLX"));
+				holder.setZjxs(rs.getString("ZJXS"));
+				holder.setSl(rs.getInt("SL"));
+				
+				ResultSet rs1 = null;
+				PreparedStatement ps1 = null;
+				String result = "";
+				if (!"".equals(rs.getString("GDLX")) && rs.getString("GDLX") != null) {
+					String[] arr = rs.getString("GDLX").split(",");
+					String lxStr = "";
+					if (arr.length > 0) {
+						for (String string : arr) {
+							lxStr += "'" + string + "',";
+						}
+					}
+					if (lxStr.length() > 0 ) {
+						lxStr = lxStr.substring(0, lxStr.length() - 1);
+					}
+					ps1 = conn.prepareStatement(" SELECT XH FROM PROJECT_GDLX WHERE SQU IN (" + lxStr + ") ");
+					rs1 = ps1.executeQuery();
+					while (rs1.next()) {
+						result += rs1.getString("XH") + ",";
+					}
+					if (result.length() > 0) {
+						result = result.substring(0, result.length() - 1);
+					}
+					
+				}
+				holder.setGdlx_name(result);
+				result = "";
+					
+				if (!"".equals(rs.getString("AZFS")) && rs.getString("AZFS") != null) {
+					String[] arr2 = rs.getString("AZFS").split(",");
+					String azStr = "";
+					if (arr2.length > 0) {
+						for (String string : arr2) {
+							azStr += "'" + string + "',";
+						}
+					}
+					if (azStr.length() > 0 ) {
+						azStr = azStr.substring(0, azStr.length() - 1);
+					}
+					ps1.close();
+					ps1 = conn.prepareStatement(" SELECT MS FROM PROJECT_GDLX WHERE SQU IN (" + azStr + ") ");
+					rs1 = ps1.executeQuery();
+					while (rs1.next()) {
+						result += rs1.getString("MS") + ",";
+					}
+					if (result.length() > 0) {
+						result = result.substring(0, result.length() - 1);
+					}
+				}
+				holder.setAzfs_name(result);
+				
+				list.add(holder);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return list;
+	}
+
+	/**
+	  * selectCountHolderOfProject:接口实现
+	  * @author 黄月
+	  * @date  2017-10-23 下午7:49:54
+	  * @param conn
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public Integer selectCountHolderOfProject(Connection conn, String squ)
+			throws SQLException {
+		int sum = 0;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(" SELECT COUNT(SQU) FROM T_PROJECT_ZJ WHERE PSQU = ? ");
+			ps.setString(1, squ);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				sum = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return sum;
+	}
+
+
+	/**
+	  * selectCountHolder:接口实现
+	  * @author 黄月
+	  * @date  2017-10-24 下午7:22:04
+	  * @param conn
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public Integer selectCountHolder(Connection conn, String sql) throws SQLException {
+		int sum = 0;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(" SELECT COUNT(DXSQU) FROM PROJECT_DXINFO WHERE DXSQU NOT IN (SELECT ZJSQU FROM T_PROJECT_ZJ) " + sql);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				sum = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return sum;
+	}
+
+
+	/**
+	  * selectHolderPageInfo:查询项目中没有的支架列表
+	  * @author 黄月
+	  * @date  2017-10-24 下午7:22:04
+	  * @param pageVo
+	  * @param conn
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public List<Project_DXInfo> selectHolderPageInfo(PageInfoVo pageVo,
+			Connection conn, String sql2) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT * FROM ( SELECT ROWNUM RN,B.* FROM PROJECT_DXINFO B WHERE B.DXSQU NOT IN (SELECT ZJSQU FROM T_PROJECT_ZJ)" + sql2);
+		sql.append(" ) WHERE RN >= ? AND RN < ? ");
+		List<Project_DXInfo> list = new ArrayList<Project_DXInfo>();
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setInt(1, pageVo.getStartIndex());
+			ps.setInt(2, pageVo.getEndIndex());
+			rs = ps.executeQuery();
+			
+			Project_DXInfo holder = null;
+			while (rs.next()) {
+				holder = new Project_DXInfo();
+				holder.setDxmc(rs.getString("DXMC"));
+				holder.setDxsqu(rs.getString("DXSQU"));
+				holder.setAzfs(rs.getString("AZFS"));
+				holder.setGdlx(rs.getString("GDLX"));
+				holder.setZjxs(rs.getString("ZJXS"));
+				holder.setZp(rs.getString("ZP"));
+				
+				ResultSet rs1 = null;
+				PreparedStatement ps1 = null;
+				String result = "";
+				if (!"".equals(rs.getString("GDLX")) && rs.getString("GDLX") != null) {
+					String[] arr = rs.getString("GDLX").split(",");
+					String lxStr = "";
+					if (arr.length > 0) {
+						for (String string : arr) {
+							lxStr += "'" + string + "',";
+						}
+					}
+					if (lxStr.length() > 0 ) {
+						lxStr = lxStr.substring(0, lxStr.length() - 1);
+					}
+					ps1 = conn.prepareStatement(" SELECT XH FROM PROJECT_GDLX WHERE SQU IN (" + lxStr + ") ");
+					rs1 = ps1.executeQuery();
+					while (rs1.next()) {
+						result += rs1.getString("XH") + ",";
+					}
+					if (result.length() > 0) {
+						result = result.substring(0, result.length() - 1);
+					}
+					
+				}
+				holder.setGdlx_name(result);
+				result = "";
+					
+				if (!"".equals(rs.getString("AZFS")) && rs.getString("AZFS") != null) {
+					String[] arr2 = rs.getString("AZFS").split(",");
+					String azStr = "";
+					if (arr2.length > 0) {
+						for (String string : arr2) {
+							azStr += "'" + string + "',";
+						}
+					}
+					if (azStr.length() > 0 ) {
+						azStr = azStr.substring(0, azStr.length() - 1);
+					}
+					ps1.close();
+					ps1 = conn.prepareStatement(" SELECT MS FROM PROJECT_GDLX WHERE SQU IN (" + azStr + ") ");
+					rs1 = ps1.executeQuery();
+					while (rs1.next()) {
+						result += rs1.getString("MS") + ",";
+					}
+					if (result.length() > 0) {
+						result = result.substring(0, result.length() - 1);
+					}
+				}
+				holder.setAzfs_name(result);
+				
+				list.add(holder);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return list;
+	}
+
+
+	/**
+	  * selectHavingHolderOfProject:查询当前项目是否已有当前支架,返回数量
+	  * @author 黄月
+	  * @date  2017-10-24 下午8:48:38
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public Integer selectHavingHolderOfProject(Connection conn, String holderSqu,
+			String projectSqu) throws SQLException {
+		int result = 0;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(" SELECT SL FROM T_PROJECT_ZJ WHERE PSQU=? AND ZJSQU=?");
+			ps.setString(1, projectSqu);
+			ps.setString(2, holderSqu);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(rs, ps);
+		}
+		return result;
+	}
+
+
+	/**
+	  * addHolderNumOfProject:对已有支架数量操作
+	  * @author 黄月
+	 * @throws SQLException 
+	  * @date  2017-10-24 下午8:48:38 
+	*/
+	@Override
+	public void updateHolderNumOfProject(Connection conn, Integer num, String holderSqu,
+			String projectSqu) throws SQLException {
+		String sql = " UPDATE T_PROJECT_ZJ SET SL=? WHERE PSQU=? AND ZJSQU=?";
+		ps = conn.prepareStatement(sql);
+		ps.setInt(1, num);
+		ps.setString(2, projectSqu);
+		ps.setString(3, holderSqu);
+		ps.executeUpdate();
+		closed(null, ps);
+	}
+
+
+	/**
+	  * addHolderToProject:给项目添加支架
+	  * @author 黄月
+	  * @date  2017-10-24 下午8:48:38
+	  * @throws SQLException 
+	*/
+	@Override
+	public void insertHolderToProject(Connection conn, String holderSqu,
+			String projectSqu) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" INSERT INTO T_PROJECT_ZJ(SQU,PSQU,ZJSQU,SL) ");
+		sql.append(" VALUES(SYS_GUID(),?,?,1) ");
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, projectSqu);
+			ps.setString(2, holderSqu);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(rs, ps);
+		}
+	}
+
+	/**
+	  * deleteHolderOfProjectBySqu:根据squ删除项目支架
+	  * @author 黄月
+	  * @date  2017-11-20 上午10:56:02
+	  * @param squ
+	  * @param conn 
+	 * @throws SQLException 
+	*/
+	@Override
+	public void deleteHolderOfProjectBySqu(String squ, Connection conn) throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" DELETE FROM T_PROJECT_ZJ WHERE SQU=? ");
+		ps = conn.prepareStatement(sql.toString());
+		ps.setString(1, squ);
+		ps.executeUpdate();
+		closed(null, ps);
+	}
+
+	/**
+	  * getBuildingCategory:获取建筑类别下拉列表
+	  * @author 黄月
+	  * @date  2017-11-22 下午4:58:45
+	  * @param conn
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public List<String> getBuildingCategory(Connection conn, String squ) throws SQLException {
+		ResultSet rs = null;
+		String sql = " SELECT LBMC FROM PROJECT_WZZDB WHERE PARENTSQU = '" + squ + "' ";
+		ps = conn.prepareStatement(sql);
+		rs = ps.executeQuery();
+		List<String> result = new ArrayList<String>();
+		while (rs.next()) {
+			result.add(rs.getString("LBMC"));
+		}
+		closed(null, ps);
+		return result;
+	}
+
+	/**
+	  * getSelectOfGDLX:接口实现
+	  * @author 黄月
+	  * @date  2017-12-4 下午3:14:21
+	  * @param conn
+	  * @return 
+	*/
+	@Override
+	public List<Map<String, String>> getSelectOfGDLX(Connection conn) {
+		return selectOfGDLX_AZFS(conn, 0);
+	}
+
+	/**
+	  * getSelectOfAZFS:接口实现
+	  * @author 黄月
+	  * @date  2017-12-4 下午3:14:21
+	  * @param conn
+	  * @return 
+	*/
+	@Override
+	public List<Map<String, String>> getSelectOfAZFS(Connection conn) {
+		return selectOfGDLX_AZFS(conn, 1);
+	}
+	
+	private List<Map<String, String>> selectOfGDLX_AZFS(Connection conn, Integer type){
+		ResultSet rs = null;
+		String sql = " SELECT MS,XH,SQU FROM PROJECT_GDLX WHERE FL = ? ";
+		List<Map<String, String>> list = new ArrayList<Map<String,String>>();
+		try {
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, type);
+			rs = ps.executeQuery();
+			Map<String, String> map = null;
+			while (rs.next()) {
+				map = new HashMap<String, String>();
+				if (type == 0) {
+					map.put("NAME", rs.getString("XH"));
+				} else {
+					map.put("NAME", rs.getString("MS"));
+				}
+				map.put("SQU", rs.getString("SQU"));
+				list.add(map);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(null, ps);
+		}
+		return list;
+	}
+
+	/**
+	  * listProjectSite:接口实现
+	  * @author 黄月
+	  * @date  2018-1-31 下午5:25:03
+	  * @param conn
+	  * @return 
+	*/
+	@Override
+	public List<Project_Child_Site> listProjectSite(Connection conn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	  * countProjectSite:接口实现
+	  * @author 黄月
+	  * @date  2018-1-31 下午5:25:03
+	  * @param conn
+	  * @return 
+	*/
+	@Override
+	public Integer countProjectSite(Connection conn) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	  * getParamConfig:获取参数配置对象
+	  * @author 黄月
+	  * @date  2018-2-2 下午3:32:30
+	  * @param conn
+	  * @param search
+	  * @param param
+	  * @return 
+	*//*
+	@Override
+	public Wzzdb getParamConfig(Connection conn, String search, String param) {
+		StringBuilder sql = new StringBuilder();
+		sql.append(" SELECT SQU,DMLB,LBMC,PARENTSQU,JD,ZHDM,XSCS FROM PROJECT_WZZDB WHERE ");
+		sql.append(param).append(" = '").append(search).append("'");
+		System.out.println(sql);
+		
+		ResultSet rs = null;
+		Wzzdb wzz = null;
+		try {
+			ps = conn.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				wzz = new Wzzdb();
+				wzz.setSQU(rs.getString("SQU"));
+				wzz.setDMLB(rs.getString("DMLB"));
+				wzz.setJD(rs.getString("JD"));
+				wzz.setLBMC(rs.getString("LBMC"));
+				wzz.setPARENTSQU(rs.getString("PARENTSQU"));
+				wzz.setXSCS(rs.getString("XSCS"));
+				wzz.setZHDM(rs.getString("ZHDM"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closed(rs, ps);
+		}
+		return wzz;
+	}*/
+
+}

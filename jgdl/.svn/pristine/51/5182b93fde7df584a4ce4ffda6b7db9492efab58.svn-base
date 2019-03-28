@@ -1,0 +1,261 @@
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ include file="/pages/head.jsp"%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>抗震支架基本配置</title>
+<link rel="stylesheet" type="text/css" href="resource/css/addStyle.css" />
+<script type="text/javascript" src="resource/js/kzzj/kzzj.js"></script>
+<style type="text/css">
+	
+	.box-content ul li:hover{
+	box-shadow: -2px 0px 8px #f00, 0px -2px 8px #000, 0px 2px 8px #9e038a,
+		2px 0px 8px #0f0;
+	}
+	td.box_desc{
+	text-align: left; width: 50%; line-height: 24px;
+	}
+	td.box_img{
+		width: 60px;
+		height:50px;
+	}
+	td.box_rate{
+		line-height:52px;
+		
+	}
+	
+	#table-body-userGrid tr td{
+	text-align: center;
+}
+#uiGrid-userGrid tr th{
+	text-align: center;
+}
+textarea{outline:none;resize:none;}
+#title{
+font-size:20px;
+	}
+</style>
+</head>
+
+<body>
+    <input type="hidden" id="userId" value="${sessionScope.user.squ}" />
+	<input type="hidden" id="pageNum">
+	<input type="hidden" id="cateId">
+	
+	<!-- 页头开始 -->
+	<div class="navbar">
+		<!-- 顶部 -->
+		<ul class="breadcrumb" id="userSearchBox" style="list-style:none;">
+			<li id="titleName" style="color: #369BD7;">
+				<span> 
+					<a href="javascript:void(0)"> 
+						<span id = "title">抗震支架基本配置</span>
+					</a>
+				</span>
+			</li>
+			
+			<li style="float: right;">
+				<a style="margin-top:-3px;" title="添加" class="btn btn-primary" onclick="showAddKzzj();" href="javascript:void(0);">
+				<i class="icon-plus-sign icon-white"></i>添加</a>
+			</li>
+			
+			<li id="ss" style="float:right;margin-right: 5px;">
+				<c:if test="${sessionScope.user.roleEntity.roleLevel eq 1}">
+				</c:if>
+				<input id="input_search" type="text" style="width:200px;color:#ccc;" value="关键字搜索" onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+				<a style="margin-top:-10px;" class="btn " onclick="searchWord();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+				</li>
+		</ul>
+	</div>
+	<!-- 页头结束 -->
+
+	
+		<div class="box span10">
+			<div class="box-content">
+				<table class="table">
+					 <tbody id="box_body">
+					 </tbody>
+				</table>  
+			</div>
+		</div>
+		
+	<div id="pageDiv">
+	</div> 
+	
+	
+<!-- 添加窗口 -->
+<div id="userDiv" class="modal hide fade in windowBoxMiddle" style="display:none;">
+
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			<h3 id="userTitleName">添加支架</h3>
+		</div>
+		
+		<div class="modal-body" style="padding:20px;">
+		  <div class="container-fluid">
+		  
+			  <form class="form-horizontal" method="post" action=""  id="kzzjForm" enctype="multipart/form-data">
+				 <div class="row-fluid">
+				
+				     <div class="span10">
+				     	<div class="box-content">
+							
+								<fieldset>
+								<!-- 唯一标识id -->
+								<input type="hidden" name="kzzjDxsqu" id="kzzjDxsqu" value=""/>
+								
+								  <div class="control-group">
+									<label class="control-label" for="focusedInput">支架名称：</label>
+									<div class="controls">
+									  <input class="input-xlarge focused" id="focusedInput" name = "zjmc" type="text" value="">
+									</div>
+								  </div>
+								  
+								  <div class="control-group">
+									<label class="control-label" for="selectError3">管道类型：</label>
+									<div class="controls">
+									  <select id="selectError3" name = "gdlx" class="input-xlarge selectWidth">
+										<option>DN65镀锌管，不保温</option>
+			   							<option>DN80镀锌管，不保温</option>
+			   							<option>DN100镀锌管，不保温</option>
+			   							<option>DN125镀锌管，不保温</option>
+			   							<option>DN150镀锌管，不保温</option>
+			   							<option>DN200镀锌管，不保温</option>
+			   							<option>DN250镀锌管，不保温</option>
+			   							<option>DN300镀锌管，不保温</option>
+			   							<option>DN350镀锌管，不保温</option>
+			   							<option>DN(X)镀锌管，不保温(X≥400mm)</option>
+			   							<option>多管道</option>
+			   							<option>成排管道（三管内）不保温，单层</option>
+			   							<option>成排管道（六管内）不保温，单层</option>
+			   							<option>重型成排管道（六管内）不保温，单层</option>
+			   							<option>金属矩形风管大边2米以内，不保温</option>
+			   							<option>金属矩形风管大边2-3米以内，不保温</option>
+			   							<option>金属矩形风管大边3-4米以内，不保温</option>
+			   							<option>桥架宽500mm以内</option>
+			   							<option>电缆桥架，单层</option>
+			   							<option>单件设备重量范围1.8KN至2.5KN内</option>
+			   							<option>所有集中布置管线</option>
+									  </select>
+									</div>
+								  </div>
+								  
+								   <div class="control-group">
+									<label class="control-label" for="selectError4">安装方式：</label>
+									<div class="controls">
+									  <select id="selectError4"  name = "azfs" class="input-xlarge selectWidth">
+										<option>钢筋混凝土结构内单独吊装，管中心距顶面1000mm</option>
+			   							<option>钢筋混凝土结构内吊装，支架底距顶面800mm</option>
+			   							<option>钢筋混凝土结构内成排吊装，横梁面距顶面1000mm</option>
+			   							<option>钢筋混凝土结构内吊装，风管底距顶面1000mm</option>
+			   							<option>钢筋混凝土结构内吊装，设备底距结构顶面1000mm</option>
+			   							<option>钢筋混凝土结构内吊装，桥架底距顶面800mm</option>
+			   							<option>钢筋混凝土结构内吊装，设备底距结构顶面1500mm</option>
+									  </select>
+									</div>
+								  </div>
+				
+								  
+								  
+								  <div class="control-group">
+									<label class="control-label" for="focusedInput">支架形式：</label>
+									<div class="controls">
+									  <input class="input-xlarge focused" name = "zjxs" id="zjxs" type="text" value="">
+									</div>
+								  </div>
+								  
+								   <div class="control-group">
+									<label class="control-label" for="focusedInput">图片：</label>
+									<div class="controls">
+
+									<div id="preview">
+    									<img id="imghead" border=0 src="resource/images/1208160.png" width="80" height="80" margin-top="-10px"; />
+									</div>
+									<input class="input-xlarge focused" id="photo" type="file" name="file" onchange=" previewImage(this)">
+									  <input type="hidden" name="image" id="image" value=""/>
+									</div>
+								  </div>
+								  
+								  <input type="reset" id="clearForm" name="reset" style="display:none;"/>
+								</fieldset>
+							
+						</div>
+				     </div>
+				  </div>
+			  </form>  
+		   </div>
+				
+			<div class="bottomBtnBox">
+				<a title="确定" class="btn btn-success" id="kzzjBtn" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a>
+				<a title="取消" class="btn" id="closeUserBox" data-dismiss="modal" style="margin:14px;">
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div>
+			
+		</div>
+	</div> 
+	
+
+<script type="text/javascript">
+
+function previewImage(file){
+    var MAXWIDTH = 80;
+    var MAXHEIGHT = 80;
+    var div = document.getElementById('preview');
+    if (file.files && file.files[0]) {
+        div.innerHTML = '<img id=imghead>';
+        var img = document.getElementById('imghead');
+        img.onload = function () {
+            var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+            img.width = rect.width;
+            img.height = rect.height;
+            img.style.marginLeft = rect.left+'px';
+            img.style.marginTop = rect.top + 'px';
+        }
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            img.src = evt.target.result;
+        }
+        reader.readAsDataURL(file.files[0]);
+    }else{  //兼容IE
+        var sFilter='filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+        file.select();
+        var src = document.selection.createRange().text;
+        div.innerHTML = '<img id=imghead>';
+        var img = document.getElementById('imghead');
+        img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+        var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+        status =('rect:'+rect.top+','+rect.left+','+rect.width+','+rect.height);
+        div.innerHTML = "<div id=divhead style='width:"+rect.width+"px;height:"+rect.height+"px;margin-top:"+rect.top+"px;"+sFilter+src+"\"'></div>";
+    }
+}
+
+
+
+function clacImgZoomParam( maxWidth, maxHeight, width, height ){
+    var param = {top:0, left:0, width:width, height:height};
+    if( width>maxWidth || height>maxHeight ){
+        rateWidth = width / maxWidth;
+        rateHeight = height / maxHeight;
+        if( rateWidth > rateHeight ){
+            param.width =  maxWidth;
+            param.height = Math.round(height / rateWidth);
+        }else{
+            param.width = Math.round(width / rateHeight);
+            param.height = maxHeight;
+        }
+    }
+    param.left = Math.round((maxWidth - param.width) / 2);
+    param.top = Math.round((maxHeight - param.height) / 2);
+    return param;
+}
+</script>
+	  
+</body>
+</html>

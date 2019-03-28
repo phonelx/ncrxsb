@@ -1,0 +1,30 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="dispatched" extends="monitor-struts-default" >
+	
+		<!-- 跳转人员信息列表页 -->
+		<action name="gotoDeployIndex" class="dispatchedAction" method="gotoDeployIndex">
+			<result name="success" >/pages/bk/deploy/deployIndex.jsp</result>
+		</action>
+		
+		<!-- 查询人员列表 -->
+		<action name="listDispatchedInPage" class="dispatchedAction" method="listDispatchedInPage">
+		</action>
+		
+		<!-- 跳转已部署人员信息页面 -->
+		<action name="toPersonMsgIndex" class="dispatchedAction" method="toPersonMsgIndex">
+			<result name="success">/pages/bk/deploy/personMsg.jsp</result>
+		</action>
+	
+		<!-- 查询人员轨迹-->
+		<action name="selectTrajectory" class="dispatchedAction" method="selectTrajectory">
+		</action>
+		
+		<!-- 获取最新部署人员数-->
+		<action name="getNewDataCount" class="dispatchedAction" method="getNewDataCount">
+		</action>
+		
+	</package>	
+</struts>

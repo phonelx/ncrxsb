@@ -1,0 +1,27 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="registry-query" extends="monitor-struts-default" >
+		<!-- 列表显示已经注册的 查询 -->
+		<action name="doGetAllQuerys" class="regQueryAction" method="fetchAllQuerys"/>
+		<!-- 添加 查询 -->
+		<action name="doAddQuery" class="regQueryAction" method="addQuery"/>
+		<!-- 编辑 查询 -->
+		<action name="doEditQuery" class="regQueryAction" method="editQuery"/>
+		<!-- 删除 查询 -->
+		<action name="doDeleteQuery" class="regQueryAction" method="deleteQuery"/>
+		<!-- 查询所有数据源 下拉列表数据-->
+		<action name="doGetAllDbsCombo" class="regQueryAction" method="fetchAllDbs"/>
+		<!-- 查询所有实体  下拉列表数据-->
+		<action name="doGetAllEntityCombo" class="regQueryAction" method="fetchAllEntity"/>
+		<!-- 查询所有字段  选择查询字段的值 -->
+		<action name="doGetField4ShowField" class="regQueryAction" method="fetchField4ShowField"/>
+		<!-- 查询所有字段  设置查询条件 -->
+		<action name="doGetAllFieldCombo" class="regQueryAction" method="fetchField4Combo"/>
+		<!-- 跳转到查询管理页面 -->
+		<action name="gotoRegQueryMgr" class="regQueryAction" method="gotoRegQueryMgr">
+			<result name="success">/pages/registry/query.jsp</result>
+		</action>
+	</package>	
+</struts>

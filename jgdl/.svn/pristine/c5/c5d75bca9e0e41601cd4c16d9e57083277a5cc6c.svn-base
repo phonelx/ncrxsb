@@ -1,0 +1,45 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="kzzjMxpz" extends="monitor-struts-default">
+	
+		<!-- 跳转到应用管理页面 -->
+		<action name="showKzzjMxpzIndex" class="kzzjMxpzAction" method="showKzzjMxpzIndex">
+			<result name="success">pages/kzzjMxpz/kzzjMxpz.jsp</result>
+		</action>	
+		
+		<!-- 加载支架目录 -->
+		<action name="getKzzjMenu" class="kzzjMxpzAction" method="getKzzjMenu">
+		</action>
+
+		<!-- 添加抗震支架部件 -->
+		<action name="addKzzjBj" class="kzzjMxpzAction" method="addKzzjBj">
+		</action>
+		<!-- 删除抗震支架部件 -->
+		<action name="delKzzjBj" class="kzzjMxpzAction" method="delKzzjBj">
+		</action>
+		<!-- 编辑抗震支架部件 -->
+		<action name="editKzzjBj" class="kzzjMxpzAction" method="editKzzjBj">
+		</action>
+		<!-- 查询组合部件信息 -->
+		<action name="selectZhbjInfo" class="kzzjMxpzAction" method="selectZhbjInfo">
+		</action>
+		<!-- 查询组合部件信息 -->
+		<action name="selectZhbjInfoByZhsqu" class="kzzjMxpzAction" method="selectZhbjInfoByZhsqu">
+		</action>
+		
+		<!-- 获取部件信息列表-->
+		<action name="getKzzjBjList" class="kzzjMxpzAction" method="getKzzjBjList">
+		</action>
+		<!-- 根据squ获取支架信息-->
+		<action name="loadKzzjBySqu" class="kzzjMxpzAction" method="loadKzzjBySqu">
+		</action>
+		<!-- 查询符合条件的部件-->
+		<action name="searchBjInfo" class="kzzjMxpzAction" method="searchBjInfo">
+		</action>
+		
+		
+	
+	</package>
+</struts>

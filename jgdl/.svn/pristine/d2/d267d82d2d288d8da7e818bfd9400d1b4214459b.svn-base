@@ -1,0 +1,27 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="goodsHouse" extends="monitor-struts-default">
+		<!-- 跳转到应用管理页面 -->
+		<action name="goPartsIndex" class="partsAction" method="goPartsIndex">
+			<result name="success">pages/goodsHouse/partsTree.jsp</result>
+		</action>
+		<!-- 加载加载部件目录 -->
+		<action name="getPatrsMenu" class="partsAction" method="getPatrsMenu">
+		</action>
+		<!-- 子目录列表 -->
+		<action name="getChildMenu" class="partsAction" method="getChildMenu">
+		</action>
+		<!-- 修改子目 -->
+		<action name="editChildMenu" class="partsAction" method="editChildMenu">
+		</action>
+		<!--添加子目  -->
+		<action name="addChildMenu" class="partsAction" method="addChildMenu">
+		</action>
+		<!--  删除子目-->
+		<action name="delChildMenu" class="partsAction" method="delChildMenu">
+		</action>
+		
+	</package>
+</struts>

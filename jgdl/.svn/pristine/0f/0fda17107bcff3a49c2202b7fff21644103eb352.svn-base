@@ -1,0 +1,35 @@
+package monitor.goodsHouse.service.impl;
+
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.goodsHouse.service.IPartsService;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:43:24
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class PartsServiceImpl implements IPartsService{
+	private IPartsService partsDao;
+
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws Exception {
+		try {
+			return partsDao.getPartsMenu(squ);
+		} catch (Exception e) {
+			throw new Exception("加载部件目录失败"+e.getMessage());
+		}
+	}
+	public IPartsService getPartsDao() {
+		return partsDao;
+	}
+
+	public void setPartsDao(IPartsService partsDao) {
+		this.partsDao = partsDao;
+	}
+	
+}

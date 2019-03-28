@@ -1,0 +1,27 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="registry-entity" extends="monitor-struts-default" >
+		<!-- 查询已经注册数据源  -->
+		<action name="doFindObjects" class="entityAction" method="findObjects"/>
+		<!-- 查询指定数据源下的所有实体对象 -->
+		<action name="doGetEntityByDbs" class="entityAction" method="listEntityByDbs"/>
+		<!-- 注册实体对象 -->
+		<action name="doAddEntity" class="entityAction" method="addEntity"/>
+		<!-- 列表显示所有已经注册 实体 -->
+		<action name="doGetRegistedEntity" class="entityAction" method="listRegistedEntity"/>
+		<!-- 删除实体 -->
+		<action name="doDeleteEntity" class="entityAction" method="deleteEntity"/>
+		<!-- 编辑实体 -->
+		<action name="doEditEntity" class="entityAction" method="editEntity"/>
+		<!-- 获取所有要素 -->
+		<action name="doGetAllType" class="entityAction" method="fetchAllType"/>
+		<!-- 跳转到实体和字段管理页面 -->
+		<action name="gotoEntityMgr" class="entityAction" method="gotoEntityMgr">
+			<result name="success">/pages/registry/entity_field.jsp</result>
+		</action>
+        <!--获取表的注释 -->
+        <action name="getEntityComments" class="entityAction" method="getEntityComments"/>
+	</package>	
+</struts>

@@ -1,0 +1,33 @@
+package monitor.manage.bean.entity;
+
+public class Mz {
+	private Integer squ;      	//唯一标识
+	private String bmlb;		//类别
+	private String dm;			//民族代码
+	private String dmmc;		//民族名字
+	public Integer getSqu() {
+		return squ;
+	}
+	public void setSqu(Integer squ) {
+		this.squ = squ;
+	}
+	public String getBmlb() {
+		return bmlb;
+	}
+	public void setBmlb(String bmlb) {
+		this.bmlb = bmlb;
+	}
+	public String getDm() {
+		return dm;
+	}
+	public void setDm(String dm) {
+		this.dm = dm;
+	}
+	public String getDmmc() {
+		return dmmc;
+	}
+	public void setDmmc(String dmmc) {
+		this.dmmc = dmmc;
+	}
+	
+}

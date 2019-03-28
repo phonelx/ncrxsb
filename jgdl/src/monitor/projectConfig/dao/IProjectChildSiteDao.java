@@ -1,0 +1,311 @@
+package monitor.projectConfig.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:IProjectChildSiteDao
+ * @dateTime: 2018-2-6 上午11:06:27
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IProjectChildSiteDao {
+	
+	/**
+	  * getProject_Child_SiteBySqu:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-6-23 下午3:00:13
+	  * @param conn
+	  * @param squ
+	  * @return Project_Child_Site
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Project_Child_Site getProject_Child_SiteBySqu(Connection conn, String squ) throws SQLException;
+	
+	/**
+	  * updateReportOfProject_Zj:(修改支架的手动填写报告信息).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-6-21 下午8:23:47
+	  * @param conn
+	  * @param proZj void
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	void updateReportOfProject_Zj(Connection conn, T_Project_Zj proZj) throws SQLException;
+	
+	/**
+	  * updateNumberBySqu:(根据部位支架中间表修改序号).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-6-2 下午3:37:36
+	  * @param squ
+	  * @param number
+	  * @return Boolean
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	void updateNumberBySqu(Connection conn, T_Project_Zj proZj) throws SQLException;
+	
+	/**
+	  * listHolderNotInSitePageInfo:(获取该部位下不存在的支架分页列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-2-8 下午2:18:55
+	  * @param pageVo
+	  * @param conn
+	  * @param site_squ
+	  * @return List<Project_DXInfo>
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	List<Project_DXInfo> listHolderNotInSitePageInfo(PageInfoVo pageVo, Connection conn, String site_squ) throws SQLException;
+	
+	/**
+	  * countHolderNotInSite:(获取该部位下没有的支架类型总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-2-8 下午2:11:15
+	  * @param conn
+	  * @param site_squ
+	  * @return Integer
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Integer countHolderNotInSite(Connection conn, String site_squ) throws SQLException;
+
+	/**
+	 * 
+	  * addChildSite:(新增部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:14:58
+	  * @param site
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void addChildSite(Connection conn,Project_Child_Site site) throws SQLException;;
+	
+	/**
+	 * 
+	  * delChildSite:(根据部位squ删除部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:34
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void delChildSite(Connection conn,String siteSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * updateChildSite:(修改部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:47
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void updateChildSite(Connection conn,Project_Child_Site site) throws SQLException;;
+	
+	/**
+	 * 
+	  * listChildSite:(查询部位列表).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:16:07
+	  * @param conn
+	  * @param chlidSqu
+	  * @return
+	  * @throws SQLException List<Project_Child_Site>
+	  * @since JDK 1.7
+	 */
+	List<Project_Child_Site> listChildSite(Connection conn,String childSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * addChildSite:(部位下面添加支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:14:58
+	  * @param site
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void addDxInfo(Connection conn,T_Project_Zj proZj) throws SQLException;;
+	
+	/**
+	 * 
+	  * delChildSite:(根据squ删除部位下面的支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:34
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void delDxInfo(Connection conn,String proZjSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * updateChildSite:(修改部位下面的支架信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:47
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void updateDxInfo(Connection conn,T_Project_Zj proZj) throws SQLException;;
+	
+	/**
+	 * 
+	  * listDxInfo:(查询该部位下支架列表).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:16:07
+	  * @param conn                                                                                                                      
+	  * @param chlidSqu
+	  * @return
+	  * @throws SQLException List<Project_Child_Site>
+	  * @since JDK 1.7
+	 */
+	List<Project_DXInfo > listDxInfo(Connection conn, String siteSqu, String type) throws SQLException;
+	
+/**
+	 * 
+	  * countDxInfo:(查询一个部位下的所有支架种类数).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 上午10:09:31
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException Integer
+	  * @since JDK 1.7
+	 */     
+	Integer selectCountChilSite(Connection conn, String siteSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * countChilSite:(根据子项目id统计部位总数).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 下午3:24:11
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException String
+	  * @since JDK 1.7
+	 */
+	Integer countChildSiteByChildSqu(Connection conn, String childSqu) throws SQLException;
+	
+	Integer countChildSiteByProjectSqu(Connection conn, String projectSqu) throws SQLException;
+	
+	Integer countHolderByProjectSqu(Connection conn, String projectSqu) throws SQLException;
+	
+	Integer countHolderByChildSqu(Connection conn, String childSqu) throws SQLException;
+	
+	Integer countHolderBySiteSqu(Connection conn, String siteSqu, String type) throws SQLException;
+	
+	Integer countPartsByProjectSqu(Connection conn, String projectSqu) throws SQLException;
+	
+	Integer countPartsByChildSqu(Connection conn, String childSqu) throws SQLException;
+	
+	Integer countPartsBySiteSqu(Connection conn, String siteSqu, String type) throws SQLException;
+	
+	Integer countPartsByHolderSqu(Connection conn, String holderSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * selectChilSiteSqu:(查询部位的squ).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 下午3:24:28
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException String
+	  * @since JDK 1.7
+	 */
+	String selectChilSiteSqu(Connection conn,String childSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * countChilSite:(查询部位下的支架的总数).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 下午3:24:11
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException String
+	  * @since JDK 1.7
+	 */
+	String countDxInfo(Connection conn,String siteSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * countChilSite:(查询部位下的支架的squ).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 下午3:24:11
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException String
+	  * @since JDK 1.7
+	 */
+	String selectDxInfoSqu(Connection conn,String siteSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * countParts:(查询支架下的部件).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 下午4:54:37
+	  * @param conn
+	  * @param dxInfoSqu
+	  * @return
+	  * @throws SQLException String
+	  * @since JDK 1.7
+	 */
+	String countParts(Connection conn,String siteSqu)throws SQLException;
+	
+	/**
+	 * 
+	  * selectLbxx:(查询类别系数).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-4-17 下午4:37:09
+	  * @param conn
+	  * @return
+	  * @throws SQLException List<Map<String,String>>
+	  * @since JDK 1.7
+	 */
+	List<Map<String,String>> selectLbxx(Connection conn)throws SQLException;
+	
+	
+	/**
+	  * getT_Project_ZjById:(根据id查询支架部位关联表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-6-10 下午2:56:22
+	  * @param id
+	  * @return T_Project_Zj
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	T_Project_Zj getT_Project_ZjById(Connection conn, String id) throws SQLException;
+}

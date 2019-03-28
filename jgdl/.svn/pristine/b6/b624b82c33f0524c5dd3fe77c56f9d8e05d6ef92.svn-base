@@ -1,0 +1,543 @@
+$(function() {
+
+	});	
+
+function cancel_clear(){
+	$("#param_where").val("");
+	$("#param_fh").val("");
+}
+
+
+function keyDown(e){ 
+	 var keycode = 0;
+	 keycode = e.keyCode;
+	 if (keycode == 13 ) //回车键是13
+	 {
+		 searchWord();
+	 }
+}
+
+$(function(){
+	//searchWord();
+});
+var i=0;
+function parentload(obj){
+	var ssmc = $(obj).attr("ssmc")
+
+	var squ = $(obj).attr("id");
+	var zbm = $(obj).attr("title");
+	var flag = $(obj).attr("flag")
+	$("#fla").val(flag)
+	 if(ssmc=="CPXL"){
+	
+		$(".divider1").html("/"+zbm);
+		$(".divider2").html("");
+		$(".divider3").html("");
+		
+		
+	}else if(ssmc=="CPZM"){
+	
+		$(".divider2").html("/"+zbm);
+		$(".divider3").html("");
+	
+	}else if(ssmc=="CPTZ"){
+		
+	
+		$(".divider3").html("/"+zbm);
+	}
+	$("#navg").text($(obj).attr("title"));
+	$("#pd").val($(obj).attr("id"));
+	$("#fid").val($(obj).attr("id"));	
+	loadMenu(obj);
+	searchWord();
+}
+
+
+//重新加载左部菜单列表
+function loadMenu(obj){
+	
+	var squ=$(obj).attr("id");
+	var flag = $(obj).attr("flag");
+	var isEnd = $(obj).attr("isEnd");
+	$("#ifEnd").val(isEnd);
+	if(flag==1){
+		$.ajax({
+			type : 'post',
+			url : 'getPatrsMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			async : false, //是否发送异步请求	
+			data:{
+				squ:squ,
+				
+			},
+			success : function(data) {
+				var html = "";
+				var list = data.list				
+				if(data.list[0]!=undefined){
+					
+					for(var i = 0;i < data.list.length; i++){
+						
+							html+=" <li class='nav-header hidden-tablet border-bottom' style='display:block; padding-left:15px;'>";
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  ssmc='"+data.list[i].SSMC+"' zbm='"+data.list[i].DMLB+"' flag='1' id='"+data.list[i].SQU+"'  title ='"+data.list[i].LBMC+"' isEnd = "+data.list[i].JD+" onclick='parentload(this);'>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].LBMC+"</a>";
+							/*html += "<i class='" + data.list[i].ICON + "'></i> " +data.list[i].LBMC+ "</a>";*/
+							if(data.list[i].JD==0){
+								html+=" <ul class='topnav' >";
+								html+=" </ul>";
+							}
+							html+=" </li>";
+					}
+					/*if(squ==0){
+						$(obj).parent().parent().find("ul").html(html);
+						$(obj).parent().parent().find("ul").accordion({
+							accordion:false,
+							speed: 300,
+							closedSign: '[+]',
+							openedSign: '[-]'
+						});
+					}else{*/
+					$(obj).parent().find("ul").html(html);
+					$(obj).next("ul").accordion({
+							accordion:false,
+							speed: 300,
+							closedSign: '[+]',
+							openedSign: '[-]'
+						});
+					//}
+				}
+			},
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+		$(obj).attr("flag","0");
+	}else{
+		$(obj).attr("flag","1");
+	}
+
+}
+
+
+function loadGdlxMenu(){
+	/*$("#span").text("[-]")*/
+		$.ajax({
+			type : 'post',
+			url : 'queryZhbjMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			//async : false, //是否发送异步请求	
+			data:{
+				
+			},
+			success : function(data) {
+				
+				var html = "";
+				var list = data.list			
+					for(var i = 0;i < data.list.length; i++){				
+							html+=" <li class='border-bottom' style='display:block; margin-left:15px;'>";			
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  flag='1'  id='"+data.list[i].ZHSQU+"' title ='"+data.list[i].DXZHMC+"' onclick='queryZhbjXq(this)' '>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].DXZHMC+"</a>";									
+							html+=" </li>";
+					
+				}
+				$("#topnav1").css("display","block") ;
+				$("#topnav1").html(html)
+			},
+			/*error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}*/
+		});
+	
+
+}
+
+function loadAzlxMenu(){
+	/*$("#span").text("[-]")*/
+		$.ajax({
+			type : 'post',
+			url : 'queryZhbjMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			//async : false, //是否发送异步请求	
+			data:{
+				
+			},
+			success : function(data) {
+				
+				var html = "";
+				var list = data.list			
+					for(var i = 0;i < data.list.length; i++){				
+							html+=" <li class='border-bottom' style='display:block; margin-left:15px;'>";			
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  flag='1'  id='"+data.list[i].ZHSQU+"' title ='"+data.list[i].DXZHMC+"' onclick='queryZhbjXq(this)' '>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].DXZHMC+"</a>";									
+							html+=" </li>";
+					
+				}
+				$("#topnav1").css("display","block") ;
+				$("#topnav1").html(html)
+			},
+			/*error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}*/
+		});
+	
+
+}
+/*****关键字检索****/
+var query="";
+function searchWord(){
+	var word = $("#input_search").val();
+	
+	if (word=="关键字搜索") {
+		query ="1";
+	}else{
+		query=$("#input_search").val();
+	} 
+	gridload($("#pd").val());
+}  
+
+//加载表格
+var grid ;
+var pageNo =1;
+function gridload(obj){
+	
+
+	$("#uigrld").uiGrid({
+		url : "getChildMenu.do",
+		rowNum : 10,//每页显示记录数
+		columns : [  {
+			field : 'LBMC',
+			title : '产品名称',
+			width : 220
+		}, {
+			field : 'DMLB',
+			title : '识别码',
+			width : 200
+		}],
+		divId : "#uigrld",
+		showPage : 5,//显示
+		showEdit : true,
+		showDelete : true,
+		
+		showEditEvent : showEditEvent,
+		showDeleteEvent : showDeleteEvent,
+		data : {
+			squ:obj,
+			searchKey:query,
+		},
+		jsonPager : {
+			root : "datas",// 当前页数据
+			records : "rowCount",//总记录数
+			currentPage : pageNo,//当前访问页
+			total : "pageCount"//总页数
+		}
+	});	
+	 
+}
+
+function addChildMenu(){
+	//alert($("#ifEnd").val())
+	     var fla = $("#fla").val();
+	     if(fla==1){
+	    	 if($("#ifEnd").val()!=1){
+	 			var cid = $("#pd").val();	
+	 			//alert(cid)
+	 			$("#LBMC").val("");
+	 			$("#DMLB").val("");		
+	 			$("#rsqu").val(cid);
+	 			if(cid !=""){
+	 			$("#secondTitle").html("新增子目");
+	 			$("#example2").modal();
+	 			$('#sortBtn').unbind();
+	 			$('#sortBtn').click(function(){
+	 				// Output(row.SQU);//赋值
+	 				//alert(cid)
+	 				$.ajax({
+	 					url:'addChildMenu.do',
+	 					type:'post',
+	 					data:{
+	 						//'wzz.SQU':row.SQU,
+	 						'wzz.DMLB':$('#DMLB').val(),
+	 						'wzz.LBMC':$('#LBMC').val(),
+	 						'wzz.PARENTSQU':cid,
+	 						'wzz.JD':$('#JD').val(),
+	 						'wzz.SSMC':$('#SSMC').val()
+	 					},
+	 					success:function(data){
+	 							$('#closeWin').click();
+	 							searchWord();  
+	 						
+	 					},
+	 					error:function(){
+	 						alert("编辑出错！");
+	 					}
+	 				});
+	 			});
+	 			}
+	 		}else{
+	 			Modal.alert(
+	 			  {
+	 			    msg: '当前分类已结束',
+	 			    title: '消息提示',
+	 			    btnok: '确定',
+	 			    btncl:'取消'	 			    	
+	 			  });
+	 			return false;
+	 		}
+	 		
+	     }else if(fla == 3){//添加管道类型
+	    	
+	 			$("#example4").modal();
+	 			$('#sortBtnGd').unbind();
+	 			$('#sortBtnGd').click(function(){
+	 				$.ajax({
+	 					url:'addGdlx.do',
+	 					type:'post',
+	 					data:{
+	 						//'wzz.SQU':row.SQU,
+	 						'gdlx.XH':$('#XH').val(),
+	 						'gdlx.ZH':$('#ZH').val(),
+	 						'gdlx.LBDM':$('#LBDM').val(),
+	 						
+	 					},
+	 					success:function(data){
+	 							$('#closeWin').click(); 
+	 						
+	 					},
+	 					error:function(){
+	 						alert("编辑出错！");
+	 					}
+	 				});
+	 			});
+	     }else if(fla == 4){//添加安装方式
+	    	 $("#example5").modal();
+	 			$('#sortBtnAz').unbind();
+	 			$('#sortBtnAz').click(function(){
+	 				// Output(row.SQU);//赋值
+	 				//alert(cid)
+	 				$.ajax({
+	 					url:'addAzlx.do',
+	 					type:'post',
+	 					data:{
+	 						//'wzz.SQU':row.SQU,
+	 						'gdlx.MS':$('#MS').val(),	 						
+	 						'gdlx.LBDM':$('#LBDM1').val(),
+	 						
+	 					},
+	 					success:function(data){
+	 							$('#closeWin').click();
+	 					},
+	 					error:function(){
+	 						alert("编辑出错！");
+	 					}
+	 				});
+	 			});
+	     }
+		 
+		
+}
+/**
+* 新增
+*/
+function addSort(){
+$("#secondForm").form("submit", {
+	url : 'addChildMenu.do',
+	success : function(data) {
+		$("#closeTwo").click();
+		searchWord();
+	
+	}
+});
+}
+
+//编辑分类
+function showEditEvent(row) {
+
+
+	$("#secondTitle").html("编辑子目");
+	$("#example2").modal();
+	$("#LBMC").val(row.LBMC);
+	
+	$("#DMLB").val(row.DMLB);
+	 var objjd = document.getElementById("JD");	
+	 for(var i=0;i<objjd.length;i++){
+		// alert(i+"="+objjd[i].value+"="+row.JD)
+		 if(objjd[i].value==row.JD){
+			 objjd[i].selected = true;
+		 }
+		 
+	 }
+   
+	 var objssmc = document.getElementById("SSMC");	
+	 for(var i=0;i<objssmc.length;i++){
+		 if(objssmc[i].value==row.SSMC){
+			 objssmc[i].selected = true;
+		 }
+		 
+	 }
+
+	$('#sortBtn').unbind();
+	$('#sortBtn').click(function(){
+		$.ajax({
+			url:'editChildMenu.do',
+			type:'post',
+			data:{
+				'wzz.SQU':row.SQU,
+				'wzz.DMLB':$('#DMLB').val(),
+				'wzz.LBMC':$('#LBMC').val(),			
+				'wzz.JD':$('#JD').val(),
+				'wzz.SSMC':$('#SSMC').val()
+			},		
+			success:function(data){
+				
+					$('#closeWin').click();
+					searchWord();  searchWord();  
+				
+			},
+			error:function(){
+				alert("编辑出错！");
+			}
+		});
+	});
+}
+/**
+* 编辑
+*/
+function editSort(){
+	$("#secondForm").form("submit", {    
+	    url:'editChildMenu.do',
+	    onSubmit: function(){    
+	    },    
+	    success:function(data){
+	    	if("Exist"==data){
+	    		Modal.alert(
+	  				  {
+	  				    msg: '分类已存在',
+	  				    title: '消息提示',
+	  				    btnok: '确定',
+	  				    btncl:'取消'
+	  				    	
+	  				  });
+	    	}
+	    $("#closeTwo").click(); 
+	    	searchWord();   
+	    },
+			error : function(data) {
+				Modal.alert(
+						  {
+						    msg: '编辑分类出错',
+						    title: '消息提示',
+						    btnok: '确定',
+						    btncl:'取消'
+						    	
+						  });
+
+			}
+	});  
+}
+
+
+
+function showDeleteEvent(row) {
+	if (row != undefined) {
+		deleteEvent(row);
+	}
+}
+
+function deleteEvent(row) {
+	Modal.confirm(
+  {
+    msg: "确认删除？"
+  })
+  .on( function (e) {
+	  if(e){
+			$.ajax({
+				type : "post",
+				url : "delChildMenu.do",
+				timeout : 1321231232131213123,
+				data : {
+					"squ" : row.SQU,
+				},
+				success : function(data) {
+					var da = eval("(" + data + ")");
+						var sta = da.status
+					
+						if(sta!=0){
+							Modal.alert(
+									  {
+									    msg: '请先删除该目录下的子目录',
+									    title: '消息提示',
+									    btnok: '确定',
+									    btncl:'取消'
+									    	
+									  });
+						}
+						searchWord();
+					},
+				
+				error : function() {
+					Modal.alert(
+					  {
+					    msg: '删除分类信息出错',
+					    title: '消息提示',
+					    btnok: '确定',
+					    btncl:'取消'					    	
+					  });
+				}
+			});
+	  }
+  });
+}
+
+/**
+ * 模板下载
+  * dowloadMB:(描述)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 唐青
+  * @dateTime: 2017-10-21 下午3:08:39
+  * @param: 
+  * @return: void
+ */
+function dowloadMB(){
+
+	location.href="dowloadPartsMB.do";
+}
+
+
+function addBatchParts(){
+	$('#exampl3').modal();
+	$("#btn_file_ok").click(function(){
+		$("#uploadForm3").form("submit",{ 
+	    	url:"addBatchParts.do",
+	        success:function(data){ 
+	        	$("#input_file").val(data);	
+	        	$('#exampl3').hide();
+	        	$(".modal-backdrop").remove();
+	        	//loadMenu(); 
+	        }  
+	    });
+	});
+	
+}

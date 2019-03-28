@@ -1,0 +1,16 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="registry-relation" extends="monitor-struts-default" >
+		<action name="gotoRelationMgr" class="relationAction" method="gotoRelationMgr">
+			<result name="success">/pages/registry/relation.jsp</result>
+		</action>
+		<action name="doListRelations" class="relationAction" method="listRelations"/>
+		<action name="doDeleteRelation" class="relationAction" method="deleteRelation"/>
+		<action name="doAddRelation" class="relationAction" method="addRelation"/>
+		<action name="doEditRelation" class="relationAction" method="editRelation"/>
+		<action name="doFetchTables" class="relationAction" method="fetchTables"/>
+		<action name="doFetchFields" class="relationAction" method="fetchFields"/>
+	</package>	
+</struts>

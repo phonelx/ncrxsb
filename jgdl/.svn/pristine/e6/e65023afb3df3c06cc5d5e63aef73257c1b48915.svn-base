@@ -1,0 +1,45 @@
+package monitor.registry.service;
+
+import java.util.List;
+
+import net.sf.json.JSONArray;
+
+import monitor.registry.bean.entity.RegDataSource;
+
+public interface IDataSourceService {
+	public void addDataSource(RegDataSource rds);
+	public int getAllCnt(String searchKey);
+	/**
+	 * @description 分页查询数据源
+	 * @param pageSize 每页显示条数
+	 * @param pageNo 当页数
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> findDataSourceList(int pageSize,int pageNo,String searchKey);
+	public boolean deleteDbs(int squ);
+	public void editDbs(RegDataSource rds);
+	public boolean testConnection(RegDataSource rds);
+	public boolean checkDbsName(String dbsName) ;
+	
+	/**
+	 * 根据squ查询指定数据源bean
+	 * @author:  cl 
+	 * @param 
+	 * @return RegDataSource
+	 */
+	public RegDataSource findDataSourceBySqu(int squ);
+	
+	/**
+	 * 列出所有数据源信息，不分页 
+	 * @author: cl 
+	 * @param 
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> listDataSourceList();
+	/**
+	 * 将list转换为json
+	 * @param regDataSources
+	 * @return
+	 */
+	public JSONArray ChangetoJSON(List<RegDataSource> regDataSources);
+}

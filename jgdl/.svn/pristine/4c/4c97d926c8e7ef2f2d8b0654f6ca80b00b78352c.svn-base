@@ -1,0 +1,44 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 26, 2011 1:13:12 PM
+*/
+package monitor.registry.bean.dto;
+
+import monitor.registry.bean.entity.RegQuery;
+
+/** 
+ * 查询注册管理 数据传输对象
+ * @author  liangxj
+ * @datetime  Apr 26, 2011 1:13:12 PM
+ */
+public class RegQueryDto {
+	private RegQuery query ;
+	private String entitySqus ;
+	/** 
+	 * @return query 
+	 */
+	public RegQuery getQuery() {
+		return query;
+	}
+	/** 
+	 */
+	
+	public void setQuery(RegQuery query) {
+		this.query = query;
+	}
+	/** 
+	 * @return entitySqus 
+	 */
+	public String getEntitySqus() {
+		return entitySqus;
+	}
+	/** 
+	 */
+	
+	public void setEntitySqus(String entitySqus) {
+		this.entitySqus = entitySqus;
+	}
+	
+}

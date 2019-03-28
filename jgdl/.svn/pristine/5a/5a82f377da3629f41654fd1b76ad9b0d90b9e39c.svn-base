@@ -1,0 +1,89 @@
+package monitor.manage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import monitor.common.dao.BaseDAO;
+import monitor.manage.bean.dto.BKMessageDto;
+import monitor.manage.dao.IBKMessageDao;
+
+public class BKMessageDaoImpl extends BaseDAO implements IBKMessageDao {
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+
+	@Override
+	public List<BKMessageDto> bkMessage(String session) {
+		List<BKMessageDto> bkmList = new ArrayList<BKMessageDto>();
+		BKMessageDto bkMessageDto = null;
+		// 布控号码：在XX表中有X条新数据
+		String sql = "SELECT COUNT(BKHM),BID,BKHM,ISTABLE,BKSOURCE,ISTABLEID FROM T_BKMESSAGE "
+				+ "WHERE OPRATIONSHOW=0 AND MESS=1 AND BKR=? GROUP BY BID,BKHM,ISTABLE,BKSOURCE,ISTABLEID";
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, session);
+			// System.out.println(session+":"+sql);
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				bkMessageDto = new BKMessageDto();
+				bkMessageDto.setCount(rs.getInt(1));
+				bkMessageDto.setBid(rs.getInt(2));
+				bkMessageDto.setBkhm(rs.getString(3));
+				bkMessageDto.setIsTable(rs.getString(4));
+				bkMessageDto.setBksource(rs.getString(5));
+				bkMessageDto.setIsTableId(rs.getInt(6));
+
+				bkmList.add(bkMessageDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		return bkmList;
+	}
+
+	@Override
+	public String deleteMess(BKMessageDto bkMessageDto, String user) {
+		String sql = "UPDATE T_BKMESSAGE SET OPRATIONSHOW=1 "
+				+ "WHERE BKR=? AND BKHM=? AND ISTABLE=? AND BKSOURCE=? ";
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user);
+			pstmt.setString(2, bkMessageDto.getBkhm());
+			pstmt.setString(3, bkMessageDto.getIsTable());
+			pstmt.setString(4, bkMessageDto.getBksource());
+
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		return "deleteSuccess";
+	}
+
+	public void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

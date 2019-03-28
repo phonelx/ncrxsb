@@ -1,0 +1,64 @@
+package monitor.manage.util;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
+
+public class SetBKTime {
+	private static String fileName="D:/BKTime.properties";
+	public static void setTime(String time) {
+		InputStream stream = null;
+		OutputStream of = null;
+		try {
+			Properties properties = new Properties();
+			stream = new FileInputStream(fileName);
+			properties.load(stream);
+			properties.setProperty("time", time);
+			of = new FileOutputStream(fileName);
+			properties.store(of, "12");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stream != null) {
+					stream.close();
+				}
+				if (of != null) {
+					of.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static String getTime() {
+		String minute = "0";
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(fileName);
+			Properties properties = new Properties();
+			properties.load(stream);
+			minute = properties.getProperty("time");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stream != null) {
+					stream.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return minute;
+	}
+
+	public static void main(String[] args) {
+		setTime("20");
+		System.out.println(getTime());
+	}
+}

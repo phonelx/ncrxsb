@@ -1,0 +1,115 @@
+package monitor.manage.timer;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.TimerTask;
+
+import monitor.manage.bean.dto.CMDto;
+import monitor.manage.dao.ISelectCMDao;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+
+class BKTask extends TimerTask {
+	private ISelectCMDao iSelectDao;
+
+	public ISelectCMDao getiSelectDao() {
+		return iSelectDao;
+	}
+
+	public void setiSelectDao(ISelectCMDao iSelectDao) {
+		this.iSelectDao = iSelectDao;
+	}
+
+	/**
+	 * Creates a new instance of YJTask.
+	 */
+	public BKTask() {
+		super();
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @see java.util.TimerTask#run()
+	 */
+	@Override
+	public void run() {
+		System.out.println("监听已启动，正在执行定时器");
+		SendHttp();
+	}
+
+	/**
+	 * SendHttp:(这里用一句话描述这个方法的作用).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-24 上午10:57:45
+	 * @param:
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public void SendHttp() {
+		String url = "http://localhost:8080/monitor_internet/bkTask.do";
+		String bkName = "bkhm";
+		String bkValue = "";
+
+		String bt = "";
+		String dxjsdh = "";
+		String bkhm = "";
+		String bksource = "";
+		String bkmess = "";
+		String bkr = "";
+		String lastTime="";
+		// String bkValue = "44098219811215543X,";
+
+		List<CMDto> list = (List<CMDto>) iSelectDao.getBKTJ();
+
+		for (CMDto cmDto : list) {
+			System.out.println(cmDto.getBklx() + "-" + cmDto.getBkhm() + "-"
+					+ cmDto.getBkSource() + "-" + cmDto.getBkr());
+
+			bt = bt + cmDto.getBt() + ",";
+			dxjsdh = dxjsdh + cmDto.getDxjsdh() + ",";
+			bkhm = bkhm + cmDto.getBkhm() + "-";
+			bksource = bksource + cmDto.getBkSource() + ",";
+			bkmess = bkmess + cmDto.getMess() + ",";
+			bkr = bkr + cmDto.getBkr() + ",";
+			lastTime = lastTime + cmDto.getLastTime() + ",";
+			
+		}
+		bkValue = bt + "@" + dxjsdh + "@" + bkhm + "@" + bksource + "@" + bkmess + "@" + bkr + "@" + lastTime;
+
+		SendPost(url, bkName, bkValue);// 发送请求，进行一次比对
+	}
+
+	/**
+	 * SendPost:(发送HTTP请求).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-24 上午10:57:51
+	 * @param: @param s
+	 * @param: @param d
+	 * @param: @param f
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public void SendPost(String url, String bkName, String bkValue) {
+		HttpClient hClient = new HttpClient();
+		PostMethod method = new PostMethod(url);
+		method.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,"utf-8");
+
+		method.setParameter(bkName, bkValue);
+
+		try {
+			hClient.executeMethod(method);// 执行发送请求
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+}

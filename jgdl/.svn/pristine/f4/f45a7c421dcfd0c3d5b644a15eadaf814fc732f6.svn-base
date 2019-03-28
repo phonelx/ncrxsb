@@ -1,0 +1,71 @@
+package monitor.dispatched.service.impl;
+
+import java.sql.SQLException;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+import monitor.dispatched.dao.IOverdueDao;
+import monitor.dispatched.service.IOverdueService;
+
+public class OverdueServiceImpl implements IOverdueService{
+
+	/**
+	 * 是否是管理员（审批）角色
+	 */
+	public static final int ISADMIN = 1;
+	public static final int ISSPR = 1;
+	
+	private IOverdueDao overdueDao;
+
+	/**
+	 * 续期
+	 */
+	@Override
+	public String updateOverdue(String gmsfhm){
+		return overdueDao.updateOverdue(gmsfhm);
+	}
+
+	public IOverdueDao getOverdueDao(){
+		return overdueDao;
+	}
+
+	public void setOverdueDao(IOverdueDao overdueDao){
+		this.overdueDao = overdueDao;
+	}
+
+	/**
+	  * listOverdueInPage:分页查询已过期列表
+	  * @author 黄月
+	  * @date  2017-5-22 上午10:54:17
+	  * @param dispatchedDto
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public DispatchedDto listOverdueInPage(DispatchedDto dispatchedDto, String search)
+			throws SQLException {
+		StringBuffer sbParam = new StringBuffer();
+		//判断用户的权限
+		if (ISSPR == dispatchedDto.getUserdto().getRoleEntity().getIsSpr()) {
+			//查询当前审批人
+			sbParam.append(" AND　SPRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+		} else {
+			//查询当前录入人
+			sbParam.append("　AND　LRRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+		}
+		if (dispatchedDto.getBkzt() != 4) {
+			sbParam.append(" AND BKZT = ");
+			sbParam.append(dispatchedDto.getBkzt());
+			//待续期状态（倒计时只余一天时）
+			if (dispatchedDto.getBkzt() == 1) {
+				sbParam.append(" AND  (CAST(T.SXSJ AS DATE) - SYSDATE < 1 AND CAST(T.SXSJ AS DATE) - SYSDATE >  0  ) ");
+			}
+		} else {
+			sbParam.append(" AND ((BKZT = 1 AND (CAST(T.SXSJ AS DATE) - SYSDATE < 1 AND CAST(T.SXSJ AS DATE) - SYSDATE >  0  ) ) ");
+			sbParam.append(" OR BKZT = 2 OR BKZT = 3 ) ");
+			sbParam.append(" AND GMSFHM ='" + search + "'");
+		}
+		return overdueDao.listOverdueInPage(dispatchedDto, sbParam.toString());
+	}
+}

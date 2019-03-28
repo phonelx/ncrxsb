@@ -1,0 +1,323 @@
+$().ready(function(){
+	//表单验证绑定
+	$("#objectForm").Validform({
+		tiptype:function(msg,o,cssctl){
+			var objtip = $("#msg");
+			cssctl(objtip,o.type);
+			objtip.text(msg);
+		},
+		callback:function(form){	//验证后回调
+			//执行自定义表单提交
+			addOrUpdateProject();
+			//默认提交关闭
+			return false;
+		}
+	});
+	listProject("");
+});
+
+$().load(function(){
+	//加载建筑类别
+	
+	//地区设防烈度
+});
+
+/**
+  * getSelectOfConstractionClasses:(建筑类别下拉列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-21 下午6:09:00
+  * @param: 
+  * @return: void
+ */
+function getSelectOfConstractionClasses(){
+	
+}
+
+function listProject(searchWord){
+	$("#projectGrid").uiGrid({ 
+		url : "selectProjectPageInfo.do",
+		rowNum : 10,//每页显示记录数
+		columns : [ {
+			field : 'gcmc',
+			title : '工程名称',
+			width : 150,
+		},{
+			field : 'jzlb',
+			title : '建筑类别',
+			width : 70,
+			statusStyle : [{
+				status:'this',
+				statusClass:"label label-success"
+				}]
+		},{
+			field : 'gcdz',
+			title : '工程地址',
+			width : 150,
+		},{
+			field : 'dqsfld',
+			title : '地区设防烈度/(度)',
+			width : 110,
+			statusStyle : [{
+				status:'this',
+				statusClass:"label label-warning"
+				}]
+		},{
+			field : 'dzjsd',
+			title : '地震加速度/(g)',
+			width : 110,
+			statusStyle : [{
+				status:'this',
+				statusClass:"label label-warning"
+				}]
+		},{
+			field : 'dzlx',
+			title : '地震类型',
+			width : 70,
+			statusStyle : [{
+				status:'this',
+				statusClass:"label label-success"
+				}]
+		},{
+			field : 'fwxt',
+			title : '服务系统',
+			width : 100,
+		}],
+		divId : "#projectGrid",
+		showPage : 5,//显示
+		showDelete : true,
+		showEdit : true,
+		showDeleteEvent : showDelete,
+		showEditEvent : showEditControl,
+		jsonPager : {
+			root : "datas",// 当前页数据
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		},
+		data : {
+			searchWord : searchWord,
+		}
+	});
+}
+
+/**
+  * addOrUpdateProject:(新增或修改项目)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-18 下午7:59:14
+  * @param: 
+  * @return: void
+ */
+function addOrUpdateProject(){
+	var squ = $("#squ").val();
+	if (squ != "") {
+		updateProject();
+	} else {
+		addProject();
+	}
+}
+
+/**
+  * showAddModal:(新增项目模态框)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-17 下午8:47:16
+  * @param: 
+  * @return: void
+ */
+function showAddModal(){
+	$('#htmlTitle').html("新增项目");
+	$('#objectForm')[0].reset();
+	$('#objectModal').modal();
+}
+
+/**
+  * addProject:(新增项目)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-17 下午9:17:50
+  * @param: 
+  * @return: void
+ */
+function addProject(){
+	$.ajax({
+		type : 'post',
+		url : 'insertProject.do',
+		timeout : 1321231232131213123,
+		data : $('#objectForm').serialize(),
+		dataType :'json',
+		success : function(data) {
+			if (data.status == "success") {
+				listProject();
+				$('#clBtn').click();
+			} else {
+				Modal.alert({
+					msg : "新增项目失败：" + data.result,
+					title:"错误！",
+					btnok:"确定",
+					btncl:"取消"
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : "ajax错误！",
+				title:"错误！",
+				btnok:"确定",
+				btncl:"取消"
+			});
+		}
+	});
+}
+
+/**
+  * showDelete:(删除项目)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-17 下午9:49:59
+  * @param: @param row
+  * @param: @returns
+  * @return: any
+ */
+function showDelete(row){
+	Modal.confirm({msg: "确认删除[" + row.gcmc + "]项目吗？"}).on(function(e){
+		if(e){
+			$.ajax({
+				type : 'post',
+				url : 'deleteProjectBySqu.do',
+				timeout : 1321231232131213123,
+				dataType :'json',
+				data : {
+					squ:row.squ,
+				},
+				success : function(data) {
+					if (data.status == "success") {
+						listProject();
+					} else {
+						Modal.alert({
+							msg : "删除项目失败：" + data.result,
+							title:"错误！",
+							btnok:"确定",
+							btncl:"取消"
+						});
+					}
+				},
+				error : function() {
+					Modal.alert({
+						msg : "ajax错误！",
+						title:"错误！",
+						btnok:"确定",
+						btncl:"取消"
+					});
+				}
+			});
+		}
+	});
+}
+	
+/**
+  * showEditControl:(编辑模态框)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-18 下午7:55:47
+  * @param: @param row
+  * @return: void
+ */
+function showEditControl(row){
+	$('#htmlTitle').html("编辑项目");
+	$('#objectForm')[0].reset();
+	$('#objectModal').modal();
+	//赋值
+	$('#squ').val(row.squ);		//id
+	$('#gcmc').val(row.gcmc);		//工程名称
+	$('#gcdz').val(row.gcdz);		//工程地址
+	$('#jzlb').val(row.jzlb);		//建筑类别
+	$('#jzgd').val(row.jzgd);		//建筑高度
+	$('#dqsfld').val(row.dqsfld);	//地区设防烈度
+	$('#dzjsd').val(row.dzjsd);		//地震加速度
+	$('#dzlx').val(row.dzlx);		//地震类型
+	$('#azbg').val(row.azbg);		//安装标高
+	$('#azbw').val(row.azbw);		//安装部位
+	$('#bh').val(row.bh);			//编号
+	$('#fwxt').val(row.fwxt);		//服务系统
+	$('#gdcz').val(row.gdcz);		//管道材质
+	$('#gdgg').val(row.gdgg);		//管道规格
+	$('#gdlx').val(row.gdlx);		//管道类型
+	$('#jgljfs').val(row.jgljfs);	//结构连接方式
+	$('#kzzcsl').val(row.kzzcsl);	//抗震支撑数量
+	$('#szzt').val(row.szzt);		//设置状态
+	$('#xcjd').val(row.xcjd);		//斜撑角度
+	$('#xh').val(row.xh);			//型号
+	$('#ysfsjgg').val(row.ysfsjgg);	//约束方式及规格
+}
+
+/**
+  * updateProject:(执行修改项目)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午6:18:04
+  * @param: 
+  * @return: void
+ */
+function updateProject(){
+	$.ajax({
+		type : 'post',
+		url : 'updateProjectBySqu.do',
+		timeout : 1321231232131213123,
+		data : $('#objectForm').serialize(),
+		dataType :'json',
+		success : function(data) {
+			if (data.status == "success") {
+				$('#clBtn').click();
+				listProject();
+			} else {
+				Modal.alert({
+					msg : "修改项目失败：" + data.result,
+					title:"错误！",
+					btnok:"确定",
+					btncl:"取消"
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : "修改项目ajax错误！",
+				title:"错误！",
+				btnok:"确定",
+				btncl:"取消"
+			});
+		}
+	});
+}
+
+/**
+  * subBtnClick:(提交按钮点击传递)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午6:17:10
+  * @param: 
+  * @return: void
+ */
+function subBtnClick(){
+	$('#subBtn').click();
+}
+
+
+/**
+  * doSearch:(执行检索)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-13 上午9:57:04
+  * @param: 
+  * @return: void
+ */
+function doSearch(){
+	//获取输入的查询
+	var searchWord = $('#input_search').val();
+	if (searchWord == "关键字搜索") {
+		searchWord = "";
+	}
+	
+	listProject(searchWord);
+}

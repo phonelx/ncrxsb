@@ -1,0 +1,25 @@
+#level：error>warn>info>debug  
+#设置级别和多个目的地  
+#log4j.rootLogger=debug,DEPApender,appender2   
+log4j.rootLogger=warn,DEPApender  
+
+#输出到终端：   
+log4j.appender.DEPApender=org.apache.log4j.ConsoleAppender   
+log4j.appender.DEPApender.Target=System.out
+
+#输出到文件：
+#log4j.appender.DEPApender=org.apache.log4j.FileAppender
+#log4j.appender.DEPApender.File=c:/Log4JDemo02.html
+
+
+#（包含日志产生的时间、线程、类别等等信息）
+#log4j.appender.DEPApender.layout=org.apache.log4j.TTCCLayout
+#（以HTML表格形式布局）
+#log4j.appender.DEPApender.layout=org.apache.log4j.HTMLLayout
+#（可以灵活地指定布局模式）
+log4j.appender.DEPApender.layout=org.apache.log4j.PatternLayout    
+#log4j.appender.DEPApender.layout.ConversionPattern=[%p][%d{yy/MM/dd HH:mm:ss}][%l]%m%n
+log4j.appender.DEPApender.layout.ConversionPattern=[%p][%d{yy/MM/dd HH:mm:ss}]%m%n
+#（包含日志信息的级别和信息字符串）
+#log4j.appender.DEPApender.layout=org.apache.log4j.SimpleLayout        
+log4j.category.ssp=debug

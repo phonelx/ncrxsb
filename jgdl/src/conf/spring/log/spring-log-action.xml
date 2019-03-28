@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	    http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<bean id="queryUserLoginAction" class="monitor.log.action.QueryUserLoginAction" scope="prototype">
+		<property name="searchLogService" ref="searchLogService" />
+	</bean>
+
+	<bean id="queryUserOperateAction" class="monitor.log.action.QueryUserOperateAction" scope="prototype">
+		<property name="searchLogService" ref="searchLogService" />
+	</bean>
+	<bean id="querySystemRunAction" class="monitor.log.action.QuerySystemRunAction" scope="prototype">
+		<property name="searchLogService" ref="searchLogService" />
+	</bean>
+
+	<bean id="monitorLogAction" class="monitor.log.action.MonitorLogAction" scope="prototype">
+		<property name="monitorLogService" ref="monitorLogService"></property>
+	</bean>
+</beans>

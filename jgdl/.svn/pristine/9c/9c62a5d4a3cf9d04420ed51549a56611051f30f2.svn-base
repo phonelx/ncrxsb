@@ -1,0 +1,297 @@
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ include file="/pages/head.jsp"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>部门管理</title>
+<link rel="shortcut icon" href="resource/new/bootstrap/img/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="resource/new/css/iconfont/iconfont.css"/>
+<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+<link rel="stylesheet" type="text/css"  href="resource/css/addStyle.css" />
+<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+<script type="text/javascript" src="resource/js/dept/dept.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#right").click(function(){   <%--判断用户是否单击的向右按钮--%>
+            var $options = $("#leftSelect option:selected");    <%--获取用户选择的列表项--%>
+            var $remove = $options.remove();    <%--将列表项删除--%>
+            $remove.appendTo("#rightSelect");   <%--将删除的列表项追加到select2中--%>
+        });
+
+        $("#rightAll").click(function(){    <%--判断用户是否单击了全部向右移动按钮--%>
+            var $options = $("#leftSelect option"); <%--获取全部的列表项--%>
+            var $remove = $options.remove();
+            $options.appendTo("#rightSelect");  <%--将全部的列表项追加到select2中--%>
+        });
+
+        $("#left").click(function(){
+            var $options = $("#rightSelect option:selected");   <%--判断用户是否单击的向左按钮--%>
+            var $remove = $options.remove();    <%--将列表项删除--%>
+            $remove.appendTo("#leftSelect");    <%--将删除的列表项追加到select中--%>
+        });
+
+        $("#leftAll").click(function(){
+            var $options = $("#rightSelect option");
+            var $remove = $options.remove();
+            $remove.appendTo("#leftSelect");
+        });
+        initZtree();
+        //初始化zTree樹
+    	//tree();
+    });
+</script>
+<style type="text/css">
+	body{overflow-x: hidden; overflow-y: hidden;}
+	#dept_table td{border:1px solid #ccc;}
+	.dept_label{width: 58px;height: 35px;}
+	.dept_input{width:190px;}
+	.mask {position:absolute;top:0px;filter:alpha(opacity=60);background-color:#777;z-index:1002;left:0px;opacity:0.5;-moz-opacity:0.5;}
+	
+	#dept_table input{width:185px;height:30px;margin:0px;border:0px;}
+	
+	#weiAddUser,#yiAdduser{float:left;width:230px;height:430px;}
+	#btnAdduser{float:left;height:430px;width:50px;margin-right:10px;}
+	#btnAdduser label{margin-top:70px;}
+	#btnAdduser button{width:35px;margin:3px 0px;}
+	#weiAddUser select,#yiAdduser select{height:400px;}
+	.container-fluid {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+</style>
+</head>
+<body onkeydown="keyDown(event);">
+	<!-- 页头开始 -->
+	<ul class="breadcrumb" id="roleSearchBox" style="list-style:none;">
+		<li id="titleName1" style="color: #369BD7;">
+			当前页面：用户权限管理&nbsp;&gt;
+			<span> 
+				<a href="javascript:void(0)"> 
+					部门管理
+				</a>
+			</span>
+		</li>
+	</ul>
+	
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<!-- 左菜单开始 -->
+			<div id="listContent" class="span3 leftSideBar" >
+			   <div id="dept_list" >
+   			      <ul id="moduleTree" class="tree"></ul>
+   		       </div>
+			</div>
+			<!-- 左菜单结束 -->
+	        <div id="content" class="span9">
+				<div>
+					<ul class="breadcrumb" style="list-style:none;line-height: 27px;">
+						<span id="home" style="padding-top: 10px;">
+							<a href="javascript:void(0)">首页</a>
+							<span class="divider">/</span>
+							<a href="javascript:void(0)">部门管理</a>
+						</span>
+						<li style="float: right;">
+						    <a onclick="deptRegister();" title="新增" href="javascript:void(0);" class="btn btn-primary" style="margin-top:-3px;">
+						    	<i class="icon-plus-sign icon-white"></i> 新增
+						    </a>
+						</li>
+						<li id="ss" style="float:right;margin-right: 5px;">
+							<c:if test="${sessionScope.user.roleEntity.roleLevel eq 1}">
+							</c:if>
+							<input id="input_search" type="text" style="width:200px;color:#ccc;" value="关键字搜索" onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+							<a style="margin-top:-10px;" class="btn " onclick="searchWord();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+						</li>
+					</ul>
+				</div>
+				
+				<div id="uigrld"></div>
+			</div>
+			<input type="hidden" id="typeId"/>
+		</div>
+	</div>
+	
+	<%-- <div class="navbar">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".top-nav.nav-collapse,.sidebar-nav.nav-collapse">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
+				</a>
+				<a class="brand" style="width: 200px;" href="javascript:void(0);">
+					<img alt="部门管理" src="resource/new/bootstrap/img/logo20.png" /> <span>部门管理</span>
+				</a>
+			</div>
+		</div>
+	</div> --%>
+
+	<%-- <div class="container-fluid" style="border:1px solid red;">
+		<div class="row-fluid" style="border:1px solid red;">
+			<!-- 左菜单开始 -->
+			<div id="listContent" class="span4 main-menu-span" style="width: 320px;">
+				<div class="well nav-collapse sidebar-nav " style="padding: 10px;">
+				   <div id="dept_list" style=" overflow-y:auto;max-height:595px;min-height:100px;overflow:auto;border: 0px solid #7F9DB9; width: 300px" >
+	   			      <ul id="moduleTree" class="tree" style="margin-left: -9px;"></ul>
+	   		       </div>
+				</div>
+			</div>
+			<!-- 左菜单结束 -->
+	        <div id="content" class="span8" style="margin-left:20px;">
+				<div>
+					<ul class="breadcrumb" style="list-style:none;line-height: 27px;">
+						<span id="home" style="padding-top: 10px;">
+							<a href="javascript:void(0)">首页</a>
+							<span class="divider">/</span>
+							<a href="javascript:void(0)">部门管理</a>
+						</span>
+						<li style="float: right;">
+						    <a onclick="deptRegister();" title="新增" href="javascript:void(0);" class="btn btn-small" style="margin-top:-3px;"><i class="icon-plus-sign"></i> 新增</a>
+						</li>
+						<li id="ss" style="float:right;margin-right: 5px;">
+							<c:if test="${sessionScope.user.roleEntity.roleLevel eq 1}">
+							</c:if>
+							<input id="input_search" type="text" style="width:200px;color:#ccc;" value="关键字搜索" onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+							&nbsp;&nbsp;
+							<a style="margin-top:-10px;" class="btn " onclick="searchWord();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+						</li>
+					</ul>
+				</div>
+				
+				<div id="uigrld"></div>
+			</div>
+			<input type="hidden" id="typeId"/>
+		</div>
+	</div> --%>
+	
+	<!-- 添加和编辑部门弹窗-- start -->
+	<div class="container">
+		<form action="" method="post" id="deptForm" class="registerform" enctype="multipart/form-data">
+			<div id="dept_example" class="modal hide fade in" style="display: none;width: 650px;height: 320px;margin-left: -23%;margin-top: -19%;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a>
+					<h3 id="htmlTitle">部门管理</h3>
+				</div>
+				<div class="modal-body">
+					<div style="padding:5px; border:1px solid #ccc;margin:20px auto;width: 520px">
+						<table id="dept_table">
+						<tr>
+							<td class="dept_label">部门编号:</td>
+							<td class="dept_input">
+								<input type="text" name="dept.bmdm" id="add_bmdm" datatype="s2-40" nullmsg="请输入部门代码！" errormsg="请输入2-40个字符！" placeholder="请输入部门代码..."  id="bmdm">
+							</td>
+
+							<td class="dept_label">上一级部门编号:</td>
+				            <td class="dept_input">
+								<input type="text" name="dept.parentBmdm" id="add_parentBmdm"  nullmsg="请输入上级部门代码！"  placeholder="请输入上一级部门代码..."  id="parentbmdm">
+							</td>
+						</tr>
+						<tr>
+							<td class="dept_label">部门名称:</td>
+							<td>
+								<input type="text" id="bmmc" name="dept.bmmc" datatype="*2-50" nullmsg="请输入部门名称！" errormsg="请输入2-50个中文名称！" placeholder="请输入部门名称...">
+							</td>
+							
+							<td class="dept_label">添加用户</td>
+							<td>
+								<input id="valueUser" name="dept.addUser" type="hidden" value="">
+								<input id="textUser" type="text" style="width:100px;">
+								<a href="javaScript:void(0);" class="btn" onclick="showAddUserToBM();">选择用户</a>
+							</td>
+						</tr>
+						</table>
+					</div>
+					<div id="msg" style="height:15px;"></div>
+				</div>
+
+				<!-- <div class="modal-footer">
+					<a href="javaScript:void(0);" class="btn" onclick="$('#deptForm').submit();" id="deptBtn">确定</a>
+					<a href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin">取消</a>
+				</div> -->
+				<div class="bottomBtnBox">
+					<a title="确定" href="javaScript:void(0);" class="btn btn-success" onclick="$('#deptForm').submit();" id="deptBtn" style="margin:14px 0;">
+						<i class="icon-ok icon-white"></i> 确定
+					</a>
+					<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;">
+						<i class="icon-remove"></i> 取消
+					</a>
+				</div>
+				
+			</div>
+		</form>
+	</div>
+	<!-- 添加和编辑部门弹窗-- end -->
+
+	<!-- 查看选中部门下的用户-- start -->
+	<div class="container">
+		<form action="" method="post" id="dept_user" class="registerform" enctype="multipart/form-data">
+			<div id="user_example" class="modal hide fade in"
+				style="display: none;width: 600px;height: 540px;margin-left: -23%;margin-top: -19%;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a>
+					<h3 id="htmlTitle">用户列表</h3>
+				</div>
+				<div class="modal-body">
+					<div id="usergrld"></div>
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- 查看部门下的用户-- end -->
+
+	<!-- 为选中部门添加用户 -- start -->
+	<div id="addUserToBM" class="modal hide fade in" style="display:none;width:650px;height:600px;margin-left:-23%;margin-top:-22%;">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			<h3 id="htmlTitle">添加用户</h3>
+		</div>
+
+		<div class="modal-body">
+			<div id="weiAddUser">
+				<label>
+					<span>用户列表</span>
+                    <select multiple="multiple" size="6" name="select" id="leftSelect">
+
+                    </select>
+                </label>
+			</div>
+			<div id="btnAdduser">
+				<label>
+	                <div align="center">
+	                    <button id="right" type="button" title="右移" value=">">></button>
+	                    <button id="left"  type="button" title="左移" value="<"><</button>
+	                    <button id="rightAll" type="button" title="全右移" value=">>">>></button>
+	                    <button id="leftAll"  type="button" title="全左移" value="<<"><<</button>
+	                </div>
+	            </label>
+			</div>
+			<div id="yiAdduser">
+				<label>
+					<span>部门用户</span>
+	                <select multiple="multiple" size="6" name="select2" id="rightSelect">
+
+	                </select>
+                </label>
+			</div>
+		</div>
+
+		<div class="modal-footer">
+			<a href="javaScript:void(0);" class="btn" onclick="sureAddUser();" id="deptBtn">确定</a>
+			<a href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWinUser">取消</a>
+		</div>
+	</div>
+	<!-- 为选中部门添加用户 -- end -->
+
+	<div id="mask" class="mask"  style="display: none;height:100px;" >
+		<div align="center" style="width: 100%;margin-top:300px;">
+			<img src="resource/images/loading.gif"/><span st yle="color: white;">请耐心等待</span><br/>
+
+			<span id="checkinfo"><h4 style="color: white;">正在更新信息...</h4></span>
+
+			<a style="display: none;" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWinTest">取消</a>
+		</div>
+	</div>
+</body>
+</html>
+

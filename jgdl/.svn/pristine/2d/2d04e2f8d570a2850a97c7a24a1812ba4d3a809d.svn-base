@@ -1,0 +1,105 @@
+package monitor.manage.service;
+
+import java.util.List;
+
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.bean.entity.Yjgz;
+
+public interface ManageService {
+	/**
+	 * 
+	  * GetAllMz:(获取所有民族)<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 上午09:54:48
+	  * @param: @return
+	  * @return: List
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List GetAllMz();
+	/**
+	 * 
+	  * addManage:(添加预警配置).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 下午01:47:44
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String addManage(Yjgz yjgz);
+	/**
+	 * 
+	  * EditManage:(编辑预警配置).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 下午01:48:50
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String EditManage(Yjgz yjgz);
+	/**
+	 * 
+	  * delManage:(删除预警配置).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 下午01:49:08
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String delManage(String yjID);
+	/**
+	 * 
+	  * showManage:(显示已添加规则 分页显示).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 下午02:37:53
+	  * @param: @return
+	  * @return: List
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List showManage(int pageSize,int pageNo,String isquery);
+	/**
+	 * 
+	  * GetRegManage:(获取已添加配置总数).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-8 下午02:39:30
+	  * @param: @return
+	  * @return: int
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public int GetRegManageCount();
+	/**
+	 * 
+	  * showCitys:(根据输入模糊查询加载数据).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-9 下午02:13:47
+	  * @param: @param option
+	  * @param: @return
+	  * @return: List
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List showCitys(String option);
+	/**
+	 * 
+	  * GetYJSFZS:(分页查询身份证进行比对查询).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-23 下午02:54:22
+	  * @param: @param pageSize
+	  * @param: @param pageNo
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String GetYJSFZS(int pageSize,int pageNo);
+
+	
+	public int QueryCountSfz(Yjgz yjgz);
+}

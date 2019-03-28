@@ -1,0 +1,144 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:IProjectChildSiteDao.java
+	* Date:2018-2-6上午11:06:27   
+	***/
+package monitor.projectConfig.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:IProjectChildSiteDao
+ * @dateTime: 2018-2-6 上午11:06:27
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IProjectChildSiteDao {
+
+	/**
+	 * 
+	  * addChildSite:(新增部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:14:58
+	  * @param site
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void addChildSite(Connection conn,Project_Child_Site site) throws SQLException;;
+	
+	/**
+	 * 
+	  * delChildSite:(根据部位squ删除部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:34
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void delChildSite(Connection conn,String siteSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * updateChildSite:(修改部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:47
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void updateChildSite(Connection conn,Project_Child_Site site) throws SQLException;;
+	
+	/**
+	 * 
+	  * listChildSite:(查询部位列表).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:16:07
+	  * @param conn
+	  * @param chlidSqu
+	  * @return
+	  * @throws SQLException List<Project_Child_Site>
+	  * @since JDK 1.7
+	 */
+	List<Project_Child_Site> listChildSite(Connection conn,String childSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * addChildSite:(部位下面添加支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:14:58
+	  * @param site
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void addDxInfo(Connection conn,T_Project_Zj proZj) throws SQLException;;
+	
+	/**
+	 * 
+	  * delChildSite:(根据squ删除部位下面的支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:34
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void delDxInfo(Connection conn,String proZjSqu) throws SQLException;;
+	
+	/**
+	 * 
+	  * updateChildSite:(修改部位下面的支架信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:15:47
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	 */
+	void updateDxInfo(Connection conn,T_Project_Zj proZj) throws SQLException;;
+	
+	/**
+	 * 
+	  * listChildSite:(查询支架列表).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午2:16:07
+	  * @param conn                                                                                                                      
+	  * @param chlidSqu
+	  * @return
+	  * @throws SQLException List<Project_Child_Site>
+	  * @since JDK 1.7
+	 */
+	List<Project_DXInfo > listDxInfoPageInfo(Connection conn,PageInfoVo pageVo,String siteSqu) throws SQLException;
+	
+	/**
+	 * 
+	  * countDxInfo:(查询一个子工程项目下的所有支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-7 上午10:09:31
+	  * @param conn
+	  * @param childSqu
+	  * @return
+	  * @throws SQLException Integer
+	  * @since JDK 1.7
+	 */     
+	Integer selectCountChilSite(Connection conn,String siteSqu) throws SQLException;
+	
+	List<Map<String,String>> countChilSite(Connection conn,String childSqu) throws SQLException;
+}

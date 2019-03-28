@@ -1,0 +1,513 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="/pages/head.jsp" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<base href="<%=basePath%>">
+
+	<title>项目配置页面</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+	<link rel="stylesheet" type="text/css" href="pages/ality/css/set.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/addStyle.css" />
+	<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+	
+	<style>
+	.form-horizontal .control-group{
+		    margin-bottom: 12px;
+	}
+	.input_box {
+	    padding-right: 10px;
+	    border: 1px solid #ccc;
+	    border-radius : 5px;
+	}
+	legend{
+		margin-bottom: 0px;
+	}
+ 	.control-label{
+		width: 100px !important;
+	} 
+	.controls {
+    margin-left: 100px !important;
+    }
+    
+    	.add-style1{
+		background-color: #f5f5f5;
+	}
+	.container-fluid {
+	    padding-right: 10px;
+	    padding-left: 10px;
+	}
+    .topnav li:last-child{
+		border-bottom:none;
+	}
+	.form-horizontal .control-group {
+    margin-bottom: 8px;
+	}
+	.control-group h4{
+	    margin-top:4px;
+	}
+	#tree .border-bottom a{
+    margin-left: 10px;
+    }
+    .msg_div{
+    	display: none;
+    }
+    /*安装吊高，部位标高  */
+    #azdg,#bwbg{
+    	width: 150px;
+    }
+	</style>
+</head>
+  
+<body>
+	<!-- 顶端导航-->
+	<ul class="breadcrumb" style="list-style:none;">
+		<li id="titleName" style="color: #369BD7;">
+			当前页面：项目配置管理&nbsp;&gt;
+			<span id="home"> 
+				<a id="head_title" href="javascript:void(0)"> 
+					项目基本配置
+				</a>
+			</span>
+		</li>
+	</ul>
+	<!-- 顶端导航结束 /////////////////////////////////////////////////////////////////////////////////////////////////-->
+	
+	<!-- 页面内容-->	
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<!-- 树菜单 start-->
+			<div class="leftSideBar span3">
+				<ul style="width:100%;" class="parNav">
+					<li class="nav-header hidden-tablet border-bottom">
+						<a class="ajax-link" style="padding-left:10px;" id="treeTop"
+							href="javascript:void(0);" onclick="loadTree('',0)"><b>[工程项目目录]</b>
+						</a>
+					</li>
+					<!-- 工程项目分页 -->
+					<li class="nav-header hidden-tablet border-bottom">
+						<ul class="topnav" id="tree"></ul>
+					</li>
+					<li>
+						<div id="pageInfo"></div>
+					</li>
+				</ul>
+			</div>
+			<!-- 树菜单 end//////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+			
+			<!-- 右边内容 start-->	
+			<div class="span9" style="margin-left: 20px;">
+				<!-- 信息展示 -->
+				<div>
+					<!-- 项目信息 -->
+					<div class="msg_div project_msg">
+						<div class="projectCon">
+							<div class="projectTitle">项目信息</div>
+							<div class="row-fluid ">
+							</div>
+						</div>
+					</div>
+					
+					<!-- 子项目信息 -->
+					<div class="msg_div child_msg">
+						<div class="projectCon">
+							<div class="projectTitle">子项目信息</div>
+							<div class="row-fluid"></div>
+						</div>
+					</div>
+					
+					<!-- 部位信息 -->
+					<div class="msg_div site_msg">
+						<div class="projectCon">
+							<div class="projectTitle">部位信息</div>
+							<div class="row-fluid"></div>
+						</div>
+					</div>
+
+					<!-- 支架信息 -->
+					<div class="msg_div holder_msg">
+						<div class="projectCon">
+							<div class="projectTitle">支架信息</div>
+							<div class="row-fluid"></div>
+						</div>
+					</div>
+					
+					<!-- 数据统计信息 -->
+					<div class="msg_div count_msg">
+					</div>
+				</div>
+
+
+				<ul class="breadcrumb" id="listTitle" style="list-style:none;line-height: 27px;height: 27px;">
+					<li style="float: right;"><a style="margin-top:-3px;"
+						title="新增" class="btn btn-primary" onclick="showAddModal();"
+						href="javascript:void(0);"> <i
+							class="icon-plus-sign icon-white"></i> 新增
+					</a></li>
+				</ul>
+
+				<!-- 	<li id="ss" style="float:right;margin-right: 5px;">
+					<input id="input_search" type="text" class="inputText" value="关键字搜索"
+					onfocus="if(this.value == '关键字搜索') this.value = ''"
+					onblur="if(this.value =='')  this.value = '关键字搜索'" /> &nbsp;&nbsp;
+					<a style="margin-top:-10px;" class="btn" onclick="doSearch();"
+					href="javascript:void(0);">
+						<i class="icon-search"></i> 检索
+					</a>
+				</li> -->
+				
+				<!-- 项目列表 -->
+				<div style="padding:0;text-align: center;" class="list_div project_list">
+					<div id="projectGrid"></div>
+				</div>
+				<!-- 子项目列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div child_list">
+					<div id="childGrid"></div>
+				</div>
+				<!-- 部位列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div site_list">
+					<div id="siteGrid"></div>
+				</div>
+				<!-- 支架列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div holder_list">
+					<div id="holderGrid"></div>
+					<div id="pageInfo2"></div>
+				</div>
+				<!-- 部件列表 -->
+				<div style="padding:0;text-align: center;display: none;" class="list_div parts_list">
+					<div class="tabbable">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#tab1" data-toggle="tab" id="1stTemp" onclick="loadZJListByType(1)">结构组件</a></li>
+								<li><a href="#tab2" data-toggle="tab" onclick="loadZJListByType(2)">承重组件</a></li>
+								<li><a href="#tab3" data-toggle="tab" onclick="loadZJListByType(3)">抗震组件</a></li>
+								<li><a href="#tab4" data-toggle="tab" onclick="loadZJListByType(4)">约束组件</a></li>
+							</ul>
+						</div>
+					<!-- 组件列表 -->
+			 		<div id="zjList"></div>
+			 		<div id="pageInfo3"></div>
+				</div>
+			</div>
+			<!-- 右边内容 end/////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+			
+	  	</div>
+	</div>
+	<!-- 页面内容/////////////////////////////////////////////////////////////////////////////////////////////////-->	
+	
+	
+	<!-- 模态框 -->
+	<div class="container">
+		<!-- 项目表单模态框 -->
+		<form method="post" id="objectForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="objectModal" class="modal hide fade in"
+				style="display: none;height: 500px;width: 440px;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal" id='clBtn'>×</a>
+					<h3 id="htmlTitle">新增项目</h3>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid" style="width: 400px;">
+						<div class="row-fluid tooltip-demo" style="margin-left:-5px;width: 400px;">
+							<input type="hidden" id="project_squ" name="project_squ" placeholder="id" value="" />
+							<!--左边内容-->
+							<div class="span5">
+								<div class="box-content" style="width: 360px;">
+									<fieldset>
+										<div class="input_box" style="height: 340px;">
+											<div style="width: 300px;float: left;margin-top: 10px;">
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目名称：</label>
+													<div class="controls">
+														<input type="text" id="xmmc" class="input" name="xmmc"
+															placeholder="" datatype="s1-18"
+															errormsg="项目名称至少1个字符,最多18个字符！" required="true" />
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目编号：</label>
+													<div class="controls">
+														<input type="text" id="xmbh" class="input" name="xmbh"
+															placeholder="" datatype="s10-18"
+															errormsg="项目编号四位大写字母六位报备日期！" required="true" />
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目地址：</label>
+													<div class="controls">
+														<input type="text" id="xmdz" class="input" name="xmdz"
+															placeholder="" datatype="s1-18"
+															errormsg="项目地址至少1个字符,最多18个字符！" required="true" />
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目类型：</label>
+													<div class="controls">
+														<input type="text" id="xmlx" class="input" name="xmlx"
+															placeholder="" required="true" nullmsg />
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">项目面积：</label>
+													<div class="controls">
+														<input type="text" id="xmmj" class="input" name="xmmj"
+															placeholder="" required="true" nullmsg />
+													</div>
+												</div>
+
+												<div class="control-group">
+													<label class="control-label" for="dzlx">地震类型：</label>
+													<div class="controls">
+														<select id="dzlx" class="input" name="dzlx"
+															required="true" nullmsg>
+														</select>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label">地区设防烈度：</label>
+													<div class="controls">
+														<select id="dzsfld" class="input" name="dzsfld"
+															required="true" nullmsg>
+														</select>
+													</div>
+												</div>
+												<div class="control-group">
+													<label class="control-label">地震加速度：</label>
+													<div class="controls">
+														<!-- 	 <input type="text" id="dzjsd" class="input" name="dzjsd" placeholder="" required="true"
+														datatype="/^-?[1-9]+(\.\d+)?$|^-?0(\.\d+)?$|^-?[1-9]+[0-9]*(\.\d+)?$/"  errormsg="地震加速度请输入数字！"/> -->
+														<select id="dzjsd" class="input" name="dzjsd"
+															placeholder="" required="true" nullmsg>
+														</select>
+													</div>
+												</div>
+
+												<div class="control-group">
+													<label class="control-label" for="focusedInput">系数最大值：</label>
+													<div class="controls">
+														<input type="text" id="alphaMax" class="input"
+															name="alphaMax" placeholder="" required="true" nullmsg
+															readonly="readonly" />
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</fieldset>
+								</div>
+							</div>
+							<!--左边内容-->
+						</div>
+					</div>
+				</div>
+				<div class="bottomBtnBox">
+					<span id="projectMsg" style="margin-left:30px;"></span> 
+					<input type="submit" value="确定" class="btn btn-success" id="projectSubBtn" style="display: none;" /> 
+						<a title="确定" href="javaScript:void(0);" class="btn btn-success"
+							onclick="subBtnClick('project')" style="margin:14px 0;"> 
+						<i class="icon-ok icon-white"></i> 确定
+					</a> 
+					<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" style="margin:14px;"> 
+						<i class="icon-remove"></i> 取消
+					</a>
+				</div>
+		</form>
+	</div>
+
+
+	<!--//////////////////////////////////////////////////////// 子项目表单模态框 /////////////////////////////////////////////////////-->
+	<div class="container">
+		<form method="post" id="childForm" class="form-horizontal"
+			enctype="multipart/form-data">
+			<div id="childModal" class="modal hide fade in"
+				style="display: none;height: 250px;width: 440px;">
+				<div class="modal-header">
+				<a class="close" data-dismiss="modal" id='childclBtn'>×</a>
+					<h3 id="childHtmlTitle">新增子项目</h3>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid" style="width: 400px;">
+						<div class="row-fluid tooltip-demo" style="margin-left:-5px;width: 400px;">
+							<div class="box-content" style="width: 360px;">
+								<fieldset>
+									<div class="input_box" style="height: 90px;">
+										<div style="width: 300px;float: left;margin-top: 10px;">
+											<input type="hidden" id="child_squ" name="child_squ" placeholder="id" value="" />
+											<div class="control-group">
+												<label class="control-label">子项目名称：</label>
+												<div class="controls">
+													<input type="text" id="zdwxmmc" class="input"
+														name="zdwxmmc" placeholder="" datatype="s2-18"
+														errormsg="子项目名称至少2个字符,最多18个字符！" required="true" />
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label" for="focusedInput">建筑高度：</label>
+												<div class="controls">
+													<input type="text" id="jzgd" class="input" name="jzgd"
+														placeholder="" required="true" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bottomBtnBox">
+					<span id="childMsg" style="margin-left:30px;"></span> 
+						<input type="submit" value="确定" class="btn btn-success" id="childSubBtn"
+						style="display: none;" /> 
+						<a title="确定" href="javaScript:void(0);" class="btn btn-success" onclick="subBtnClick('child')"
+						style="margin:14px 0;"> <i class="icon-ok icon-white"></i> 确定
+					</a> 
+					<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" style="margin:14px;"> 
+						<i class="icon-remove"></i> 取消
+					</a>
+				</div>
+		</form>
+	</div>
+	
+	<!-- //////////////////////////////////////////////////////////部位表单模态框 //////////////////////////////////////////////////-->
+	<div class="container">
+		<form method="post" id="siteForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="siteModal" class="modal hide fade in" style="display: none;height: 450px;width: 440px;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal" id='siteclBtn'>×</a>
+					<h3 id="siteHtmlTitle">新增部位</h3>
+				</div>
+				<div class="modal-body">
+					<div class="container-fluid" style="width: 400px;">
+						<div class="row-fluid tooltip-demo" style="margin-left:-5px;width: 400px;">
+							<div class="box-content" style="width: 360px;">
+								<fieldset>
+									<div class="input_box" style="height: 290px;">
+										<div style="width: 300px;float: left;margin-top: 10px;">
+											<input type="hidden" id="site_squ" name="site_squ" placeholder="id" value="" />
+											<div class="control-group">
+												<label class="control-label">部位名称：</label>
+												<div class="controls">
+													<input type="text" id="bwmc" class="input"
+														name="bwmc" placeholder="" datatype="s2-18"
+														errormsg="子项目名称至少2个字符,最多18个字符！" required="true" />
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">安装吊高：</label>
+												<div class="input-append">
+													<input type="text" id="azdg" class="input" name="azdg"
+														placeholder="" required="true" datatype="/^(?!0{1,4})\d{1,4}|10{4}|0$/"
+														 errormsg="ss"/>
+														<span class="add-on">mm</span>
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">部位标高：</label>
+												<div class="input-append">
+													<input type="text" id="bwbg" class="input" name="bwbg"
+														placeholder="" required="true" />
+														<span class="add-on">mm</span>
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">是否是改建工程：</label>
+												<div class="controls">
+													<input type="text" id="gjlx" class="input" name="gjlx"
+														placeholder="" required="true" />
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">管道材质：</label>
+												<div class="controls">
+													<input type="text" id="gdcz" class="input" name="gdcz"
+														placeholder="" required="true" />
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">管道规格：</label>
+												<div class="controls">
+													<input type="text" id="gdgg" class="input" name="gdgg"
+														placeholder="" required="true" />
+												</div>
+											</div>
+											<div class="control-group">
+												<label class="control-label">管道类型：</label>
+												<div class="controls">
+													<input type="text" id="gdlx" class="input" name="gdlx" placeholder="" required="true" />
+												</div>
+											</div>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="bottomBtnBox">
+					<span id="siteMsg" style="margin-left:30px;"></span> 
+					<input type="submit" value="确定" class="btn btn-success" id="siteSubBtn" style="display: none;" /> 
+						<a title="确定" href="javaScript:void(0);" class="btn btn-success"
+						onclick="subBtnClick('site')" style="margin:14px 0;"> 
+						<i class="icon-ok icon-white"></i> 确定
+					</a> 
+					<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" style="margin:14px;"> 
+						<i class="icon-remove"></i> 取消
+					</a>
+				</div>
+		</form>
+	</div>
+
+
+	<div class="container">
+		<!-- 支架模态框 -->
+		<form method="post" id="holderForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="holderModal" class="modal hide fade in windowBoxBig" style="display: none;height: 600px;width: 880px;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal" id='holderclBtn'>×</a> 
+					<h3 id="holderHtmlTitle">支架</h3>
+				</div>
+				<div class="modal-body">
+				<!-- 	<div>
+						<ul class="breadcrumb" style="list-style:none;line-height: 27px;height: 27px;">
+							<li style="margin-right: 5px;">
+								管道类型：<select id="gdlx_select" onchange="loadHolderList()"></select>
+								安装方式：<select id="azfs_select" onchange="loadHolderList()"></select>
+							</li>
+							<li id="ss" style="float:right;margin-right: 5px;">
+								<input id="input_search" type="text" style="margin-top:-5px;width:200px;color:#ccc;" placeholder="支架搜索"/>
+								&nbsp;&nbsp;
+								<a style="margin-top:-5px;" class="btn " onclick="loadHolderList();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+							</li>
+						</ul>
+					</div> -->
+					<div id="holderAll"></div>
+				</div>
+		</form>
+	</div>
+	
+	
+	
+	
+</body>
+	<!-- 项目公共js -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectCommon.js"></script>
+	<!-- 项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/project.js"></script>
+	<!-- 子项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectChild.js"></script>
+	<!-- 部位项目 -->
+	<script type="text/javascript" src="resource/js/projectConfig/projectChildSite.js"></script>
+	<!-- 支架 -->
+	<script type="text/javascript" src="resource/js/projectConfig/holder.js"></script>
+	<script type="text/javascript" src="resource/js/projectConfig/projectGrid.js"></script>
+	<script type="text/javascript" src="resource/js/projectConfig/holderGrid.js"></script>
+	<!-- 树菜单依赖 -->
+ 	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+
+</html>

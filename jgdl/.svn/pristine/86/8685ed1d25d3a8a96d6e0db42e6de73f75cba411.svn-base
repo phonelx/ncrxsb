@@ -1,0 +1,89 @@
+
+
+/**
+  * loadSiteTreeAndList:(加载)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午5:51:58
+  * @param: 
+  * @return: void
+ */
+function loadSiteTreeAndList(child_squ){
+	$.ajax({
+		type : 'post',
+		url : 'selectListChildSite.do',
+		timeout : 1321231232131213123,
+		dataType:"json",
+		async : false,
+		data:{
+			squ:child_squ,
+		},
+		success : function(data) {
+			if (data.length > 0) {
+				loadSiteTree(data, project_squ);
+			}
+			loadSiteList(data);
+		},
+		error : function() {
+			Modal.alert({
+			    msg: '部位列表加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			  });
+		}
+	});
+}
+
+/**
+  * loadChildList:(加载子项目列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午4:17:56
+  * @param: 
+  * @return: void
+ */
+function loadSiteList(data){
+	//子项目列表
+	var html = "<table class='table table-bordered'>";
+	html += "<tr><th>部位名称</th><th>部位标高</th><th>部位吊高</th><th>管道材质</th><th>管道规格</th><th>管道类型</th><th>改建工程</th><th>操作</th></tr>";
+	if (data.length <= 0) {
+		html += "<tr><td colspan='8'>未查询到数据</td></tr>";
+	} else {
+		for ( var i = 0; i < data.length; i++) {
+			html += "<tr><td>" + data[i].bwmc + "</td><td>" + data[i].bwbg + "</td><td>" + data[i].bwdg + "</td>";
+			html += "<tr><td>" + data[i].gdcz + "</td><td>" + data[i].gdgg + "</td><td>" + data[i].gdlx + "</td>";
+			html += "<tr><td>" + data[i].gjlx + "</td><td></td><tr>";
+		}
+	}
+	html += "</table>";
+	$('#siteGrid').html(html);
+}
+
+/**
+  * loadChildTree:(加载子项目树)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午4:17:30
+  * @param: @param data
+  * @return: void
+ */
+function loadSiteTree(data, child_squ){
+	//子项目树
+	var html = "";
+	for (var i = 0;i < data.length; i++) {
+		html+=" <li class='nav-header hidden-tablet border-bottom' style='display:block; padding-left:15px;'>";
+		html+=" <a href='javascript:void(0);' style='color:#3f9fd9;' class='ajax-link'  flag='1' onclick='loadTree(2," + JSON.stringify(data[i]) + ")' >";
+		html+=" <i class='icon-darkgray '></i>&nbsp;" + data[i].bwmc + "</a>";
+		html+=" <ul class='topnav'>";
+		html+=" </ul>";
+		html+=" </li>";
+	}
+	$("#" + child_squ + "").parent().find("ul").html(html);
+	$("#" + child_squ + "").next("ul").accordion({
+			accordion:false,
+			speed: 300,
+			closedSign: '[+]',
+			openedSign: '[-]'
+		});
+}

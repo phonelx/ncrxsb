@@ -1,0 +1,56 @@
+
+/**
+  * loadChildTree:(根据项目id加载子项目列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午3:35:42
+  * @param: 
+  * @return: void
+ */
+function loadChildTreeAndList(project_squ) {
+	$.ajax({
+		type : 'post',
+		url : 'listChildProjectByProjectSqu.do',
+		timeout : 1321231232131213123,
+		dataType:"json",
+		async : false,
+		data:{
+			project_squ:project_squ,
+		},
+		success : function(data) {
+			alert(data);
+			//子项目树
+			var html1 = "";
+			//子项目列表
+			var html2 = "";
+			count = data.length;
+			if (count > 0) {
+				for (var i = 0;i < count; i++) {
+					html1+=" <li class='nav-header hidden-tablet border-bottom' style='display:block; padding-left:15px;'>";
+					html1+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  ssmc='"+data.list[i].SSMC+"' zbm='"+data.list[i].DMLB+"' flag='1' id='"+data.list[i].SQU+"'  title ='"+data.list[i].LBMC+"' isEnd = "+data.list[i].JD+" onclick='parentsearch(this);'>";
+					html1+=" <i class='icon-darkgray '></i>&nbsp;" + dfsdfsd + "</a>";
+						html1+=" <ul class='topnav' >";
+						html1+=" </ul>";
+					html1+=" </li>";
+				}
+				$("#" + project_squ).parent().find("ul").html(html1);
+				$("#" + project_squ).next("ul").accordion({
+						accordion:false,
+						speed: 300,
+						closedSign: '[+]',
+						openedSign: '[-]'
+					});
+			}
+		},
+		error : function() {
+			Modal.alert(
+			  {
+			    msg: '子项目列表加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			    	
+			  });
+		}
+	});
+}

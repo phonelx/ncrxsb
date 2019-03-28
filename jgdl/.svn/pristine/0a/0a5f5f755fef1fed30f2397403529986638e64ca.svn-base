@@ -1,0 +1,17 @@
+package monitor.goodsHouse.service;
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:42:22
+ *@version
+ *@author:唐青
+ *@since
+ */
+public interface IStentsService {
+	/**
+	 *@ClassName
+	 *@dataTime 2017-10-14-下午2:42:22
+	 *@version
+	 *@author:唐青
+	 *@since
+	 */
+}

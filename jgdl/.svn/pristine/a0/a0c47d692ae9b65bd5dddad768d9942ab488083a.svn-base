@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<bean id="roleDAO" class="monitor.user.dao.impl.RoleDAOImpl"
+		scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+
+	<bean id="userDAO" class="monitor.user.dao.impl.UserDAOImpl"
+		scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+		<property name="roleDAO" ref="roleDAO"></property>
+	</bean>
+
+	<bean id="authDAO" class="monitor.user.dao.impl.AuthorityDAOImpl"
+		scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+		<property name="publicJspSet">
+			<set>
+				<value>/</value>
+				<value>/pages/common/cannotAccessJsp.jsp</value>
+				<value>/pages/common/exception.jsp</value>
+				<value>/pages/common/noRight.jsp</value>
+				<value>/pages/common/notice.jsp</value>
+				<value>/pages/common/notSupport.jsp</value>
+				<value>/pages/login.jsp</value>
+				<value>/pages/left.jsp</value>
+				<value>/pages/bk_backIndex.jsp</value>
+				
+				<!-- 注册页面 -->
+				<value>/pages/register.jsp</value>
+				<value>/pages/main.jsp</value>
+				<value>/pages/calOnlineUserCount.jsp</value> <!-- 在线用户数 -->
+				<value>/pages/jump.jsp</value>
+				<value>/pages/message/lyMsg.jsp</value>
+				<value>/pages/message/msgList.jsp</value>
+				<value>/pages/message/addMsg.jsp</value>
+				<value>/pages/message/messageIndex.jsp</value>
+				<!-- 模板查询 -->
+				<value>/pages/query/peopleQuery.jsp</value>
+				<value>/pages/query/carQuery.jsp</value>
+				<value>/pages/query/driverQuery.jsp</value>
+				<value>/pages/query/assInfo.jsp</value>
+
+				<value>/pages/callsample.jsp</value>
+				<!-- 首页地图页面start -->
+				<value>/pages/linkPages/GSBDZYK.jsp</value>
+				<value>/pages/linkPages/GSYYXTDH.jsp</value>
+				<value>/pages/linkPages/XBDQYYXTDH.jsp</value>
+				<value>/pages/linkPages/XBDQYYXTDH_JSBT.jsp</value><!-- 兵团 -->
+				<value>/pages/linkPages/XBDQYYXTDH_XJ.jsp</value><!-- 新疆 -->
+				<value>/pages/linkPages/XBDQYYXTDH_XZ.jsp</value><!-- 西藏 -->
+				<value>/pages/linkPages/XBDQYYXTDH_GS.jsp</value><!-- 甘肃 -->
+				<value>/pages/linkPages/XBDQYYXTDH_QH.jsp</value><!-- 青海 -->
+				<value>/pages/linkPages/XBDQYYXTDH_SC.jsp</value><!-- 四川 -->
+				<value>/pages/linkPages/XBDQYYXTDH_YN.jsp</value><!-- 云南 -->
+				<value>/pages/linkPages/XBDQYYXTDH_NMG.jsp</value><!-- 内蒙古 -->
+				<value>/pages/linkPages/XBDQYYXTDH_NX.jsp</value><!-- 宁夏 -->
+				<value>/pages/linkPages/XBDQYYXTDH_SX.jsp</value><!-- 陕西 -->
+				<value>/pages/linkPages/XBDQYYXTDH_CQ.jsp</value><!-- 重庆 -->
+				<value>/pages/linkPages/XBDQYYXTDH_GZ.jsp</value><!-- 贵州 -->
+				<value>/pages/linkPages/XBDQYYXTDH_GX.jsp</value><!-- 广西 -->
+				<value>/pages/linkPages/XBDQYYXTDH_GD.jsp</value><!-- 广东 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HAIN.jsp</value><!-- 海南 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HUN.jsp</value><!-- 湖南 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HUB.jsp</value><!-- 湖北 -->
+				<value>/pages/linkPages/XBDQYYXTDH_JX.jsp</value><!-- 江西 -->
+				<value>/pages/linkPages/XBDQYYXTDH_FJ.jsp</value><!-- 福建 -->
+				<value>/pages/linkPages/XBDQYYXTDH_AH.jsp</value><!-- 安徽 -->
+				<value>/pages/linkPages/XBDQYYXTDH_ZJ.jsp</value><!-- 浙江 -->
+				<value>/pages/linkPages/XBDQYYXTDH_JS.jsp</value><!-- 江苏 -->
+				<value>/pages/linkPages/XBDQYYXTDH_SH.jsp</value><!-- 上海 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HB.jsp</value><!-- 河北 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HN.jsp</value><!-- 河南 -->
+				<value>/pages/linkPages/XBDQYYXTDH_SD.jsp</value><!-- 山东 -->
+				<value>/pages/linkPages/XBDQYYXTDH_SHX.jsp</value><!-- 山西 -->
+				<value>/pages/linkPages/XBDQYYXTDH_BEIJ.jsp</value><!-- 北京 -->
+				<value>/pages/linkPages/XBDQYYXTDH_TJ.jsp</value><!-- 天津 -->
+				<value>/pages/linkPages/XBDQYYXTDH_LN.jsp</value><!-- 辽宁 -->
+				<value>/pages/linkPages/XBDQYYXTDH_JL.jsp</value><!-- 吉林 -->
+				<value>/pages/linkPages/XBDQYYXTDH_HLJ.jsp</value><!-- 黑龙江 -->
+				<!-- 首页地图页面end -->
+				<value>/pages/WSclient/syncWS.jsp</value>
+
+				<value>/pages/welcome.jsp</value><!-- 黑龙江 -->
+
+				<!-- 检测各地市州 系统运行状态 省厅才有该功能 -->
+				<value>/pages/sysStatus.jsp</value>
+				<!-- 保存质量检测报告word -->
+				<value>/pages/check/savaOffice/saveSjzlFile.jsp</value>
+				<value>/pages/bk/overdue/overdueIndex.jsp</value>
+			</set>
+		</property>
+		<property name="publicActionSet">
+			<set>
+				<value>/login.do</value>
+				<value>/index.do</value>
+				<value>/type.do</value>
+				<value>/deployed.do</value>
+				<value>/logout.do</value>
+				<value>/listModules.do</value>
+				<value>/showWelcome.do</value>
+				<value>/goloutout.do</value>
+				<value>/doDicExpdataHandle.do</value>
+				<!-- 首页的两个统计 -->
+				<value>/generatePieChartOfAllFactorsCounts.do</value>
+				<value>/showDataSourceStat.do</value>
+				<value>/calculateAllFactourCounts.do</value>
+				<value>/getLastNotice.do</value><!-- 首页显示公告信息 -->
+				<value>/sameNameJudge.do</value><!-- 进行同名验证 -->
+				<value>/showPerList.do</value>
+				<value>/fetchResourceTypesByParentSQU.do</value><!-- 根据父资源squ获取所有子资源list -->
+				<value>/fetchParentResourceTypesSqu.do</value><!-- 根据子资源squ获取父资源squ -->
+				<value>/genResourceTypeTree.do</value><!-- 弹出资源分类树 -->
+				<value>/checkSysStatus.do</value><!--检测系统状态 -->
+
+				<!-- 临时 -->
+				<value>/loginOtherSsp.do</value><!-- 登陆到其他ssp系统 -->
+				<value>/loginOther.do</value><!-- 登陆到其他ssp系统 -->
+
+				<value>/getGLSource.do</value><!-- 显示关联数据源 -->
+				<value>/getTree4LstWSC.do</value>
+				<value>/wsQuery.do</value>
+				<value>/getWSConfMsg.do</value>
+				<value>/addWS.do</value>
+				<value>/editWS.do</value>
+				<value>/deleteWS.do</value>
+				<value>/getWSCond.do</value>
+				<value>/addWSType.do</value>
+				<value>/editWSType.do</value>
+				<value>/deleteWSType.do</value>
+				<!-- 照片查询 -->
+				<value>/queryPhoto.do</value>
+				<value>/queryPhotoAgain.do</value>
+				<!--数据复用下载文件 -->
+				<value>/downloadFile.do</value>
+
+				<value>/listSjzlData.do</value>
+				<value>/pages/gotoSjzlWord.do</value>
+				<value>/gotoSjzlWord.do</value>
+				<value>/gotoEditSjzlData.do</value>
+				<value>/gotoLookSjzlData.do</value>
+				<value>/deleteSjzlData.do</value>
+				<value>/chekcIsFinished.do</value>
+				<!--首页数据交换量统计 -->
+				<value>/getAllDbs.do</value>
+				<value>/getHomePageStat.do</value>
+				<value>/gotoDispatchedIndex.do</value>
+				<value>/listDispatchedInPage.do</value>
+
+				<!-- 已部署 -->
+				<!-- 获取最新部署总数 -->
+                <value>/getNewDataCount.do</value>
+				<!-- 跳转人员流动信息页面 -->
+				<value>/toPersonMsgIndex.do</value>
+				<!-- 查询人员轨迹 -->
+                <value>/selectTrajectory.do</value>
+                <value>/queryIsNew.do</value>
+                
+				<!-- 跳转已过期人员信息页面 -->
+				<value>/toOverdueIndex.do</value>
+				<!-- 修改布控状态 -->
+				<value>/updateOverdue.do</value>
+				<!--注册功能  -->
+				<value>/register.do</value>
+
+                <!--根据未满18位数ID查询数据  -->
+                <value>/findByidCard.do</value>
+                <!--根据18位数ID查询数据  -->
+                <value>/findByidCard2.do</value>
+                <!--根据主键删除  -->
+                <value>/deleteBySqu.do</value>
+                <!--列出是管理员的名单  -->
+                <value>/listAdminRole.do</value>
+                <!--添加信息到布控人员表  -->
+                <value>/addInforToBkry.do</value>
+                <!--根据ID查询数据(此ID已通过前台验证)  -->
+                <value>/findByIDCard.do</value>
+                <!--删除中间数据库指定的记录数  -->
+                <value>/deleteRecordById.do</value>
+                <!--清空后台静态变量的值  -->
+                <value>/cleanStaticVariable.do</value>
+                <!--展示详细信息  -->
+                <value>/showDetailed.do</value>
+                <!--ajax展示详细信息  -->
+                <value>/ajaxShowDetailed.do</value>
+                <!--展示详细信息  -->
+                <value>/showDetailed.do</value>
+                <!--ajax展示详细信息  -->
+                <value>/ajaxShowDetailed.do</value>
+                <!--检查该身份证是否是否布控过的  -->
+				<value>/checkIsBked.do</value>
+                <!--添加临时数据  -->
+                <value>/addTransition.do</value>
+                <!-- 判断是否在页面上 -->
+                <value>/existInPage.do</value>
+                <!--重新读取数据  -->
+                <value>/reloadOwn.do</value>
+                
+                <!-- 待审批 -->
+                <!-- 跳转 -->
+                 <value>/approvalclock.do</value>
+                <!-- 跳转到待审批页面 -->
+                <value>/gotoApprovalIndex.do</value>
+                <value>/listApprovalInPage.do</value>
+                <value>/quxiaoApproval.do</value>
+                <!-- 跳转到待审批人员详情页面 -->
+                <value>/toApprovaldetails.do</value>
+                <!-- 审核待审批人员-->
+                <value>/editApproval.do</value>
+                
+                <!-- 跳转到未通过详情页面 -->
+                <value>/toNotPassedIndex.do</value>
+                  <!-- 通过公民身份号码查询过期人员信息 -->
+                <value>/queryOverdueByGMSFHM.do</value>
+                <value>/gotoDeployIndex.do</value>
+                
+                <!-- 已过期 -->
+                <!-- 跳转已过期页面 -->
+                <value>/gotoOverdueIndex.do</value>
+                <value>/listOverdueInPage.do</value>
+                
+                <!--部门首页  -->
+                <value>/showDeptIndex.do</value>
+                <!--查询部门信息  -->
+                <value>/listDept.do</value>
+                <!--加载部门用户 -->
+                <value>/findUserBySqu.do</value>
+                <value>/loadUserGrld.do</value>
+                <!--添加用户  -->
+                <value>/addDept.do</value>
+                <!--删除部门  -->
+                <value>/delDept.do</value>
+                <!-- 修改部门信息 -->
+                <value>/editDept.do</value>
+                <!-- 通过部门编号查询部门信息 -->
+                <value>/listDeptByBmdm.do</value>
+			</set>
+		</property>
+	</bean>
+
+</beans>

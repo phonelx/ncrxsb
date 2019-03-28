@@ -1,0 +1,17 @@
+package monitor.goodsHouse.dao;
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:40:50
+ *@version
+ *@author:唐青
+ *@since
+ */
+public interface IStentsDao {
+	/**
+	 *@ClassName
+	 *@dataTime 2017-10-14-下午2:40:50
+	 *@version
+	 *@author:唐青
+	 *@since
+	 */
+}

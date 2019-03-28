@@ -1,0 +1,113 @@
+body{
+	margin: 0px;
+}
+#frame-all{
+	overflow: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+}
+#frame-top{
+	height: 62px;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	width: 100%;
+	/* background-color: #EFF4F8; */
+	background-color: #13427c;
+}
+.logo{
+	float: left;
+	width:409px;
+    height: 28px;
+    margin: 4px auto auto 14px;
+	background-image: url(../../images/misc/logo_yw.png);
+	background-repeat: no-repeat;
+	background-size : 100% 100%;
+}
+.logo a{
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+dd{
+	float: right;
+    margin: 12px 16px auto auto;
+}
+#frame-left{
+	width:194px;
+	position: absolute;
+	top: 62px;
+	left: 0px;
+	bottom: 0px;
+	background-color: #1C2B36;
+}
+#left-module{
+	/* margin-top: 5px; */
+}
+#module-list{margin: 0px;padding: 0px;}
+#module-list li{margin: 0px; padding:0px;}
+#module-list span{
+	font-family:微软雅黑;
+	font-size:14px;
+	color:#FFF;
+}
+#module-list span .text{
+	padding-left: 38px;
+}
+#module-list a {
+	cursor: pointer;
+	height: 45px;
+	line-height: 45px;
+	width: 179px;
+	display: block;
+	padding-left: 15px;
+}
+.child_list a:hover{
+	background-color:#1C2B36;
+	cursor: pointer;
+	color: white;
+}
+/*google浏览器  */
+.child_list a:webkit-any-link{
+	background-color:#1C2B36;
+    cursor: pointer;
+}
+.child_list{
+	display: none;
+	margin: 0px;
+	}
+.child_list a{
+	    width: 164px !important;
+	padding-left: 30px !important;}
+.child_list.on{
+	display: block;
+	}
+
+
+#frame-right{
+	position: absolute;
+	top: 62px;
+	left: 194px;
+	right: 0px;
+	bottom: 0px;
+	/* border-left: 1px solid #CCC;
+    border-top: 1px solid #CCC; */
+}
+#logout
+{
+	margin-right1: 20px;
+}
+.inputText{width:200px;color:#666;}
+.windowBox{
+	width:600px;
+	height:560px;
+	top:40%;
+	left:50%;
+	margin-left:-300px;
+	margin-top:-220px;
+	}

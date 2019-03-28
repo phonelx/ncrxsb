@@ -1,0 +1,20 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="projectChild" extends="monitor-struts-default" >
+	
+		<!-- 查询子项目列表 -->
+		<action name="listChildProjectByProjectSqu" class="projectChildAction" method="listChildProjectByProjectSqu"/>
+		
+		<!-- 新增子项目 -->
+		<action name="addChildProject" class="projectChildAction" method="addChildProject"/>
+		
+		<!-- 修改子项目 -->
+		<action name="updateChildProject" class="projectChildAction" method="updateChildProject"/>
+		
+		<!-- 删除子项目 -->
+		<action name="delChildProjectBySqu" class="projectChildAction" method="delChildProjectBySqu"/>
+		
+	</package>	
+</struts>

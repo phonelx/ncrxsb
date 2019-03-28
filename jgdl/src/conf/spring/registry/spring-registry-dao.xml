@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">  
+	<!-- 数据源处理DAO -->
+	<bean id="dataSourceDao" class="monitor.registry.dao.impl.DataSourceDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	<!-- 实体对象处理DAO -->
+	<bean id="entityDao" class="monitor.registry.dao.impl.EntityDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	<!-- 字段处理DAO -->
+	<bean id="fieldDao" class="monitor.registry.dao.impl.FieldDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	<!-- 查询注册DAO -->
+	<bean id="regQueryDao" class="monitor.registry.dao.impl.RegQueryDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	<!-- 关系注册DAO -->
+	<bean id="relationDao" class="monitor.registry.dao.impl.RelationDaoImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+</beans>

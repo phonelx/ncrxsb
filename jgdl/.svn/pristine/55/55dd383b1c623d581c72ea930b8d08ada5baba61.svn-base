@@ -1,0 +1,55 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 16, 2011 5:21:28 PM
+*/
+package monitor.registry.dao;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.RegDataSource;
+
+/**
+ * 数据资源注册 DAO 接口
+ * @author  liangxj
+ * @datetime  Apr 16, 2011 5:21:28 PM
+ */
+public interface IDataSourceDao {
+	/**
+	 * @description  注册数据源
+	 * @param  rds 数据源 
+	 * @return void
+	 */
+	public void addRbs(RegDataSource rds) ;
+	/**
+	 * @description 返回数据源总数
+	 * @return int
+	 */
+	public int getAllCnts(String searchKey);
+	/**
+	 * @description 分页查询数据源
+	 * @param pageSize 每页显示条数
+	 * @param pageNo 当页数
+	 * @return List
+	 */
+	public List findDataSourceList(int pageSize,int pageNo,String searchKey );
+	public boolean deleteDbs(int squ);
+	public void editDbs(RegDataSource rds);
+	public boolean testConnection(RegDataSource rds);
+	public boolean checkDbsName(String dbsName);
+	/**
+	 * 根据squ查询指定数据源bean
+	 * @author:  cl
+	 * @param
+	 * @return RegDataSource
+	 */
+	public RegDataSource findDataSourceBySqu(int squ);
+	/**
+	 * 列出所有数据源信息，不分页
+	 * @author: cl
+	 * @param
+	 * @return List<RegDataSource>
+	 */
+	public List<RegDataSource> listDataSourceList();
+}

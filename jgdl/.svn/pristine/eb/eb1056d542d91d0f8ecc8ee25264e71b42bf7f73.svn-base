@@ -1,0 +1,25 @@
+#level£ºerror>warn>info>debug  
+#\u914D\u7F6E\u8DDFlog
+#log4j.rootLogger=debug,DEPApender,appender2   
+log4j.rootLogger=warn,DEPApender  
+
+#Êä³öµ½ÖÕ¶Ë£º   
+log4j.appender.DEPApender=org.apache.log4j.ConsoleAppender   
+log4j.appender.DEPApender.Target=System.out
+
+#Êä³öµ½ÎÄ¼þ£º
+#log4j.appender.DEPApender=org.apache.log4j.FileAppender
+#log4j.appender.DEPApender.File=c:/Log4JDemo02.html
+
+
+#£¨°üº¬ÈÕÖ¾²úÉúµÄÊ±¼ä¡¢Ïß³Ì¡¢Àà±ðµÈµÈÐÅÏ¢£©
+#log4j.appender.DEPApender.layout=org.apache.log4j.TTCCLayout
+#£¨ÒÔHTML±í¸ñÐÎÊ½²¼¾Ö£©
+#log4j.appender.DEPApender.layout=org.apache.log4j.HTMLLayout
+#£¨¿ÉÒÔÁé»îµØÖ¸¶¨²¼¾ÖÄ£Ê½£©
+log4j.appender.DEPApender.layout=org.apache.log4j.PatternLayout    
+#log4j.appender.DEPApender.layout.ConversionPattern=[%p][%d{yy/MM/dd HH:mm:ss}][%l]%m%n
+log4j.appender.DEPApender.layout.ConversionPattern=[%p][%d{yy/MM/dd HH:mm:ss}]%m%n
+#£¨°üº¬ÈÕÖ¾ÐÅÏ¢µÄ¼¶±ðºÍÐÅÏ¢×Ö·û´®£©
+#log4j.appender.DEPApender.layout=org.apache.log4j.SimpleLayout        
+log4j.category.ssp=debug⍬敶敬ꎺ敲牯爾睡牮㹩湦漾摥扵朠‍ਣ짨훃벶뇰뫍뛠룶쒿뗄뗘†ഊ⍬潧㑪⹲潯瑌潧来爽摥扵本䑅偁灥湤敲ⱡ灰敮摥爲†‍੬潧㑪⹲潯瑌潧来爽睡牮ⱄ䕐䅰敮摥爠‍਍ਣ쫤돶떽훕뛋ꎺ†‍੬潧㑪⹡灰敮摥爮䑅偁灥湤敲㵯牧⹡灡捨攮汯朴樮䍯湳潬敁灰敮摥爠†ഊ汯朴樮慰灥湤敲⹄䕐䅰敮摥爮呡牧整㵓祳瑥洮潵琍਍ਣ쫤돶떽컄볾ꎺഊ⍬潧㑪⹡灰敮摥爮䑅偁灥湤敲㵯牧⹡灡捨攮汯朴樮䙩汥䅰灥湤敲ഊ⍬潧㑪⹡灰敮摥爮䑅偁灥湤敲⹆楬攽挺⽌潧㑊䑥浯〲⹨瑭氍਍਍ਣꎨ냼몬죕횾닺짺뗄쪱볤ꆢ쿟돌ꆢ샠뇰뗈뗈탅쾢ꎩഊ⍬潧㑪⹡灰敮摥爮䑅偁灥湤敲⹬慹潵琽潲朮慰慣桥⹬潧㑪⹔呃䍌慹潵琍ਣꎨ틔䡔䵌뇭룱탎쪽늼뻖ꎩഊ⍬潧㑪⹡灰敮摥爮䑅偁灥湤敲⹬慹潵琽潲朮慰慣桥⹬潧㑪⹈呍䱌慹潵琍ਣꎨ뿉틔쇩믮뗘횸뚨늼뻖쒣쪽ꎩഊ汯朴樮慰灥湤敲⹄䕐䅰敮摥爮污祯畴㵯牧⹡灡捨攮汯朴樮偡瑴敲湌慹潵琠†‍ਣ汯朴樮慰灥湤敲⹄䕐䅰敮摥爮污祯畴⹃潮癥牳楯湐慴瑥牮㵛╰嵛╤筹礯䵍⽤搠䡈㩭洺獳絝嬥汝╭╮ഊ汯朴樮慰灥湤敲⹄䕐䅰敮摥爮污祯畴⹃潮癥牳楯湐慴瑥牮㵛╰嵛╤筹礯䵍⽤搠䡈㩭洺獳絝╭╮ഊ⎣ꢰﲺ곈헖뻐엏ꊵ쒼뚱췐엏ꋗ횷﮴꺣ꤍਣ汯朴樮慰灥湤敲⹄䕐䅰敮摥爮污祯畴㵯牧⹡灡捨攮汯朴樮卩浰汥䱡祯畴††††ഊ汯朴樮捡瑥杯特⹳獰㵤敢畧

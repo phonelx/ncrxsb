@@ -1,0 +1,28 @@
+package monitor.dispatched.service;
+
+import java.sql.SQLException;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+public interface IOverdueService {
+	/**
+	 * 修改布控状态
+	 * @param gmsfhm（ID）
+	 * @return
+	 */
+	public String updateOverdue(String gmsfhm);
+	
+	/**
+	  * listOverdueInPage:(分页查询已过期列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午10:53:26
+	  * @param dispatchedDto
+	  * @return
+	  * @throws SQLException DispatchedDto
+	  * @since JDK 1.7
+	*/
+	public DispatchedDto listOverdueInPage(DispatchedDto dispatchedDto, String search) throws SQLException;
+	
+
+}

@@ -1,0 +1,121 @@
+package monitor.manage.bean.entity;
+
+public class ControlEntity {
+	private int bid;
+	private String bt;// 布控标题
+	private int bklx;// 布控类型( 1：身份证 2：车牌号)
+	private String bkhm;// 布控号码
+	private String dxjsdh;// 接受人电话
+	private String bkr;// 布控人
+	private String cjsj;// 创建时间
+	private int status;// 布控状态( 1:进行 2：完成)
+	private String stopTime;// 失效时间
+	private String flag;// 是否启用( 0：禁用 1：启用)
+	private int isshow;// 是否显示
+	private int bkSource;// 关联数据源
+	private int mess;// 是否提示声音
+
+	public int getBid() {
+		return bid;
+	}
+
+	public void setBid(int bid) {
+		this.bid = bid;
+	}
+
+	public String getBt() {
+		return bt;
+	}
+
+	public void setBt(String bt) {
+		this.bt = bt;
+	}
+
+	public int getBklx() {
+		return bklx;
+	}
+
+	public void setBklx(int bklx) {
+		this.bklx = bklx;
+	}
+
+	public String getBkhm() {
+		return bkhm;
+	}
+
+	public void setBkhm(String bkhm) {
+		this.bkhm = bkhm;
+	}
+
+	public String getDxjsdh() {
+		return dxjsdh;
+	}
+
+	public void setDxjsdh(String dxjsdh) {
+		this.dxjsdh = dxjsdh;
+	}
+
+	public String getBkr() {
+		return bkr;
+	}
+
+	public void setBkr(String bkr) {
+		this.bkr = bkr;
+	}
+
+	public String getCjsj() {
+		return cjsj;
+	}
+
+	public void setCjsj(String cjsj) {
+		this.cjsj = cjsj;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public String getStopTime() {
+		return stopTime;
+	}
+
+	public void setStopTime(String stopTime) {
+		this.stopTime = stopTime;
+	}
+
+	public String getFlag() {
+		return flag;
+	}
+
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+
+	public int getIsshow() {
+		return isshow;
+	}
+
+	public void setIsshow(int isshow) {
+		this.isshow = isshow;
+	}
+
+	public int getBkSource() {
+		return bkSource;
+	}
+
+	public void setBkSource(int bkSource) {
+		this.bkSource = bkSource;
+	}
+
+	public int getMess() {
+		return mess;
+	}
+
+	public void setMess(int mess) {
+		this.mess = mess;
+	}
+}

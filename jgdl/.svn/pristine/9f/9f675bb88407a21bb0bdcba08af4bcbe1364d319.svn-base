@@ -1,0 +1,169 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 19, 2011 10:25:36 AM
+*/
+package monitor.registry.service.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sf.json.JSONArray;
+
+import monitor.common.bean.vo.ZTreeNodeVo;
+import monitor.registry.bean.entity.RegEntity;
+import monitor.registry.bean.entity.RegEntityType;
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.bean.vo.ComboVo;
+import monitor.registry.bean.vo.DicTypeVo;
+import monitor.registry.dao.IEntityDao;
+import monitor.registry.service.IEntityService;
+
+/** 
+ * 实体注册 service  
+ * @author  liangxj
+ * @datetime  Apr 19, 2011 10:25:36 AM
+ */
+public class EntityServiceImpl implements IEntityService {
+	private IEntityDao dao ;
+
+    public String getEntityComments(String entityName,String dbsSqu){
+        return dao.getEntityComments(entityName,dbsSqu);
+    }
+
+	/** 查询已经注册的的对象包括：数据源，表，视图，字段 
+	 * 以树形结构显示
+	 * @param name 
+	 * @return list
+	 */
+	public List<ZTreeNodeVo> getDbsObject(String squ,String lvl) {
+		List<ZTreeNodeVo> list = null;
+		// 查询已经注册的数据源
+		if(squ == null || "sourceRigistry".equals(squ) || "0".equals(squ) || "".equals(squ)){
+			list = dao.getAllDbs();
+		}else{
+			// 获取squ
+			if(squ.indexOf("_")>0)
+			squ = squ.substring(squ.lastIndexOf("_")+1) ;
+			list = new ArrayList<ZTreeNodeVo>();
+			if("1".equals(lvl)){// 查询表，视图
+				List<RegEntity> list1 = dao.findRegEntity(squ) ;
+				for(RegEntity entity : list1){
+					ZTreeNodeVo node = new ZTreeNodeVo();
+					node.setId("entity_"+entity.getSqu()) ;
+					node.setName(entity.getTitle()+"("+entity.getName()+")");
+					node.setIsParent("true") ;
+					list.add(node) ;
+				}
+			}else{// 查询字段
+				List<RegField> list1 = dao.findRegField(squ) ;
+				for(RegField field : list1){
+					ZTreeNodeVo node = new ZTreeNodeVo();
+					node.setId("field_"+field.getSqu()) ;
+					node.setName(field.getTitle()+"("+field.getName()+")") ;
+					list.add(node) ;
+				}
+			}
+		}
+		return list;
+	}
+	/**
+	 * @description 通过数据源名称 查询数据源下所有的 表和视图  
+	 *              未注册
+	 * @param 
+	 * @return List
+	 */
+	public List getEntityByDbs(String dbsSqu,String dbsName,int[] page){
+	    if(dbsSqu.indexOf("?") >= 0){
+	        dbsSqu = dbsSqu.substring(0,dbsSqu.indexOf("?"));
+        }
+	    
+		return dao.findEntityByDbs(dbsSqu,dbsName,page) ;
+	} 
+	/**
+	 * 注册实体
+	 * @param entity
+	 */
+	public int addEntity(RegEntity entity){
+		return dao.addEntity(entity) ;
+	}
+	
+	/** 
+	 * 查询已经注册的实体 对象  列表显示
+	 * @param squ
+	 * @return List
+	*/
+	public List getRegistedObject(String squ) {
+	    if(squ.indexOf("?") >= 0){
+	        squ = squ.substring(0,squ.indexOf("?"));
+	    }
+	    
+		return dao.findRegEntity(squ);
+	}
+	/** 
+	 * 删除实体
+	 * @param squ 
+	*/
+	public boolean deleteEntity(int squ) {
+		return dao.deleteEntity(squ) ;
+	}
+	/** 
+	 * 编辑实体
+	 * @param entity 
+	*/
+	public void editEntity(RegEntity entity) {
+		dao.editEntity(entity) ;
+	}
+	/**
+	 * 获取所有要素
+	 * @return
+	 */
+	public List<ComboVo> getAllType(long pid){
+		List<RegEntityType> listTemp = dao.getAllType(pid) ;
+		List<ComboVo> list = new ArrayList<ComboVo>();
+		int i = 0;
+		for(RegEntityType type : listTemp){
+			ComboVo combo = new ComboVo();
+			combo.setId(type.getSqu()+"") ;
+			combo.setText(type.getTypeName()) ;
+			// 设置第一条记录被选中
+			if(i++==0){
+				combo.setSelected("true") ;
+			}
+			list.add(combo) ;
+		}
+		return list ;
+	}
+	
+	/** 
+	 * 查询所有数据字典类型 
+	 * @return 
+	*/
+	public List listAllDicType() {
+		return dao.listDicType();
+	}
+	/**
+	 * 获取指定数据源下的所有表
+	 */
+	@Override
+	public JSONArray ListRegEntity(String dbsSqu) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	//------ getters and setters
+	/** 
+	 * @return dao 
+	 */
+	public IEntityDao getDao() {
+		return dao;
+	}
+	/** 
+	 */
+	
+	public void setDao(IEntityDao dao) {
+		this.dao = dao;
+	}
+
+
+}

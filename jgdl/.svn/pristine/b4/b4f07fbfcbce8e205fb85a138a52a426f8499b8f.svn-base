@@ -1,0 +1,60 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildSiteDaoImpl.java
+	* Date:2018-2-6上午11:06:50   
+	***/
+package monitor.projectConfig.dao.impl;
+
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.dao.IProjectChildSiteDao;
+
+/**
+ * @ClassName:ProjectChildSiteDaoImpl
+ * @dateTime: 2018-2-6 上午11:06:50
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildSiteDaoImpl implements IProjectChildSiteDao {
+
+	/**
+	  * addChildSite:接口实现
+	  * @author 黄月
+	  * @date  2018-2-6 上午11:40:18
+	  * @param site 
+	*/
+	@Override
+	public void addChildSite(Project_Child_Site site) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	  * delChildSite:接口实现
+	  * @author 黄月
+	  * @date  2018-2-6 上午11:40:18 
+	*/
+	@Override
+	public void delChildSite() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	  * updateChildSite:接口实现
+	  * @author 黄月
+	  * @date  2018-2-6 上午11:40:18 
+	*/
+	@Override
+	public void updateChildSite() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

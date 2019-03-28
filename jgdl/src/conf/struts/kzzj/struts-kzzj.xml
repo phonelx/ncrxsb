@@ -1,0 +1,30 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="kzzj" extends="monitor-struts-default">
+	
+		<!-- 跳转到应用管理页面 -->
+		<action name="showKzzjIndex" class="kzzjAction" method="showKzzjIndex">
+			<result name="success">pages/kzzj/kzzjManage.jsp</result>
+		</action>
+		
+		<!-- 抗震支架列表 -->
+		<action name="listKzzj" class="kzzjAction" method="listKzzj"></action>
+		
+		<!-- 抗震支架添加 -->
+		
+		<action name="addKzzj" class="kzzjAction" method="addKzzj"></action>
+		<!-- 抗震支架删除-->
+		<action name="deleteKzzj" class="kzzjAction" method="deleteKzzj"></action>
+		
+		<!-- 抗震支架编辑-->
+		<action name="editKzzj" class="kzzjAction" method="editKzzj"></action>
+		<!-- 通过SQU查询抗震支架-->
+		<action name="queryKzzjBySqu" class="kzzjAction" method="queryKzzjBySqu"></action>
+		<!-- 通过SQU查询抗震支架-->
+		<action name="searchLbmc" class="kzzjAction" method="searchLbmc"></action>
+		
+
+	</package>
+</struts>

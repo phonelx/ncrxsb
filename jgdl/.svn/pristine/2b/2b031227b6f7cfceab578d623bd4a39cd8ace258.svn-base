@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="manage" location="291,10" size="1750,1155">
+    <action name="showManageIndex" location="555,862" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="controlIndex.jsp" />
+      </result>
+    </action>
+    <action name="addControl" location="555,968" size="150,40" />
+    <action name="deleteControl" location="310,968" size="150,40" />
+    <action name="editControl" location="65,968" size="150,40" />
+    <action name="listControlInPage" location="65,1073" size="150,40" />
+    <action name="getGLSource" location="695,1073" size="150,40" />
+    <action name="selectListIndex" location="695,687" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="selectPage.jsp" />
+      </result>
+    </action>
+    <action name="selectList" location="1290,688" size="150,40" />
+    <action name="getSourceTable" location="1290,793" size="150,40" />
+    <action name="detialInformation" location="1290,898" size="150,40" />
+    <action name="detialTabPage" location="1535,898" size="150,40" />
+    <action name="deleteMess" location="1535,582" size="150,41">
+      <result name="deleteSuccess">
+        <resourceEdge source="deleteSuccess" routing="0" target="selectPage.jsp" />
+      </result>
+    </action>
+    <action name="selectMess" location="0,0" size="0,0" />
+    <action name="showYJSFZ" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="yjselect.jsp" />
+      </result>
+    </action>
+    <action name="selectyjsfz" location="0,0" size="0,0" />
+    <action name="getSourceTables" location="0,0" size="0,0" />
+    <action name="showManage" location="1535,477" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="yjgc.jsp" />
+      </result>
+    </action>
+    <action name="showCNMZ" location="1535,163" size="150,40" />
+    <action name="QueryCountSFZ" location="800,163" size="150,40" />
+    <action name="addManage" location="800,338" size="150,40" />
+    <action name="EditManage" location="1045,338" size="150,40" />
+    <action name="listManage" location="1045,233" size="150,40" />
+    <action name="showCitys" location="1290,233" size="150,40" />
+    <action name="DelManage" location="1290,408" size="150,40" />
+    <action name="EditRunTime" location="555,408" size="150,40" />
+    <action name="showSMS" location="555,302" size="150,41">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="sms.jsp" />
+      </result>
+    </action>
+    <action name="listSMS" location="555,58" size="150,40" />
+    <action name="showBK" location="65,58" size="150,40" />
+    <action name="AddSMS" location="65,233" size="150,40" />
+    <action name="ExitSMS" location="310,233" size="150,40" />
+    <action name="DelSms" location="310,128" size="150,40" />
+  </package>
+  <webResource name="controlIndex.jsp" path="/pages/manage/controlIndex.jsp" location="10,835" size="150,55" />
+  <webResource name="selectPage.jsp" path="/pages/manage/selectPage.jsp" location="51,660" size="150,55" />
+  <webResource name="yjgc.jsp" path="/pages/manage/yjgc.jsp" location="69,450" size="150,55" />
+  <webResource name="sms.jsp" path="/pages/manage/sms.jsp" location="72,275" size="150,55" />
+  <webResource name="yjselect.jsp" path="/pages/manage/yjselect.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+

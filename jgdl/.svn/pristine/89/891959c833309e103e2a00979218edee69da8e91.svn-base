@@ -1,0 +1,22 @@
+package monitor.manage.bean.dto;
+
+public class BKHMDto {
+	private int bk_id;// 布控规则ID
+	private String bk_bkhm;// 布控号码
+
+	public int getBk_id() {
+		return bk_id;
+	}
+
+	public void setBk_id(int bk_id) {
+		this.bk_id = bk_id;
+	}
+
+	public String getBk_bkhm() {
+		return bk_bkhm;
+	}
+
+	public void setBk_bkhm(String bk_bkhm) {
+		this.bk_bkhm = bk_bkhm;
+	}
+}

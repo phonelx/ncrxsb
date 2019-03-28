@@ -1,0 +1,325 @@
+$().ready(function(){
+	
+	//数量减少
+    $(".quantity-remove").live("click",function(e){  
+        var elemID = $(this).parent().attr("title");  
+        //var count = $("." + elemID + "inp_hide").val(); 
+        var count = parseInt($(this).parent().find("." + elemID + "inp").val());
+        if (count > 1) {
+        	$("." + elemID + "inp").val(count - 1);  
+        }
+    }); 
+    
+    //数量增加
+    $(".quantity-add").live("click", function(){  
+        var elemID = $(this).parent().attr("title");  
+        var count = parseInt($(this).parent().find("."+elemID+"inp").val());  
+        $(this).parent().find("." + elemID + "inp").val(count + 1);  
+    }); 
+});
+
+function editNum(index){
+	//当前支架数量
+	var count = $(index).parent().parent().parent().find(".hideInp").val();
+	//输入框赋值
+	$(index).parent().parent().parent().find(".quantity-count").val(count);
+	$(index).parent().parent().parent().find(".editAddNum").show();
+	$(index).parent().parent().parent().find(".buttonTeam").hide();
+}
+
+function cancelNum(index){
+	$(index).parent().parent().parent().find(".editAddNum").hide();
+	$(index).parent().parent().parent().find(".buttonTeam").show();
+}
+
+/**
+ * deleteHolder:(删除支架)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-11-17 下午3:13:49
+ * @param: @param row
+ * @return: void
+*/
+function deleteHolder(row){
+	Modal.confirm({msg : "确认删除当前支架?"}).on(function(e){
+		if (e) {
+			$.ajax({
+				type : "post",
+				url : "deleteHolderOfProjectBySqu.do",
+				timeout : 1321231232131213123,
+				data : {
+					squ : row.squ,
+				},
+				success : function(data) {
+					//加载当前支架列表
+					loadHolderOfProject();
+				},
+				error : function() {
+					Modal.alert({
+						msg : '删除支架出错！',
+						title : '消息提示',
+						btnok : '确定',
+						btncl : '取消'
+					});
+				}
+			});
+		}
+	});
+}
+
+/**
+  * loadHolderTreeAndList:(加载支架树和列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2018-2-7 上午11:52:51
+  * @param: 
+  * @return: void
+ */
+function loadHolderTreeAndList(site_squ){
+	loadHolderOfSite(site_squ);
+}
+
+/**
+ * loadHolderOfProject:(加载项目下的支架列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-10-23 下午7:30:04
+ * @param: 
+ * @return: void
+*/
+function loadHolderOfSite(site_squ) {
+	$().projectGrid({
+		url : 'loadHolderOfProjectPageInfo.do',
+		data : {
+			squ : site_squ,
+		}
+	});
+}
+
+/**
+ * loadHolderList:(分页加载支架信息)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-10-24 下午7:25:04
+ * @param: 
+ * @return: void
+*/
+function loadHolderList(site_squ){
+//	var search = $('#input_search').val();
+	$("#holderGrid").uiGrid({ 
+		url : "selectlistDxInfo.do",
+		rowNum : 5,//每页显示记录数
+		columns : [ {
+			field : 'zp',
+			title : '照片',
+			width : 60,
+			formatter : function(value, rec) {
+				if (rec.zp == "" || rec.zp == null) {
+					return '<img src="resource/images/mrtp.png" width="60px" height="60px">';
+				} else {
+					return '<img src="http://newsunny.jios.org:8088/upload/' + rec.zp + '" onerror="javascript:this.src=\'resource/images/mrtp.png\'" width="60px" height="60px">';
+				}
+			}
+		},{
+			field : 'dxmc',
+			title : '单项名称',
+			width : 800,
+			formatter : function(value, rec) {
+				return '<p><h4>支架名:' + rec.dxmc + '&nbsp;&nbsp;<small>支架形式:'+rec.zjxs+'</small></h4></p><span><b>管道类型:</b>'
+				+rec.gdlx_name+'</span>&nbsp;&nbsp;&nbsp;<span><b>安装方式:</b>'+rec.azfs_name+'</span>';
+		}
+		}],
+		divId : "#holderGrid",
+		showPage : 5,//显示
+		toAdd : true,
+		toAddEvent : toAdd,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount",//总页数
+		},
+		data : {
+			squ : site_squ
+		}
+	});
+}
+
+/**
+ * toAdd:(新增支架)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-10-24 下午9:11:27
+ * @param: 
+ * @return: void
+*/
+function toAdd(row){
+	$.ajax({
+		type : "post",
+		url : "addHolderToProject.do",
+		timeout : 1321231232131213123,
+		dataType : 'text',
+		data : {
+			projectSqu : _projectSqu,
+			holderSqu : row.dxsqu
+		},
+		success : function(data) {
+			if (data == "success") {
+				Modal.alert({
+					title : "提示",
+					msg : "添加成功！",
+					btnok : "确定"
+				});
+				loadHolderOfProject();
+				loadHolderList();
+			} else {
+				Modal.alert({
+					msg : '执行添加操作异常！',
+					title : '消息提示',
+					btnok : '确定',
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : 'ajax执行添加操作错误！',
+				title : '消息提示',
+				btnok : '确定',
+			});
+		}
+	});
+}
+
+
+/**
+ * updateHolderNum:(执行修改支架数量)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-11-20 下午12:11:20
+ * @param: @param index
+ * @param: @param row
+ * @return: void
+*/
+function updateHolderNum(index, row){
+	var count = $(index).parent().parent().find(".quantity-count").val();
+	$.ajax({
+		type : "post",
+		url : "updateHolderNumOfProject.do",
+		timeout : 1321231232131213123,
+		data : {
+			num : count,
+			holderSqu : row.dxsqu,
+			projectSqu : _projectSqu
+		},
+		success : function(data) {
+			//加载当前支架列表
+			loadHolderOfProject();
+		},
+		error : function() {
+			Modal.alert({
+				msg : '修改支架出错！',
+				title : '消息提示',
+				btnok : '确定',
+				btncl : '取消'
+			});
+		}
+	});
+}
+
+/**
+ * showSubassembly:(展示支架信息)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午9:38:33
+ * @param: 
+ * @return: void
+*/
+function holder_link(row){
+	//显示支架信息页
+	hideHolderListAndShowSubassembly();
+	//加载支架信息
+	showHolderMsg(row);
+	//加载组件列表
+	loadZJList(1, row.dxsqu);
+}
+
+/**
+ * hideHolderListAndShowSubassembly:(隐藏支架列表，显示部件列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午9:36:16
+ * @param: 
+ * @return: void
+*/
+function hideHolderListAndShowSubassembly(){
+	$('#holderListBox').hide();
+	$('#holderMsgBox').show();
+	$('#subassemblyListBox').show();
+	$('#retBtn').show();
+	$('#addBtn').hide();
+}
+
+/**
+ * showHolderListAndHideSubassembly:(显示支架列表，隐藏部件列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午9:37:24
+ * @param: 
+ * @return: void
+*/
+function showHolderListAndHideSubassembly(){
+	$('#holderListBox').show();
+	$('#holderMsgBox').hide();
+	$('#subassemblyListBox').hide();
+	$('#retBtn').hide();
+	$('#addBtn').show();
+}
+
+/**
+ * showSubassemblyMsg:(显示支架明细)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午10:59:45
+ * @param: 
+ * @return: void
+*/
+function showHolderMsg(holderObject){
+	$('#1stTemp').click();
+	$('#kzzjDXSQU').val(holderObject.dxsqu);
+	$('#kzzjDXMC').html(holderObject.dxmc);
+	$('#kzzjGDLX').html(holderObject.gdlx_name);
+	$('#kzzjAZFS').html(holderObject.azfs_name);
+	$('#kzzjZJXS').html(holderObject.zjxs);
+	$('#kzzjImg').attr("src","http://newsunny.jios.org:8088/upload/" + holderObject.zp);
+}
+
+/**
+ * loadZJListByType:(根据类型加载组件列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午11:09:41
+ * @param: @param activeID
+ * @return: void
+*/
+function loadZJListByType(activeID){
+	var dxsqu = $('#kzzjDXSQU').val();
+	loadZJList(activeID, dxsqu);
+}
+
+/**
+ * loadZJList:(加载组件列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-12-4 上午10:21:13
+ * @param: 
+ * @return: void
+*/
+function loadZJList(activeID, dxsqu){
+	$("#zjList").holderGrid({
+		url : "getKzzjBjList.do",
+		data :{
+			op:activeID,
+			dxsqu:dxsqu,
+			searchKey:""
+		}
+	});
+}

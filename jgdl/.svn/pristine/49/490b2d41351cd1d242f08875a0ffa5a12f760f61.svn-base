@@ -1,0 +1,232 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:KzzjMxpzAction.java
+	* Date:2017-10-26下午2:49:04   
+	***/
+package monitor.kzzjMxpz.action;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.common.exception.DaoException;
+import monitor.common.util.Constant;
+import monitor.kzzjMxpz.bean.entity.Dxmxb;
+import monitor.kzzjMxpz.service.IKzzjMxpzService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:KzzjMxpzAction
+ * @dateTime: 2017-10-26 下午2:49:04
+ * @Description: TODO
+ * @version 
+ * @author: 康正秋
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class KzzjMxpzAction extends BaseAction{
+	
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.6
+	*/
+	private static final long serialVersionUID = 1L;
+	
+	private IKzzjMxpzService kzzjMxpzService;
+	/**
+	 * @Fields pageVo:分页工具
+	 * @since JDK1.6
+	 */
+	private PageInfoVo pageVo = new PageInfoVo();
+	
+	private String dxsqu;
+	
+
+	public PageInfoVo getPageVo() {
+		return pageVo;
+	}
+
+
+	public void setPageVo(PageInfoVo pageVo) {
+		this.pageVo = pageVo;
+	}
+
+
+	public String getDxsqu() {
+		return dxsqu;
+	}
+
+
+	public void setDxsqu(String dxsqu) {
+		this.dxsqu = dxsqu;
+	}
+
+
+	public IKzzjMxpzService getKzzjMxpzService() {
+		return kzzjMxpzService;
+	}
+
+
+	public void setKzzjMxpzService(IKzzjMxpzService kzzjMxpzService) {
+		this.kzzjMxpzService = kzzjMxpzService;
+	}
+
+
+	/**
+	 * showDeptIndex:跳转到抗震支架明细配置
+	 * 
+	 * @author: 
+	 * @dateTime: 2015-8-13 下午8:59:01
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	
+	public String showKzzjMxpzIndex() {
+		return "success";
+	}
+	
+	
+	public void getKzzjMenu(){
+		
+		String pageStr = getRequest().getParameter("page");
+		String rowsStr = getRequest().getParameter("rows");
+		if (pageStr != null || !"".equals(pageStr)) {
+			this.pageVo.setPageNumber(Integer.parseInt(pageStr));
+		}
+		if (rowsStr != null) {
+			this.pageVo.setPageSize(Integer.parseInt(rowsStr));
+		}
+
+		try {
+			this.pageVo = kzzjMxpzService.getPartsMenu(pageVo);
+			//jsonObj.accumulate("pageVo", pageVo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject jsonObj = JSONObject.fromObject(pageVo); 
+
+		writeJsonBack(jsonObj.toString());
+	}
+	
+	
+	public void getKzzjBjList(){
+		String pageStr = getRequest().getParameter("page");
+		String rowsStr = getRequest().getParameter("rows");
+		
+		String dxsqu = getRequest().getParameter("dxsqu");
+		int op =Integer.parseInt(getRequest().getParameter("op"));
+		String searchKey = getRequest().getParameter("searchKey");
+		
+		if (pageStr != null || !"".equals(pageStr)) {
+			this.pageVo.setPageNumber(Integer.parseInt(pageStr));
+		}
+		if (rowsStr != null) {
+			this.pageVo.setPageSize(Integer.parseInt(rowsStr));
+		}
+		
+		try {
+			this.pageVo = kzzjMxpzService.getKzzjBjList(pageVo, dxsqu, searchKey, op);
+			//jsonObj.accumulate("pageVo", pageVo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject jsonObj = JSONObject.fromObject(pageVo); 
+
+		writeJsonBack(jsonObj.toString());
+		
+	}
+	
+
+	
+	public void addKzzjBj(){
+		
+		String bjsqu = getRequest().getParameter("bjsqu") ;
+		String sl = getRequest().getParameter("sl") ; 
+		String dxsqu = getRequest().getParameter("dxsqu") ;
+		String bjop = getRequest().getParameter("bjop") ;
+		
+		Dxmxb dxmxb = new Dxmxb();
+		
+		dxmxb.setBJSQU(bjsqu);
+		dxmxb.setSL(Integer.parseInt(sl));
+		dxmxb.setDXSQU(dxsqu);
+		dxmxb.setBJLX(Integer.parseInt(bjop));//部件类型
+		
+		String result = kzzjMxpzService.addKzzjBj(dxmxb);
+		writeJsonBack(getText(result));
+	}
+	
+	
+	
+	public void delKzzjBj(){
+		
+		String bjsqu = getRequest().getParameter("bjsqu") ;
+		String dxsqu = getRequest().getParameter("dxsqu") ;
+		
+		String result =kzzjMxpzService.delKzzjBj(dxsqu, bjsqu);
+		
+		writeJsonBack(getText(result));
+	}
+	
+	
+	public void editKzzjBj(){
+		
+		String bjsqu = getRequest().getParameter("bjsqu") ;
+		String sl = getRequest().getParameter("sl") ; 
+		String dxsqu = getRequest().getParameter("dxsqu") ;
+		
+		Dxmxb dxmxb = new Dxmxb();
+		dxmxb.setBJLX(0);
+		dxmxb.setBJSQU(bjsqu);
+		dxmxb.setSL(Integer.parseInt(sl));
+		dxmxb.setDXSQU(dxsqu);
+		
+		String result = kzzjMxpzService.editKzzjBj(dxmxb);
+		writeJsonBack(getText(result));
+		
+	}
+	
+	
+	
+	public void selectZhbjInfo(){
+		
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, String>> listZhbj = kzzjMxpzService.selectZhbjInfo();
+			json.accumulate("state", "success");
+			json.accumulate("list", listZhbj);
+		} catch (Exception e) {
+			json.accumulate("state", "wrong");
+			json.accumulate("state", e.getMessage());
+		}
+	
+		writeJsonBack(json.toString());
+	}
+	
+	public void selectZhbjInfoByZhsqu(){
+		String ZHSQU = getRequest().getParameter("ZHSQU") ;
+		JSONObject json = new JSONObject();
+		try {
+			List<Map<String, String>> listZhbj = kzzjMxpzService.selectZhbjInfoById(ZHSQU);
+			json.accumulate("state", "success");
+			json.accumulate("list", listZhbj);
+		} catch (Exception e) {
+			json.accumulate("state", "wrong");
+			json.accumulate("state", e.getMessage());
+		}
+		
+		writeJsonBack(json.toString());
+	}
+
+}

@@ -1,0 +1,93 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:SmsDao.java
+	* Date:2016-3-14上午11:25:35   
+	***/
+package monitor.manage.dao;
+
+import java.util.List;
+
+import monitor.manage.bean.entity.SMS;
+
+/**
+ * @ClassName:SmsDao
+ * @dateTime: 2016-3-14 上午11:25:35
+ * @Description: TODO
+ * @version 
+ * @author: 田浩楠
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface SmsDao {
+	/**
+	 * 
+	  * GetBKList:(下拉列表框加载所有布控规则).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-14 下午02:12:21
+	  * @param: @return
+	  * @return: List
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List GetBKList();
+	/**
+	 * 
+	  * AddSms:(添加短信管理规则).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-14 下午03:27:24
+	  * @param: @param sms
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String AddSms(SMS sms);
+
+	/**
+	 * 
+	  * ShowSMSList:(分页显示短信配置).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-14 下午03:46:58
+	  * @param: @param page
+	  * @param: @param pagesize
+	  * @param: @return
+	  * @return: List
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public List ShowSMSList(int page,int pagesize);
+	/**
+	 * 
+	  * ExitSms:(编辑短信配置).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-14 下午04:34:37
+	  * @param: @param sms
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String ExitSms(SMS sms);
+	/**
+	 * 
+	  * DelSms:(删除短信配置).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-14 下午05:06:41
+	  * @param: @param id
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String DelSms(Integer id);
+	public int getcounSMS();
+}

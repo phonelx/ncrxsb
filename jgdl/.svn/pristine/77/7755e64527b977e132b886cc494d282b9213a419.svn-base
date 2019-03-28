@@ -1,0 +1,207 @@
+package monitor.registry.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.common.exception.SysException;
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.service.IFieldService;
+
+public class FieldAction extends BaseAction{
+	/**
+	 * @field serialVersionUID
+	*/
+	private static final long serialVersionUID = 1L;
+	// 注入service 
+	private IFieldService service;
+	// 注入RegField 
+	private RegField field;
+	// 注入entitySqu
+	private String entitySqu;
+	// 注入实体名
+	private String entityName;
+	// 注入数据源名称
+	private String dbsName;
+	// 注入数据源编号
+	private String dbsSqu;
+
+    /**
+     *获取字段注释
+     */
+    public void getFieldComments(){
+        String filedName = getRequest().getParameter("filedName");
+        String entityName = getRequest().getParameter("entityName");
+        String dbsSqu = getRequest().getParameter("dbsSqu");
+        writeStringBack(service.getFieldComments(filedName , entityName,dbsSqu));
+    }
+
+	/**
+	 * @description 列表显示 通过实体 ID 获取已经注册的字段
+	 * @return String
+	 */
+	public String listRegistedField(){
+		try {
+		    // 每页显示条数
+            int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+            // 当前页
+            int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+            int[] page={pageSize,pageNo};
+            
+			PrintWriter out = getResponse().getWriter();
+			JSONObject datas = new JSONObject();
+			List list = service.getRegistedField(entitySqu);
+			datas.put("total", list.size());
+			datas.put("rows", list);
+			datas.put("pageSize", pageSize);
+            datas.put("pageNumber", pageNo);
+			out.print(datas);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 列表显示  获取为注册字段
+	 * @return String
+	 */
+	public String listFields(){
+		try {
+		    // 每页显示条数
+            int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+            // 当前页
+            int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+            int[] page={pageSize,pageNo};
+            
+			PrintWriter out = getResponse().getWriter();
+			JSONObject datas = new JSONObject();
+			List list
+			= service.getFieldByEntityName(
+				entitySqu , entityName , dbsSqu);
+			datas.put("total", list.size());
+			datas.put("rows", list);
+			datas.put("pageSize", pageSize);
+            datas.put("pageNumber", pageNo);
+			out.print(datas);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 注册字段
+	 * @return String
+	 */
+	public String addField(){
+		writeStringBack(service.addField(field) + "");
+		setOperationDescb("字段名称：" + field.getTitle());
+		return null;
+	}
+	/**
+	 * @description 删除字段
+	 * @return String
+	 */
+	public String deleteField(){
+		service.deleteField(field.getSqu());
+		setOperationDescb("字段名称：" + field.getTitle());
+		return null;
+	}
+	/**
+	 * @description 编辑字段
+	 * @return String
+	 */
+	public String editField(){
+		service.editField(field);
+		setOperationDescb("字段名称：" + field.getTitle());
+		return null;
+	}
+	/**
+	 * @return service
+	 */
+	public IFieldService getService() {
+		return service;
+	}
+	/**
+	 */
+	public void setService(IFieldService service) {
+		this.service = service;
+	}
+	/**
+	 * @return field
+	 */
+	public RegField getField() {
+		return field;
+	}
+	/**
+	 */
+	public void setField(RegField field) {
+		this.field = field;
+	}
+	/**
+	 * @return entitySqu
+	 */
+	public String getEntitySqu() {
+		return entitySqu;
+	}
+	/**
+	 */
+	public void setEntitySqu(String entitySqu) {
+		this.entitySqu = entitySqu;
+	}
+	/**
+	 * @return entityName
+	 */
+	public String getEntityName() {
+		return entityName;
+	}
+	/**
+	 */
+	public void setEntityName(String entityName) {
+		try {
+			if (entityName != null){
+				this.entityName = new String(
+				entityName.getBytes("iso-8859-1"),"utf-8");
+			} else {
+				this.entityName = entityName;
+			}
+		} catch (Exception e) {
+			throw new SysException(e);
+		}
+	}
+	/**
+	 * @return dbsName
+	 */
+	public String getDbsName() {
+		return dbsName;
+	}
+	/**
+	 */
+	public void setDbsName(String dbsName) {
+		try {
+			if (dbsName != null) {
+				this.dbsName = new String(
+				dbsName.getBytes("iso-8859-1") , "utf-8");
+			} else {
+				this.dbsName = dbsName;
+			}
+		} catch (Exception e) {
+			throw new SysException(e);
+		}
+	}
+	/**
+	 * @return dbsSqu
+	 */
+	public String getDbsSqu() {
+		return dbsSqu;
+	}
+	/**
+	 */
+	public void setDbsSqu(String dbsSqu) {
+		this.dbsSqu = dbsSqu;
+	}
+
+}

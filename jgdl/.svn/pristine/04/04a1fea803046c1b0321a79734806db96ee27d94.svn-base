@@ -1,0 +1,83 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:Log.java
+ * Date:2016-3-17上午11:55:43
+ ***/
+package monitor.log.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import monitor.common.dao.BaseDAO;
+import monitor.log.bean.entity.InterLogEntity;
+import monitor.log.dao.IMonitorLogDAO;
+
+/**
+ * @ClassName:Log
+ * @dateTime: 2016-3-17 上午11:55:43
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class MonitorLogDAOImpl extends BaseDAO implements IMonitorLogDAO {
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	String sql = null;
+
+	/**
+	 * executeInter_log:("执行日志类inter_log方法").<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-22 上午11:59:16
+	 * @param: @param ile
+	 * @param: @param sql
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public void executeInter_log(InterLogEntity ile, String sql) {
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, ile.getRequester());
+			pstmt.setString(2, ile.getTerminal_id());
+			pstmt.setString(3, ile.getInterface_condition());
+			pstmt.setString(4, ile.getInterface_result());
+
+//			System.out.println("执行日志："+sql);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt);
+		}
+	}
+
+	/**
+	 * close:("用于关闭不使用的连接对像").<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-22 上午11:59:14
+	 * @param: @param conn
+	 * @param: @param pstmt
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public void close(Connection conn, PreparedStatement pstmt) {
+		try {
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}

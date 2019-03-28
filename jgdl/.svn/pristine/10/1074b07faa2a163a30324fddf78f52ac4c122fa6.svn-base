@@ -1,0 +1,26 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="projectChildSite" extends="monitor-struts-default" >
+		
+		<!-- 新增部位-->
+		<action name="insertChildSite" class="projectChildSiteAction" method="insertChildSite"/>
+		<!-- 根据squ删除部位 -->
+		<action name="delChildSite" class="projectChildSiteAction" method="delChildSite"/>
+		<!-- 修改部位 -->
+		<action name="updateChildSite" class="projectChildSiteAction" method="updateChildSite"/>
+		<!-- 查询部位列表 -->
+		<action name="selectlistChildSite" class= "projectChildSiteAction" method="selectlistChildSite"/>
+		<!-- 添加支架 -->
+		<action name="insertDxInfo" class= "projectChildSiteAction" method="insertDxInfo"/>
+		<!-- 删除支架 -->
+		<action name="delDxInfo" class= "projectChildSiteAction" method="delDxInfo"/>
+		<!--修改支架  -->
+		<action name="updateDxInfo" class= "projectChildSiteAction" method="updateDxInfo"/>
+		<!-- 查询支架列表 -->
+		<action name="selectlistDxInfo" class= "projectChildSiteAction" method="selectlistDxInfo"/>
+		
+		
+	</package>	
+</struts>

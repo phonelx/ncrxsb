@@ -1,0 +1,221 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 21, 2011 2:59:58 PM
+*/
+package monitor.registry.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.common.exception.SysException;
+import monitor.registry.bean.dto.RegQueryDto;
+import monitor.registry.bean.entity.RegQuery;
+import monitor.registry.service.IRegQueryService;
+
+/**
+ * 查询注册管理 Action
+ * @author  liangxj
+ * @datetime  Apr 21, 2011 2:59:58 PM
+ */
+public class RegQueryAction extends BaseAction {
+	/**
+	 * @field serialVersionUID
+	*/
+	private static final long serialVersionUID = 1L;
+	// 注入 service
+	private IRegQueryService service;
+	// 注入 regquery
+	private RegQuery query;
+	// 注入 queryDto
+	private RegQueryDto queryDto;
+	// 注入数据源ID
+	private int dbsSqu;
+	// 注入 下拉列表选中的 实体 的编号
+	private String entitySqus;
+	/**
+	 * @description  列表显示所有  已经注册的查询
+	 * @return String
+	 */
+	public String fetchAllQuerys() {
+		try {
+			// 每页显示条数
+			int pageSize
+			= Integer.parseInt(getRequest().getParameter("rows"));
+			// 当前页
+			int pageNo
+			= Integer.parseInt(getRequest().getParameter("page"));
+			PrintWriter out = getResponse().getWriter();
+			JSONObject datas = new JSONObject();
+			// 获取分页数据
+			List list = service.getAllQuerys(pageSize, pageNo - 1);
+			datas.put("total", list.get(0));
+			datas.put("rows", list.get(1));
+			out.print(datas);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return  null;
+	}
+	/**
+	 * @description 注册查询
+	 * @return String
+	 */
+	public String addQuery(){
+		service.addQuery(queryDto);
+		setOperationDescb("查询名称：" + queryDto.getQuery().getName());
+		return null;
+	}
+	/**
+	 * @description 编辑查询
+	 * @return String
+	 */
+	public String editQuery(){
+		service.editQuery(query);
+		return null;
+	}
+	/**
+	 * @description 删除查询
+	 * @return String
+	 */
+	public String deleteQuery(){
+		service.deleteQuery(query.getSqu());
+		setOperationDescb("查询名称：" + query.getName());
+		return null;
+	}
+	/**
+	 * @description 查询所有数据源
+	 * @return String
+	 */
+	public String fetchAllDbs(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			JSONArray array = new JSONArray();
+			array.addAll(service.getAllDbs());
+			out.print(array);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description
+	 *          查询所有已经注册的实体
+	 * 			提供页面上，下拉列的表数据
+	 * @return String
+	 */
+	public String fetchAllEntity(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.getAllEntity(dbsSqu));
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description
+	 * 		查询所有 已经注册的字段
+	 * 		提供页面上，选择查询字段 的值
+	 * @return String
+	 */
+	public String fetchField4ShowField(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			out.print(service.getField4ShowField(entitySqus));
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description
+	 * 	  查询所有已经注册 的字段
+	 * 	  提供页面上，设置查询条件 下拉列表值
+	 * @return String
+	 */
+	public String fetchField4Combo(){
+		try {
+			PrintWriter out = getResponse().getWriter();
+			JSONArray array = new JSONArray();
+			array.addAll(service.getField4Combo(entitySqus));
+			out.print(array);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		}
+		return null;
+	}
+	/**
+	 * @description 跳转到查询管理页面
+	 * @return String
+	 */
+	public String gotoRegQueryMgr(){
+		return SUCCESS;
+	}
+	//----------gettes and settes
+	/**
+	 * @return service
+	 */
+	public IRegQueryService getService() {
+		return service;
+	}
+	/**
+	 */
+	public void setService(IRegQueryService service) {
+		this.service = service;
+	}
+	/**
+	 * @return query
+	 */
+	public RegQuery getQuery() {
+		return query;
+	}
+	/**
+	 */
+	public void setQuery(RegQuery query) {
+		this.query = query;
+	}
+	/**
+	 * @return dbsSqu
+	 */
+	public int getDbsSqu() {
+		return dbsSqu;
+	}
+	/**
+	 */
+	public void setDbsSqu(int dbsSqu) {
+		this.dbsSqu = dbsSqu;
+	}
+	/**
+	 * @return entitySqus
+	 */
+	public String getEntitySqus() {
+		return entitySqus;
+	}
+	/**
+	 */
+	public void setEntitySqus(String entitySqus) {
+		this.entitySqus = entitySqus;
+	}
+	/**
+	 * @return queryDto
+	 */
+	public RegQueryDto getQueryDto() {
+		return queryDto;
+	}
+	/**
+	 */
+	public void setQueryDto(RegQueryDto queryDto) {
+		this.queryDto = queryDto;
+	}
+}

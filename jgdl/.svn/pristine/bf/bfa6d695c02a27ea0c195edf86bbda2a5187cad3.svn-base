@@ -1,0 +1,132 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 20, 2011 6:21:53 PM
+*/
+package monitor.registry.bean.vo;
+
+/** 
+ * <description> 
+ * @author  liangxj
+ * @datetime  Apr 20, 2011 6:21:53 PM
+ */
+public class FieldVo {
+	// 字段名称
+	private String columnName ;
+	// 数据类型
+	private String dataType ;
+	// 数据长度
+	private String dataLength;
+	// 数据精度
+	private String dataPrecision;
+	// 小数数位
+	private String dataScale ;
+	// 是否为空
+	private String nullable ;
+	// 约束类型
+	private String consType ;
+	//是否为预警字段
+	private String isquery;
+	//匹配字段
+	private String indexof;
+	
+	/** 
+	 * @return columnName 
+	 */
+	public String getColumnName() {
+		return columnName;
+	}
+	/** 
+	 */
+	
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+	/** 
+	 * @return dataType 
+	 */
+	public String getDataType() {
+		return dataType;
+	}
+	/** 
+	 */
+	
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+	/** 
+	 * @return dataLength 
+	 */
+	public String getDataLength() {
+		return dataLength;
+	}
+	/** 
+	 */
+	
+	public void setDataLength(String dataLength) {
+		this.dataLength = dataLength;
+	}
+	/** 
+	 * @return dataPrecision 
+	 */
+	public String getDataPrecision() {
+		return dataPrecision;
+	}
+	/** 
+	 */
+	
+	public void setDataPrecision(String dataPrecision) {
+		this.dataPrecision = dataPrecision;
+	}
+	/** 
+	 * @return dataScale 
+	 */
+	public String getDataScale() {
+		return dataScale;
+	}
+	/** 
+	 */
+	
+	public void setDataScale(String dataScale) {
+		this.dataScale = dataScale;
+	}
+	/** 
+	 * @return nullable 
+	 */
+	public String getNullable() {
+		return nullable;
+	}
+	/** 
+	 */
+	
+	public void setNullable(String nullable) {
+		this.nullable = nullable;
+	}
+	/** 
+	 * @return consType 
+	 */
+	public String getConsType() {
+		return consType;
+	}
+	/** 
+	 */
+	
+	public void setConsType(String consType) {
+		this.consType = consType;
+	}
+	public String getIsquery() {
+		return isquery;
+	}
+	public void setIsquery(String isquery) {
+		this.isquery = isquery;
+	}
+	public String getIndexof() {
+		return indexof;
+	}
+	public void setIndexof(String indexof) {
+		this.indexof = indexof;
+	}
+	
+	
+}

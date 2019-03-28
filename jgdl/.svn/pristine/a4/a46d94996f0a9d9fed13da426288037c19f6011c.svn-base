@@ -1,0 +1,92 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:GetProperties.java
+ * Date:2016-3-16下午03:24:13   
+ ***/
+package monitor.manage.util;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
+
+/**
+ * @ClassName:GetProperties
+ * @dateTime: 2016-3-16 下午03:24:13
+ * @Description: TODO
+ * @version
+ * @author: 田浩楠
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class GetProperties {
+
+	/**
+	  * GetRuntime:(读取).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-16 下午03:56:10
+	  * @param: @return
+	  * @return: int
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public static int GetRuntime() {
+		int minute = 0;
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream("D:/YjTime.properties");
+			Properties properties = new Properties();
+			properties.load(stream);
+			minute
+			= Integer.parseInt(properties.getProperty("time"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stream != null) { stream.close(); }
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return minute;
+	}
+
+	public static void Properties(String time) {
+		InputStream stream = null;
+		OutputStream of = null;
+		try {
+			Properties properties = new Properties();
+			stream = new FileInputStream("D:/YjTime.properties");
+			properties.load(stream);
+			properties.setProperty("time", time);
+			of = new FileOutputStream("D:/YjTime.properties");
+			properties.store(of, "12");
+			stream.close();
+			of.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stream != null) { stream.close(); }
+				if (of != null) { of.close(); }
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public static void main(String[] args) {
+		Properties("300");
+		System.out.println(GetRuntime());
+		
+		
+	}
+}

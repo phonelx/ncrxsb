@@ -1,0 +1,673 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-4-18 上午10:54:53
+ */
+package monitor.user.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.common.util.StringConvert;
+import monitor.user.bean.dto.ModuleMainDto;
+import monitor.user.bean.dto.ModuleSubDto;
+import monitor.user.bean.dto.UserDto;
+import monitor.user.bean.dto.UserLoginInfoDto;
+import monitor.user.bean.entity.RoleEntity;
+import monitor.user.bean.entity.UserEntity;
+import monitor.user.bean.vo.PageInfoVo;
+import monitor.user.dao.IRoleDAO;
+import monitor.user.dao.IUserDAO;
+import net.sf.json.JSONObject;
+
+/**
+ * <description>
+ * 
+ * @author cl
+ * @datetime 2011-4-18 上午10:54:53
+ */
+public class UserDAOImpl extends BaseDAO implements IUserDAO {
+	private IRoleDAO roleDAO = null;
+
+	public IRoleDAO getRoleDAO() {
+		return roleDAO;
+	}
+
+	public void setRoleDAO(IRoleDAO roleDAO) {
+		this.roleDAO = roleDAO;
+	}
+
+	public UserDto login(UserDto user) {
+		UserDto userDto = null;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			String sql="";
+			if(user.getUsername()=="admin"||user.getUsername().equals("admin")){//admin登录
+				sql="select * from SSP_TUserInfo where username='admin' and pwd ='"+StringConvert.getBASE64(user.getPwd())+"'";
+				pstmt=conn.prepareStatement(sql);
+			}else{
+				sql="select * from SSP_TUserInfo where loginCode=?";
+				//modification start 2016-3-3
+				String ipAddress=user.getIp();//获取当前系统的IP
+				
+				String baseLoginCode = user.getUsername() + user.getPwd() + ipAddress;// 登录识别码
+				pstmt = conn.prepareStatement(sql);
+				String a=StringConvert.getBASE64(baseLoginCode);
+				pstmt.setString(1, a);
+			} 
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				UserEntity userEntity = new UserEntity();
+				userEntity.setSqu(rs.getInt("squ"));
+				userEntity.setRoleSqu(rs.getInt("roleSqu"));
+				userEntity.setUserTitle(rs.getString("userTitle").trim());
+				userEntity.setUsername(rs.getString("username").trim());
+				userEntity.setPwd(rs.getString("pwd").trim());
+				userEntity.setDescb(rs.getString("descb"));
+				userEntity.setIsDefault(rs.getInt("isDefault"));
+				userEntity.setIsEnabled(rs.getInt("isEnabled"));
+				
+				/* ------------Adding,set value for userEntity 2016-3-3----------- */
+				userEntity.setSfzhm(rs.getString("sfzhm"));
+				userEntity.setValidTime(rs.getString("validTime"));
+				userEntity.setIp(rs.getString("ip"));
+				userEntity.setCrreateTime(rs.getString("crreateTime"));
+				userEntity.setLoginCode(rs.getString("loginCode"));
+				RoleEntity roleEntity = roleDAO.findRoleBySqu(userEntity.getRoleSqu());
+
+				userDto = new UserDto(userEntity);
+				userDto.setRoleEntity(roleEntity);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return userDto;
+	}
+
+	/**
+	 * @查询所有用户信息
+	 * @author: cl
+	 * @param
+	 * @return List<UserDto>
+	 * @deprecated
+	 */
+	public List<UserDto> listUsers() {
+		List<UserDto> userList = new ArrayList<UserDto>();
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			String sql = "select * from SSP_TUserInfo";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			UserEntity userEntity = null;
+			UserDto userDto = null;
+			while (rs.next()) {
+				userEntity = new UserEntity();
+				userEntity.setSqu(rs.getInt("squ"));
+				userEntity.setRoleSqu(rs.getInt("roleSqu"));
+				userEntity.setUserTitle(rs.getString("userTitle").trim());
+				userEntity.setUsername(rs.getString("username").trim());
+				userEntity.setPwd(rs.getString("pwd").trim());
+				userEntity.setDescb(rs.getString("descb"));
+				userEntity.setIsEnabled(rs.getInt("isEnabled"));
+				userEntity.setIsDefault(rs.getInt("isDefault"));
+
+				userDto = new UserDto(userEntity);// 将实体bean封装成传输bean
+				userList.add(userDto);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return userList;
+	}
+
+	/**
+	 * @返回通过PageInfoVo封装后的用户列表，已通过分页处理
+	 * @author: cl
+	 * @param
+	 * @return PageInfoVo
+	 */
+	public PageInfoVo listUsersInPage(PageInfoVo page) {
+		List<UserDto> userList = new ArrayList<UserDto>();
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "select count(*) from SSP_TUserInfo";
+
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				page.setTotal(rs.getInt(1));
+			}
+
+			int startIndex = (page.getPageNumber() - 1) * page.getPageSize() + 1;
+			sql = "select t1.*,t2.rolename from (select my_table.*,rownum as my_rownum from (select * from SSP_TUserInfo) my_table where rownum < "
+					+ (startIndex + page.getPageSize())
+					+ ") t1,ssp_troleinfo t2 where t1.rolesqu =  t2.squ and my_rownum >= "
+					+ startIndex;
+			pstmt = conn.prepareStatement(sql);
+			System.out.println("sql："+sql);
+			rs = pstmt.executeQuery();
+
+			UserEntity userEntity = null;
+			UserDto userDto = null;
+			while (rs.next()) {
+				userEntity = new UserEntity();
+				userEntity.setSqu(rs.getInt("squ"));
+				userEntity.setRoleSqu(rs.getInt("roleSqu"));
+				userEntity.setUserTitle(rs.getString("userTitle").trim());
+				userEntity.setUsername(rs.getString("username").trim());
+				userEntity.setPwd(rs.getString("pwd").trim());
+				userEntity.setDescb(rs.getString("descb"));
+				userEntity.setIsEnabled(rs.getInt("isEnabled"));
+				userEntity.setIsDefault(rs.getInt("isDefault"));
+				
+				/* ------------Adding,set value for userEntity 2016-3-4----------- */
+				userEntity.setSfzhm(rs.getString("sfzhm"));
+				userEntity.setValidTime(rs.getString("validtime"));
+				userEntity.setIp(rs.getString("ip"));
+				userEntity.setCrreateTime(rs.getString("crreatetime"));
+				userEntity.setLoginCode(rs.getString("loginCode"));
+
+				// 加入角色名称，用于界面grid显示
+				RoleEntity role = new RoleEntity();
+				role.setSqu(rs.getInt("squ"));
+				role.setRoleName(rs.getString("rolename"));
+
+				userDto = new UserDto(userEntity);// 将实体bean封装成传输bean
+				userDto.setRoleEntity(role);
+				userList.add(userDto);
+			}
+			
+			page.setRows(userList);
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return page;
+	}
+
+	public String addUser(UserDto userDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		System.out.println(userDto);
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			String sql = "SELECT * FROM SSP_TUSERINFO WHERE USERNAME=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userDto.getUsername());
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return "nameHasExist";
+			}
+
+			//--------------modification start 2016-3-3------------
+			
+			sql="INSERT INTO SSP_TUSERINFO(ROLESQU,USERTITLE,USERNAME,PWD,DESCB,ISDEFAULT,"
+				+ "ISENABLED,SFZHM,VALIDTIME,IP,CRREATETIME,LOGINCODE) "
+				+ "VALUES(?,?,?,?,?,0,?,?,TO_DATE(TO_CHAR(SYSDATE+7,'yyyy-MM-dd HH24:mi:ss'),'yyyy-MM-dd HH24:mi:ss'),?,TO_DATE(TO_CHAR(SYSDATE,'yyyy-MM-dd HH24:mi:ss'),'yyyy-MM-dd HH24:mi:ss'),?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userDto.getRoleSqu());
+			pstmt.setString(2, userDto.getUserTitle());
+			pstmt.setString(3, userDto.getUsername());
+			pstmt.setString(4, StringConvert.getBASE64(userDto.getPwd()));
+			pstmt.setString(5, userDto.getDescb());
+			pstmt.setInt(6, userDto.getIsEnabled());
+			pstmt.setString(7, userDto.getSfzhm());
+//			String s=userDto.getValidTime();
+//			System.out.println(s.substring(0, 10));
+			pstmt.setString(8, userDto.getIp());
+			String loginCode=userDto.getUsername()+userDto.getPwd()+userDto.getIp();
+			pstmt.setString(9, StringConvert.getBASE64(loginCode));
+			
+			pstmt.executeUpdate();
+			//--------------modification end 2016-3-3------------
+
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "addSuccess";
+	}
+
+	public String editUser(UserDto userDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		System.out.println("userDto:"+userDto);
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			String sql = 
+					"UPDATE SSP_TUSERINFO SET ROLESQU=?,USERTITLE=?,USERNAME=?,PWD=?,DESCB=?,ISENABLED=?," +
+					"SFZHM=?,VALIDTIME=TO_DATE(?,'yyyy-MM-dd HH24:mi:ss'),IP=?,LOGINCODE=? WHERE SQU = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userDto.getRoleSqu());
+			pstmt.setString(2, userDto.getUserTitle());
+			pstmt.setString(3, userDto.getUsername());
+			pstmt.setString(4, StringConvert.getBASE64(userDto.getPwd()));
+			pstmt.setString(5, userDto.getDescb());
+			pstmt.setInt(6, userDto.getIsEnabled());
+			
+			//Adding 2016-3-7 start------
+			pstmt.setString(7, userDto.getSfzhm());
+			String vt=userDto.getValidTime();
+			if(vt.indexOf(".")>0){
+			    pstmt.setString(8, vt.substring(0, vt.indexOf(".")));
+			} else {
+			    pstmt.setString(8, vt);
+			}
+			pstmt.setString(9, userDto.getIp());
+			String loginCode=userDto.getUsername()+userDto.getPwd()+userDto.getIp();
+			System.out.println("loginCode:"+loginCode);
+			pstmt.setString(10, StringConvert.getBASE64(loginCode));
+			pstmt.setInt(11, userDto.getSqu());
+			System.out.println(userDto.getSfzhm()+"--"+userDto.getValidTime()+"--"+userDto.getIp());
+			String fin = ("修改的sql语句："+"UPDATE SSP_TUSERINFO SET ROLESQU='"+userDto.getRoleSqu()+"'," +
+					"USERTITLE='"+userDto.getUserTitle()+"',USERNAME='"+userDto.getUsername()+"'," +
+				"PWD='"+StringConvert.getBASE64(userDto.getPwd())+"',DESCB='"+userDto.getDescb()+"'," +
+						"ISENABLED='"+userDto.getIsEnabled()+"',SFZHM='"+userDto.getSfzhm()+"'," +
+				"VALIDTIME=TO_DATE('"+vt+"','yyyy-MM-dd HH24:mi:ss'),IP='"+userDto.getIp()+"'," +
+						"LOGINCODE='"+StringConvert.getBASE64(loginCode)+"' WHERE SQU = '"+userDto.getSqu()+"'");
+			System.out.println("FIN:"+fin);
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "editSuccess";
+	}
+
+	public String deleteUser(UserDto userDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+
+			// 判断是否是默认用户
+			String sql = "select * from ssp_tuserinfo where squ = ? and isdefault = 1";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userDto.getSqu());
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				return "defaultUser";
+			}
+
+			sql = "delete from ssp_tuserinfo where squ = ? and isdefault = 0";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userDto.getSqu());
+			pstmt.executeUpdate();
+
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return "deleteSuccess";
+	}
+
+	public List<ModuleMainDto> listModules(UserDto dto) {
+		List<ModuleMainDto> mainList = new ArrayList<ModuleMainDto>();
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		try {
+			conn = datasource.getConnection();
+
+			String sql = "select * from ssp_tmodulemain";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ModuleMainDto mainDto = new ModuleMainDto();
+				int mainSqu = rs.getInt("squ");
+				List<ModuleSubDto> subDtoList = new ArrayList<ModuleSubDto>();
+
+				sql = "select * from SSP_TRole_ModuleSub t1,ssp_tmodulesub t2 where t1.subsqu = t2.squ and t2.mainsqu = ? and t1.rolesqu = ? order by t2.dispOrder";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, mainSqu);
+				pstmt.setInt(2, dto.getRoleSqu());
+				rs2 = pstmt.executeQuery();
+				while (rs2.next()) {
+					ModuleSubDto subDto = new ModuleSubDto();
+					subDto.setSqu(rs2.getInt("squ"));
+					subDto.setName(rs2.getString("name").trim());
+					subDto.setEntryUrl(rs2.getString("entryurl").trim());
+					subDto.setImageUrl(rs2.getString("imgUrl"));
+					subDtoList.add(subDto);
+				}
+
+				mainDto.setSqu(mainSqu);
+				mainDto.setName(rs.getString("name").trim());
+				mainDto.setSubModuleList(subDtoList);
+
+				mainList.add(mainDto);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (rs2 != null) {
+					rs2.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return mainList;
+	}
+
+	public int recordUserLogin(UserLoginInfoDto userLoginDto) {
+		int loginInfoSqu = -1;
+
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			//Modification Start 2016-3-7------- 
+			String sql = "insert into LOG_INFO(NUM_ID,USER_ID,ORGANIZATION,USER_NAME,TERMINAL_ID,OPERATE_TYPE,OPERATE_TIME,OPERATE_CONDITION,OPERATE_RESULT) values(LOG_INFO_NUM_ID.NEXTVAL,?,?,?,?,?,TO_CHAR(sysdate,'YYYYMMDDHH24MISS'),?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userLoginDto.getUser_id());//用户身份证号
+			pstmt.setString(2, userLoginDto.getOrganization());
+			pstmt.setString(3, userLoginDto.getUserInfo());
+			pstmt.setString(4, userLoginDto.getLoginIp());
+			pstmt.setString(5, userLoginDto.getOperate_type());
+//			pstmt.setString(6, userLoginDto.getLoginDatetime());
+//			System.out.println(userLoginDto.getLoginDatetime());
+			pstmt.setString(6, userLoginDto.getOperate_condition());
+			pstmt.setString(7, userLoginDto.getOperate_result());
+			pstmt.executeUpdate();
+
+			sql = "select num_id from LOG_INFO where user_id = ? and terminal_id = ? and operate_time = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userLoginDto.getUserInfo());
+			pstmt.setString(2, userLoginDto.getLoginIp());
+			pstmt.setString(3, userLoginDto.getLoginDatetime());
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				loginInfoSqu = rs.getInt("num_id");
+			}
+
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return loginInfoSqu;
+	}
+
+	public void recordUserLogout(UserLoginInfoDto userLoginInfoDto) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+
+			String sql = "update LOG_INFO set OPERATE_TIME = to_date(?,'yyyy-mm-dd HH24:mi:ss') where num_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, userLoginInfoDto.getLogoutDatetime());
+			pstmt.setInt(2, userLoginInfoDto.getSqu());
+			pstmt.executeUpdate();
+
+			conn.commit();
+		} catch (Exception e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				throw new DaoException(e);
+			}
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+	}
+
+	public String getMain() {
+		Map<String, ModuleSubDto> moduleSubMap = new HashMap<String, ModuleSubDto>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			String sql = "select * from ssp_tmodulesub";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ModuleSubDto moduleSubDto = new ModuleSubDto();
+				moduleSubDto.setSqu(rs.getInt("SQU"));
+				moduleSubDto.setName(rs.getString("NAME"));
+				moduleSubDto.setMainSqu(rs.getInt("MAINSQU"));
+				moduleSubDto.setImageUrl(rs.getString("IMGURL"));
+				moduleSubDto.setEntryUrl(rs.getString("ENTRYURL"));
+				moduleSubMap.put("_" + rs.getInt("squ"), moduleSubDto);
+			}
+			System.out.println(JSONObject.fromObject(moduleSubMap));
+			System.out.println(JSONObject.fromObject(moduleSubMap).get("_1004"));
+
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return null;
+	}
+
+	public UserDto getUser() {
+		UserDto userVo = new UserDto();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = datasource.getConnection();
+			String sql = "select * from ssp_tuserinfo where username='admin'";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				userVo.setSqu(rs.getInt("squ"));
+				userVo.setRoleSqu(rs.getInt("roleSqu"));
+				userVo.setUserTitle(rs.getString("userTitle").trim());
+				userVo.setUsername(rs.getString("username").trim());
+				userVo.setPwd(rs.getString("pwd").trim());
+				userVo.setDescb(rs.getString("descb"));
+				userVo.setIsEnabled(rs.getInt("isEnabled"));
+				userVo.setIsDefault(rs.getInt("isDefault"));
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			}
+		}
+		return userVo;
+	}
+}

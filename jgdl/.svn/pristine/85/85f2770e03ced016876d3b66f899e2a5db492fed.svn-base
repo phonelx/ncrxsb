@@ -1,0 +1,418 @@
+package monitor.ality.dao.impl;
+
+import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.ality.bean.entity.AlityBean;
+import monitor.ality.dao.IAlitySetDao;
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.common.util.Base64Util;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-13-下午1:50:19
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class AlitySetDaoImpl extends BaseDAO implements IAlitySetDao {
+	private Connection conn = null ;
+	private PreparedStatement pstmt = null ;
+	private ResultSet rs = null ;
+	StringBuffer sql = new StringBuffer();
+	
+	//1.加载功能模块
+	@Override
+	public List<Map<String, Object>> fethParentMenu(String squ) throws SQLException {
+		sql.delete(0, sql.toString().length());
+		if(squ ==null|| squ.equals("")){
+			squ = "0";
+		}
+		//根据上级菜单squ查询所有功能菜单
+		sql.append(" SELECT * FROM SSP_TMODULESUB WHERE MAINSQU = "+squ+" ORDER BY SQU ");
+//System.out.println("====="+sql.toString());
+		return listResultBySql(sql.toString(), datasource.getConnection());
+	}
+	
+	
+	
+	//系统功能菜单查询
+	@Override
+	public PageInfoVo fethAlityMenu(String pSqu, PageInfoVo pageVo,String query)
+			throws SQLException {
+		String param = "AND  MAINSQU = "+pSqu+"";
+		if(!"".equals(query)){
+			param = query;
+		}
+		sql.delete(0, sql.toString().length());
+		int startIndex=(pageVo.getPageNumber()-1)*pageVo.getPageSize() +1;
+		StringBuilder sql = new StringBuilder();
+		String countSql = "SELECT COUNT(*) FROM";
+		String listSql = "SELECT * FROM ";
+		sql.append(" (SELECT S.*,ROWNUM RN FROM (SELECT A.*,B.NAME TYPENAME  FROM SSP_TMODULESUB A, ");
+		sql.append(" SSP_TMODULEMAIN B  WHERE A.MAINSQU = B.SQU(+) "+param+" ORDER BY DISPORDER )S)");
+
+		pageVo.setTotal(getAllCnts(countSql+sql.toString()));
+		sql.append(" WHERE RN <"+(pageVo.getPageSize()+startIndex)+" AND RN >="+startIndex);
+		pageVo.setRows(listResultBySql(listSql+sql.toString(), datasource.getConnection()));
+		return pageVo;
+	}
+	
+	@Override
+	public int fetchMaxOrder(String pSqu) {
+		sql.delete(0, sql.toString().length());
+		sql.append(" SELECT MAX(DISPORDER) NUM FROM SSP_TMODULESUB WHERE MAINSQU ="+pSqu);
+		return (getAllCnts(sql.toString())+1);
+	}
+	
+	@Override
+	public int urlHendiadys(String urlName) {
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_TMODULESUB WHERE ENTRYURL ='"+urlName+"'");
+		return getAllCnts(sql.toString());
+	}
+	
+	@Override
+	public int delParentMenu(String squ) {
+	
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_TMODULESUB WHERE MAINSQU = "+squ);
+		int count = getAllCnts(sql.toString());
+		if(count > 0){
+			return 1;
+		}
+			sql.delete(0, sql.toString().length());
+			sql.append("DELETE SSP_TMODULEMAIN WHERE SQU = "+squ);
+			executeSql(sql.toString());
+		return 0;
+		
+	}
+	
+
+	@Override
+	public int addParentMenu(String mainName) {
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_TMODULEMAIN WHERE NAME = '"+mainName+"'");
+		int count = getAllCnts(sql.toString());
+		if(count > 0){
+			return 1;
+		}
+		sql.delete(0, sql.toString().length());
+		sql.append("INSERT INTO SSP_TMODULEMAIN (SQU,NAME)VALUES(SEQ_TMODULEMAIN.NEXTVAL,'"+mainName+"')");
+		executeSql(sql.toString());
+		return 0;
+	}
+
+	@Override
+	public void editParentMenu(String mainName, String squ) {
+		sql.delete(0, sql.toString().length());
+		sql.append("UPDATE SSP_TMODULEMAIN SET NAME = '"+mainName+"' WHERE SQU = "+squ);
+		executeSql(sql.toString());
+	}
+	
+	@Override
+	public int addAlityMenu(AlityBean ality) {
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_TMODULESUB WHERE ENTRYURL ='"+ality.getEntryUrl()+"' OR NAME = '"+ality.getName()+"'");
+		int count = getAllCnts(sql.toString());
+		if(count>0){
+			return 1;
+		}
+		
+		int tier = 0;
+		sql.delete(0, sql.toString().length());
+		sql.append(" SELECT MAX(SQU) FROM SSP_TMODULESUB ");
+		int nextVal = getAllCnts(sql.toString());
+		
+		sql.delete(0, sql.toString().length());
+		sql.append(" SELECT SQU FROM SSP_TMODULEMAIN WHERE NAME='"+ality.getName()+"'");
+		int s = getAllCnts(sql.toString());
+		
+		int SQU;
+		sql.delete(0, sql.toString().length());
+		if(ality.getMainSqu().equals("0")){
+			tier = 1;
+			SQU = s;
+		}else{
+			tier = 2;
+			SQU=nextVal+1;
+		}
+		sql.append("INSERT INTO SSP_TMODULESUB (SQU,MAINSQU,NAME,ENTRYURL,DISPORDER,DIVID,TIER,ISHIDDE)");
+		sql.append("VALUES("+SQU+","+ality.getMainSqu()+",'"+ality.getName()+"','"+ality.getEntryUrl()+"',");
+		sql.append(""+ality.getDispOrder()+",'"+ality.getDivID()+"',"+tier+","+ality.getIsHidden()+")");
+		executeSql(sql.toString());
+		return 0;
+	}
+	@Override
+	public void editAlityMenu(AlityBean ality) {
+		sql.delete(0, sql.toString().length());
+		sql.append(" UPDATE SSP_TMODULESUB SET MAINSQU = "+ality.getMain()+",NAME = '"+ality.getName()+"',ENTRYURL ='"+ality.getEntryUrl()+"' ,");
+		sql.append(" DIVID='"+ality.getDivID()+"' ,ISHIDDE="+ality.getIsHidden()+"  WHERE SQU = "+ality.getSqu());
+		executeSql(sql.toString());
+		
+		if(ality.getMain().equals("0") || ality.getMain() == "0"){
+			sql.delete(0, sql.toString().length());
+			sql.append(" UPDATE SSP_TMODULEMAIN SET NAME = '"+ality.getName()+"' WHERE SQU = "+ality.getSqu());
+			executeSql(sql.toString());
+		}
+	}
+	
+	@Override
+	public int delAlityMenu(String squ) {
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_SMODULE_URL WHERE SUBSQU = "+squ);//判断是否有下级节点
+		int count = getAllCnts(sql.toString());
+		if(count>0){
+			return 1;
+		}else{
+			sql.delete(0, sql.toString().length());
+			sql.append("SELECT MAINSQU FROM SSP_TMODULESUB WHERE SQU = "+squ);//获取当前mainsqu
+			int main_squ = getAllCnts(sql.toString());
+			
+			sql.delete(0, sql.toString().length());
+			sql.append("SELECT NAME FROM SSP_TMODULESUB WHERE SQU = "+squ);//获取当前name
+			String name = getString(sql.toString());
+			
+			sql.delete(0, sql.toString().length());
+			sql.append("DELETE SSP_TMODULESUB WHERE SQU = "+squ);//删除当前信息
+			executeSql(sql.toString());
+			
+			if(main_squ == 0){									//如果当前目录为一级，删除MODULEMAIN目录信息
+				sql.delete(0, sql.toString().length());
+				sql.append("DELETE SSP_TMODULEMAIN WHERE NAME = '"+name+"'");
+				executeSql(sql.toString());
+			}
+		}
+		return 0;
+	}
+
+	//系统功能查询
+	@Override
+	public PageInfoVo fetchAlityUrl(String squ, PageInfoVo pageVo) throws SQLException {
+		
+		sql.delete(0, sql.toString().length());
+		
+		int startIndex=(pageVo.getPageNumber()-1)*pageVo.getPageSize() +1;
+		
+		StringBuilder sql = new StringBuilder();
+		
+		String countSql = "SELECT COUNT(*) FROM";
+		String listSql = "SELECT * FROM ";
+		
+		sql.append(" (SELECT U.*,ROWNUM RN FROM SSP_TACTIONURL U WHERE SQU IN (");
+		sql.append(" SELECT URLSQU FROM SSP_SMODULE_URL WHERE SUBSQU = "+squ+" ) )");
+		
+		pageVo.setTotal(getAllCnts(countSql+sql.toString()));
+		
+		sql.append(" WHERE RN <"+(pageVo.getPageSize()+startIndex)+" AND RN >="+startIndex);
+		
+		pageVo.setRows(listResultBySql(listSql+sql.toString(), datasource.getConnection()));
+		
+		return pageVo;
+	}
+	
+	@Override
+	public void delAlityUrl(String squ,String doSqu) {
+		sql.delete(0, sql.toString().length());
+		sql.append("DELETE SSP_SMODULE_URL WHERE SUBSQU ="+doSqu+" AND URLSQU="+squ+"");
+		executeSql(sql.toString());
+		sql.delete(0, sql.toString().length());
+		sql.append("DELETE SSP_TACTIONURL WHERE SQU ="+squ);
+		executeSql(sql.toString());
+	}
+
+	@Override
+	public void editAlityUrl(AlityBean ality,String squ) {
+		sql.delete(0, sql.toString().length());
+		sql.append("UPDATE SSP_TACTIONURL SET NAME ='"+ality.getName()+"',URL ='"+ality.getUrl()+"' ,DESCB ='"+ality.getDescb()+"'  WHERE SQU ="+squ);
+		executeSql(sql.toString());
+		
+	}
+	@Override
+	public int addAlityUrl(AlityBean ality,String squ) {
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT COUNT(*) FROM SSP_TACTIONURL WHERE URL = '"+ality.getUrl()+"'");
+		int count = getAllCnts(sql.toString());
+		if(count > 0){
+			return 1;
+		}
+		sql.delete(0, sql.toString().length());
+		sql.append("SELECT MAX(SQU)  FROM SSP_TACTIONURL U WHERE SQU IN (");
+		sql.append(" SELECT URLSQU FROM SSP_SMODULE_URL WHERE SUBSQU = "+squ+")");
+		int urlSqu = getAllCnts(sql.toString());
+		//判断squ 是否为菜单序列前缀
+		String urlId = "";
+		if(urlSqu == 0){
+			urlId = squ+"01";
+		}else{
+			urlId = urlSqu+1+"";
+		}
+		
+		sql.delete(0, sql.toString().length());
+		sql.append("INSERT INTO SSP_TACTIONURL(SQU,NAME,URL,DESCB)VALUES");
+		sql.append("("+urlId+",'"+ality.getName()+"','"+ality.getUrl()+"','"+ality.getDescb()+"')");
+		executeSql(sql.toString());
+		
+		sql.delete(0, sql.toString().length());
+		sql.append("INSERT INTO SSP_SMODULE_URL(SUBSQU,URLSQU)VALUES("+squ+","+urlId+")");
+		executeSql(sql.toString());
+		return 0;
+		
+	}
+	private List<Map<String, Object>> listResultBySql(String sql,Connection conn) {
+
+		List<Map<String, Object>> list = null;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			list = new ArrayList<Map<String, Object>>();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int j = 0;
+			while (rs.next()) {
+				Map<String,Object> map = new LinkedHashMap<String,Object>();
+				for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+					if (rsmd.getColumnClassName(i).endsWith("BLOB")) {// 处理blob字段
+						// 转换为Base64编码
+						InputStream in = rs.getBinaryStream(rsmd
+								.getColumnName(i));
+						map.put(rsmd.getColumnName(i), Base64Util
+								.Base64Encoder(in, null));
+					} else {
+						// 将空对象转换为 空串
+						String val = rs.getString(i) == null ? "" : rs
+								.getString(i);
+						// 处理日期
+						if (val.endsWith("00:00:00"))
+							val = val.substring(0, val.indexOf("00:00:00"));
+						// 将空对象转换为 空串
+						map.put(rsmd.getColumnName(i), val);
+					}
+					
+				}
+				String[] ic={"icon-cog","icon-leaf","icon-th","icon-star",
+						"icon-heart","icon-search","icon-music","icon-glass",
+						"icon-file","icon-road","icon-filter","icon-comment",
+						"icon-random","icon-calendar","icon-plane","icon-eye-close",
+						"icon-eye-open","icon-fire","icon-leaf","icon-gift",
+						"icon-asterisk","icon-download-alt"};
+				map.put("ICON","icon-darkgray "+ic[j]);
+				
+				if(j < ic.length){
+					j++;
+				}else{
+					j = 0;
+				}
+				list.add(map);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		return list;
+	}
+	
+	
+	public static void close(Connection conn,PreparedStatement stmt,ResultSet rs) {		
+		try {
+			if(null != rs)
+				rs.close();
+			if(null != stmt)
+				stmt.close();
+			if(null != conn)
+				conn.close();
+		} catch (Throwable e) {
+		}
+	}
+	
+	public boolean executeSql(String sql){
+		try {
+			conn = datasource.getConnection() ;
+			pstmt = conn.prepareStatement(sql) ;
+			return pstmt.execute();
+		} catch (Exception e) {
+			throw new DaoException(e) ;
+			
+		} finally{
+			try {
+				// 关闭连接
+				if(rs != null) rs.close() ;
+				if(pstmt != null) pstmt.close() ;
+				if(conn != null) conn.close() ;
+			} catch (Exception e) {
+				throw new DaoException(e) ;
+			}
+		}
+	}
+	
+	
+	/**
+	  * getAllCnts:(返回数据源总数量).<br/>
+	  * @author: 桂人杰
+	  * @datetime: 2016-7-14 上午10:54:07
+	  * @param: @param sql
+	  * @param: @return
+	  * @return: int
+	  * @throws
+	  * @since JDK 1.6
+	*/
+	public int getAllCnts(String sql) {
+		int cnt = 0 ;
+		try {
+			// 获取连接
+			conn = datasource.getConnection() ;
+			
+			// 查询总条数
+			pstmt = conn.prepareStatement(sql) ;
+			rs = pstmt.executeQuery();
+			if(rs.next()) cnt = rs.getInt(1) ;
+		} catch (Exception e) {
+			throw new DaoException("数据库异常",e);
+		} finally{
+			try {
+				if(rs != null) rs.close() ;
+				if(pstmt != null) pstmt.close() ;
+				if(conn != null) conn.close() ;
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常",e);	
+			}
+		}
+		return cnt ;
+	}
+
+	
+	public String getString(String sql) {
+		String cnt = "" ;
+		try {
+			// 获取连接
+			conn = datasource.getConnection() ;
+			
+			// 查询总条数
+			pstmt = conn.prepareStatement(sql) ;
+			rs = pstmt.executeQuery();
+			if(rs.next()) cnt = rs.getString(1) ;
+		} catch (Exception e) {
+			throw new DaoException("数据库异常",e);
+		} finally{
+			try {
+				if(rs != null) rs.close() ;
+				if(pstmt != null) pstmt.close() ;
+				if(conn != null) conn.close() ;
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常",e);	
+			}
+		}
+		return cnt ;
+	}
+	
+}

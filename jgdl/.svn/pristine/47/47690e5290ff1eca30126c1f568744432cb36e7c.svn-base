@@ -1,0 +1,171 @@
+
+	var l1 = 0,l2 = 0;
+	var cname1, cname2, cname3;
+	var cid1, cid2, cid3;
+	var canClick1 = !0;//true
+	var canClose1 = !0;
+	var op = 1;//普通部件/组合部件标记
+
+	// $("#zhSpan'").unbind("click");
+		//组合部件明细选择方法
+	$('#zhSpan', $('#selectButton')).on('click', function() {
+		
+		    $('#pt-select-box').hide();
+			$('#zh-select-box').show();
+		
+			if (canClick1) {
+				
+				$('ul', $('#zh-select-box')).html('');
+				var ty = "1"
+				var squ ="-1" 
+				fillDataZh();
+				canClick1 = !1;
+			}
+		});
+		
+	/*	
+	$('#zh_close', $('#zh-select-box')).on("click", function() {
+		qxzh();
+		canClick1 = !0;
+		
+	});*/
+	
+	//选择部件删除方法
+
+	$('.select-res').on('click', 'a', function() {
+		
+	$(this).parent().remove();
+	//清除表单
+	
+	$("#zhclearForm").click();
+	$("#zhphotoBox").html("<img src='resource/images/picture.png' />");
+
+	})
+	
+		
+		
+	//组合部件
+	$('ul.zhfirst', $('#zh-select-box')).on('click', 'li', function() {
+		
+		$(this).addClass('selected').siblings().removeClass('selected');
+		var id = $(this).attr('val')
+		$('#zhBtn1').unbind();
+			$("#zhBtn1").click(function(){
+				
+				fillDataZh1(id)
+				$('#zh-select-box').hide()
+			});
+		cname3 = $(this).text();//DXZHMC
+		cid3 = $(this).attr('val');//ZHSQU
+		canClose = !0;
+		/*var hasExist = !1;
+		$('.select-res').find("p").each(function() {
+			if ($(this).text().split(' > ')[2] == cname3) hasExist = !0;
+		})*/
+		//加入
+		
+		/*$('.select-res a').click();*/
+		
+	//	hasExist ? alert('所选品类已被添加！') : $('#selectButton').append('<p id = "zhbjSelect">' + cname3 + '<a title="删除"><i class="icon-remove"></i></a><input type="hidden" value="' + cid3 + '" name="cid[]" /><input type="hidden" value="' + cname3 + '" name="cname[]" /></p>');
+		//选择框隐藏
+		/*$('#zh-select-box').hide();
+		
+		$('input.cid', $('.select-res')).val(  cid3);
+		$('input.cname', $('.select-res')).val( cname3);*/
+	});
+	
+		
+		function fillDataZh() {
+			
+			var azfs = $("#azfs").val();//安装方式
+			var gdlx = $("#gdlx").val();//安装方式
+
+			var temp_html = "";
+			$.ajax({
+				type : 'post',
+				url : 'selectZhbjInfo.do',
+				timeout : 1321231232131213123,
+				dataType:"json",
+				//async : false, //是否发送异步请求	
+				data:{
+					azfs:azfs,
+					gdlx:gdlx,
+				},
+				success:function(data){
+			
+					if (typeof(data.list) != 'undefined' ) {
+						
+						$.each(data.list, function(i, pro) {
+							temp_html += '<li val="' + pro.ZHSQU + '">' + pro.DXZHMC + '</li>';
+							
+						});
+					} 
+					
+					$("#zh-select-box .zhfirst").html(temp_html);
+					
+				}
+			});
+		}
+		
+		
+		
+		//填充级联数据
+		function fillDataZh1(l2) {
+
+			var temp_html = "";
+			$.ajax({
+				type : 'post',
+				url : 'selectZhbjInfoByZhsqu.do',
+				timeout : 1321231232131213123,
+				dataType:"json",
+				//async : false, //是否发送异步请求	
+				data:{
+					ZHSQU:l2,	
+				},
+				success:function(data){
+				
+				var lis  = data.list
+					if (typeof(data.list) != 'undefined' ) {
+						
+						$.each(data.list, function(i, pro) {
+							temp_html += '<li val="' + pro.ZHSQU + '">' + pro.DXZHMC+ '</li>';
+							
+						});
+					} 
+						
+						$("#zhgdlx").val(lis[0].GDLX);
+						$("#zhazfs").val(lis[0].AZFS);
+						$("#zhzjxs").val(lis[0].ZJXS);
+						$("#zhbjmc").val(lis[0].DXZHMC);	
+						$("#bjsqu").val(lis[0].ZHSQU);
+						$("#cpZP").src = '/upload/'+lis[0].ZP;
+						$("#photoBox").html("<img src='/upload/"+lis[0].ZP+"' id = 'photo'/>")
+						$("#bjop").val(1)//组合部件
+						
+						//隐藏普通部件显示内容
+						document.getElementById("cpbmDiv").style.display = "none";
+						document.getElementById("cpxhDiv").style.display = "none";
+						document.getElementById("cbdjDiv").style.display = "none";
+						document.getElementById("cymcDiv").style.display = "none";
+						document.getElementById("jldwDiv").style.display = "none";
+						document.getElementById("forEDHL").style.display = "none";
+						
+						
+						
+						//组合部件信息显示
+						document.getElementById("zhgdlxDiv").style.display = "block";
+						document.getElementById("zhazfsDiv").style.display = "block";
+						document.getElementById("zhzjxsDiv").style.display = "block";
+						document.getElementById("zhbjmcDiv").style.display = "block";
+						
+						
+						
+						
+				}
+			});
+			
+		}
+		function qxzh(){
+			$('#zh-select-box').hide();
+			canClick1 = !0;
+		}

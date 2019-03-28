@@ -1,0 +1,149 @@
+package monitor.manage.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import net.sf.json.JSONObject;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+import monitor.common.BaseAction;
+import monitor.common.exception.BizException;
+import monitor.manage.bean.dto.CMDto;
+import monitor.manage.service.ISelectCMService;
+
+/**
+ * @ClassName:SelectCMAction
+ * @dateTime: 2016-3-14 下午2:35:37
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class SelectCMAction extends BaseAction implements ModelDriven<CMDto> {
+	/**
+	 * @since JDK1.6
+	 */
+	private static final long serialVersionUID = 1L;
+	private ISelectCMService iSelectService;
+	private CMDto cmDto;
+
+	public ISelectCMService getiSelectService() {
+		return iSelectService;
+	}
+
+	public void setiSelectService(ISelectCMService iSelectService) {
+		this.iSelectService = iSelectService;
+	}
+
+	public CMDto getCmDto() {
+		return cmDto;
+	}
+
+	public void setCmDto(CMDto cmDto) {
+		this.cmDto = cmDto;
+	}
+
+	public String selectListIndex() {
+		return SUCCESS;
+	}
+
+	public String selectList() {
+		JSONObject json = new JSONObject();
+		// 每页显示条数
+		int pageSize = Integer.parseInt(getRequest().getParameter("rows"));
+		// 当前页
+		int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+		
+		cmDto.setPageNo(pageNo);
+		cmDto.setPageSize(pageSize);
+		cmDto.setBkr(getSession().getAttribute("userTitle").toString());
+		cmDto.setIsAdmin(getSession().getAttribute("userAdmin").toString());
+		
+		json.put("total", iSelectService.selectCount(cmDto));
+		json.put("rows", iSelectService.selectList(cmDto));
+		json.put("pageSize", pageSize);
+        json.put("pageNumber", pageNo);
+		//System.out.println(json.toString());
+		writeJsonBack(json.toString());
+		return null;
+	}
+
+	public String selectDetail() {
+		JSONObject json = new JSONObject();
+		//System.out.println(cmDto.getPageNo()+""+cmDto.getPageSize());
+		String[] bk=cmDto.getBkhm().split(",");
+ 		String pBkhm="";
+ 		for(int n=0;n<bk.length;n++){
+ 			pBkhm=pBkhm+"'"+bk[n]+"',";
+ 		}
+
+ 		cmDto.setBkhm(pBkhm.substring(0, pBkhm.length()-1));
+ 		json.put("rows", iSelectService.selectDetail(cmDto));
+ 		
+// 		System.out.println(json.toString());
+		writeJsonBack(json.toString());
+		return null;
+	}
+	
+	/**
+	 * detialTabPage:(用于给详细信息分页).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-4-7 下午1:15:24
+	 * @param: @return
+	 * @return: SourceDto
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String detialTabPage(){
+		JSONObject json=new JSONObject();
+		
+		//整理布控号码为：'XXXX','XXXX'，用于IN查询
+		String[] hm=cmDto.getBkhm().split(",");
+		String tj="";
+		for(int j=0;j<hm.length;j++){
+			//System.out.println(hm[j]);
+			tj=tj+"'"+hm[j]+"',";
+		}
+		tj=tj.substring(0, tj.length()-1);
+		
+		cmDto.setBkhm(tj);
+		
+		json.put("total", iSelectService.detialTabCount(cmDto));
+		json.put("rows", iSelectService.detialTabPage(cmDto));
+
+		writeJsonBack(json.toString());
+		return null;
+	}
+
+	/**
+	 * chooseSource:(返回数据源名称给用户选择).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-17 下午1:15:24
+	 * @param: @return
+	 * @return: SourceDto
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String getSourceTable() {
+		JSONObject json = new JSONObject();
+		json.put("source", iSelectService.chooseSource(cmDto));
+		json.put("table", iSelectService.chooseTable(cmDto));
+		writeJsonBack(json.toString());
+		return null;
+	}
+
+	
+	/**
+	 * 
+	 * @see com.opensymphony.xwork2.ModelDriven#getModel()
+	 */
+	@Override
+	public CMDto getModel() {
+		if (cmDto == null) {
+			return cmDto = new CMDto();
+		}
+		return cmDto;
+	}
+}

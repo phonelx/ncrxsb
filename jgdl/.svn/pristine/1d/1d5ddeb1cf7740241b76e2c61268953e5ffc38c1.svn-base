@@ -1,0 +1,686 @@
+package monitor.manage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.common.util.TimeUtil;
+import monitor.manage.bean.dto.Citys;
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.bean.entity.Mz;
+import monitor.manage.bean.entity.Yjgz;
+import monitor.manage.dao.ManageDao;
+import monitor.manage.util.GetProperties;
+import monitor.manage.util.SendHttp;
+import monitor.registry.bean.entity.RegField;
+import monitor.user.bean.dto.UserDto;
+
+import org.apache.struts2.ServletActionContext;
+
+public class ManageDaoImpl extends BaseDAO implements ManageDao{
+	private Connection conn = null;
+	private PreparedStatement pstmt = null ;
+	private ResultSet rs = null ;
+	/**
+	 * 
+	 * TODO 获取所有民族
+	 */
+	@Override
+	public List getallmz() {
+		try {
+			conn = datasource.getConnection();
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+		String sql = "SELECT * FROM DEP_BMMXB T "
+			 + "WHERE BMLB ='GB 3304-91.0'";
+		List<Mz> mzs = new ArrayList<Mz>();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Mz mz = new Mz();
+				mz.setSqu(rs.getInt("SQU"));
+				mz.setBmlb(rs.getString("BMLB"));
+				mz.setDm(rs.getString("DM"));
+				mz.setDmmc(rs.getString("DMMC"));
+				mzs.add(mz);
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return mzs;
+	}
+
+	/**
+	 * TODO 编辑预警配置
+	 */
+	@Override
+	public String editmanage(Yjgz yjgz){
+		try {
+			conn = datasource.getConnection();
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+		HttpServletRequest request = ServletActionContext.getRequest();
+		UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+		String username = _userDto.getUsername();
+		if("".equals(yjgz.getName())){
+			yjgz.setName(username);
+		}
+		String sql = "UPDATE T_YJGZ SET NAME=?,SEX=?,"
+			+ "HJD=?,ZZ=?,CSRQ1=to_date(?,'yyyy-mm-dd'),"
+		 	+ "CSRQ2=to_date(?,'yyyy-mm-dd'),MZ=?,"
+			+ "STOPTIME=to_date(?,'yyyy-mm-dd hh24:mi:ss'),"
+			+ "YJBT=?,FLAG=?,ISTIME=?,DBCONID=? WHERE ID=?";
+		String sql1 = "SELECT * FROM DEP_BMMXB T"
+			 + " WHERE BMLB ='GB 3304-91.0' AND DMMC=?";
+		PreparedStatement pstmt1 = null;
+		 ResultSet rs1 = null;
+		try {
+			pstmt1 = conn.prepareStatement(sql1);
+			pstmt1.setString(1, yjgz.getMz());
+			rs1 = pstmt1.executeQuery();
+			if (rs1.next()) {
+				yjgz.setMz(rs1.getString("DM"));
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, yjgz.getName());
+			pstmt.setInt(2, yjgz.getSex());
+			pstmt.setString(3,
+				yjgz.getHjd().replaceAll(",,", ",").trim());
+			pstmt.setString(4, yjgz.getZz());
+			pstmt.setString(5, yjgz.getCsrq1().replaceAll(",", ""));
+			pstmt.setString(6, yjgz.getCsrq2().replaceAll(",", ""));
+			pstmt.setString(7, yjgz.getMz()
+						.replaceAll("请输入任意民族", ""));
+			pstmt.setString(8, yjgz.getStoptime());
+			pstmt.setString(9, yjgz.getYjbt());
+			pstmt.setString(10, yjgz.getFlag());
+			pstmt.setString(11, yjgz.getIstime());
+			pstmt.setInt(12, yjgz.getDbConID());
+			pstmt.setString(13,yjgz.getSqu());
+			pstmt.executeUpdate();
+//			//删除预警规则查找出来的身份证号
+//			pstmt = conn.prepareStatement(
+//			"DELETE FROM T_YJSFZ WHERE YJID=?");
+//			pstmt.setString(1, yjgz.getSqu());
+			pstmt.executeUpdate();
+			//重新执行身份证查找
+			runYJ(yjgz.getSqu(),"1");
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return "EditSuccess";
+	}
+
+	/**
+	 * TODO 添加预警配置
+	 */
+	@Override
+	public String addManage(Yjgz yjgz) {
+		String id = null;
+		HttpServletRequest request = ServletActionContext.getRequest();
+		UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+		String username = _userDto.getUsername();
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+				"SELECT YJGZ_ID.NEXTVAL FROM DUAL");
+			rs = pstmt.executeQuery();
+			if (rs.next()) { id = rs.getString(1); }
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+		if("".equals(yjgz.getName())){
+			yjgz.setName(username);
+		}
+		String sql = "INSERT INTO T_YJGZ(ID,NAME,SEX,HJD,ZZ,"
+				+ "CSRQ1,CSRQ2,MZ,CREATETIME,STOPTIME,"
+				+ "STATUS,YJBT,YJR,FLAG,ISTIME,DBCONID,ISSHOW,LASTTIME) "
+				+ "VALUES(" + id + ",'" + yjgz.getName() + "',"
+				+ "'" + yjgz.getSex() + "','"
+				+ yjgz.getHjd().replaceAll(",,", ",")
+				.replaceAll(" ", "").trim()
+				+ "','" + yjgz.getZz() + "',";
+		if ("".equals(yjgz.getCsrq1().replaceAll(",", "").trim())) {
+			sql = sql + "NULL,NULL,";
+		} else {
+			sql = sql + "to_date("
+			 + "'" + yjgz.getCsrq1().replaceAll(",", "")
+			 + "','yyyy-mm-dd'),"
+			 + "to_date('" + yjgz.getCsrq2().replaceAll(",", "")
+			 + "','yyyy-mm-dd'),";
+		}
+		sql = sql + "?,to_date(?,'yyyy-mm-dd hh24:mi:ss'),"
+				+ "to_date(?,'yyyy-mm-dd hh24:mi:ss'),"
+				+ "?,?,?,?,?,?,?,to_date(?,'yyyy-mm-dd hh24:mi:ss'))";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,
+			yjgz.getMz().replaceAll("请输入任意民族", ""));
+			pstmt.setString(2,
+			TimeUtil.getTime("yyyy-MM-dd HH:mm:ss"));
+			pstmt.setString(3,yjgz.getStoptime());
+			pstmt.setInt(4,1);
+			pstmt.setString(5,yjgz.getYjbt());
+			pstmt.setInt(6,yjgz.getYjr());
+			pstmt.setString(7,yjgz.getFlag());
+			pstmt.setString(8,yjgz.getIstime());
+			pstmt.setInt(9,yjgz.getDbConID());
+			pstmt.setInt(10,0);
+			pstmt.setString(11, TimeUtil.getLastTime("yyyy-MM-dd HH:mm:ss"));
+			pstmt.executeUpdate();
+			//执行预警查询
+			runYJ(id,"0");
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return "addsuccess";
+	}
+
+	/** 
+	 * TODO 删除预警配置
+	 */
+	@Override
+	public String delManage(String yjID) {
+		try {
+			conn = datasource.getConnection();
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		}
+		 String sql = "UPDATE T_YJGZ SET ISSHOW=1 WHERE ID=?";
+		 try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, yjID);
+			pstmt.executeUpdate();
+			String name[] = {"id"};
+			String value[] = {yjID};
+			SendHttp.SendPost("http://localhost:8080/monitor_internet/delyj.do",
+					name, value);
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return "DelSuccess";
+	}
+
+	/** 
+	 * TODO 获取已添加配置总数
+	 * @see monitor.manage.dao.ManageDao#GetRegManage()
+	 */
+	@Override
+	public int getregmanagecount() {
+		int count = 0;
+		try {	
+			HttpServletRequest request = ServletActionContext.getRequest();
+			UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+			int userid = _userDto.getSqu();
+			String sql = null;
+			String roid = QueryRoid(String.valueOf(userid));
+			if("1".equals(roid)){
+				 sql =
+				"SELECT COUNT(ID) FROM T_YJGZ WHERE ISSHOW=0";
+			}else{
+				sql =
+				"SELECT COUNT(ID) FROM T_YJGZ WHERE ISSHOW=0 AND YJR="+userid;
+			}
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+			count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return count;
+	}
+
+	/** 
+	 * TODO 显示已添加规则 分页显示
+	 */
+	@Override
+	public List<Yjgzdto> showManage(int pageSize,int pageNo,String isquery) {
+		List<Yjgzdto> list = new ArrayList<Yjgzdto>();
+		Connection conn1 = null;
+		PreparedStatement pstmt1 = null;
+		ResultSet rs1 = null;
+		HttpServletRequest request = ServletActionContext.getRequest();
+		UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+		int userid = _userDto.getSqu();
+		String roid = QueryRoid(String.valueOf(userid));
+		String sql = null;
+		try {
+			int startIndex = (pageNo - 1) * pageSize + 1;
+			if("1".equals(roid)){
+				  sql = "SELECT * FROM "
+				+ "(SELECT T.*,ROWNUM R1 FROM "
+				+ "(SELECT * FROM T_YJGZ "
+				+ "WHERE ISSHOW=0)"
+				+ " T WHERE ROWNUM < " + (pageSize + startIndex) + ")"
+				+ " WHERE R1 >= " + startIndex;
+			}else{
+				  sql = "SELECT * FROM "
+						+ "(SELECT T.*,ROWNUM R1 FROM "
+						+ "(SELECT * FROM T_YJGZ "
+						+ "WHERE ISSHOW=0 AND YJR="+userid+")"
+						+ " T WHERE ROWNUM < " + (pageSize + startIndex) + ")"
+						+ " WHERE R1 >= " + startIndex;	
+			}	
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Yjgzdto yjgz = new Yjgzdto();
+				yjgz.setYjbt(rs.getString("YJBT"));
+				yjgz.setId(rs.getInt("ID"));
+				yjgz.setName(rs.getString("NAME"));
+				yjgz.setSex(rs.getInt("SEX"));
+				yjgz.setHjd(rs.getString("HJD"));
+				yjgz.setZz(rs.getString("ZZ"));
+				if (rs.getString("CSRQ1") != null){
+				yjgz.setCsrq1(
+				 rs.getString("CSRQ1").substring(0,10));
+				yjgz.setCsrq2(
+				 rs.getString("CSRQ2").substring(0,10));
+				} else {
+					yjgz.setCsrq1(
+							rs.getString("CSRQ1"));
+					yjgz.setCsrq2(
+							rs.getString("CSRQ2"));
+				}
+				yjgz.setRuntime(GetProperties.GetRuntime());
+				yjgz.setCreatetime(rs.getString("CREATETIME"));
+				yjgz.setStoptime(rs.getString("STOPTIME"));
+				yjgz.setStatus(rs.getInt("STATUS"));
+				yjgz.setFlag(rs.getString("FLAG"));
+				yjgz.setDbConID(rs.getInt("DBCONID"));
+				yjgz.setIstime(rs.getString("ISTIME"));
+				//根据管理id查询用户名
+				conn1 = datasource.getConnection();
+				/*获取身份证数量*/
+				if("1".equals(isquery)){
+					String countsql="SELECT COUNT(1) FROM T_YJSFZ WHERE YJID=?";
+					pstmt1 = conn1.prepareStatement(countsql);
+					pstmt1.setInt(1, yjgz.getId());
+					rs1 =  pstmt1.executeQuery();
+					if(rs1.next()){
+						yjgz.setSfhm(rs1.getString(1));
+					}
+				}
+				/*获取民族*/
+				if (rs.getString("MZ") != null) {
+					String mzsql = "SELECT DEP_BMMXB.DMMC,"
+						 + "SSP_TUSERINFO.USERNAME FROM"
+				+ " DEP_BMMXB,T_YJGZ,SSP_TUSERINFO WHERE"
+					+ " BMLB ='GB 3304-91.0'"
+					+ " AND SSP_TUSERINFO.SQU=? AND "
+					+ " DEP_BMMXB.DM=? AND T_YJGZ.ID=? AND "
+					+ " DEP_BMMXB.Dm = T_YJGZ.MZ AND "
+					+ " T_YJGZ.YJR =SSP_TUSERINFO.SQU ";
+					pstmt1 = conn1.prepareStatement(mzsql);
+					pstmt1.setInt(1,
+					 Integer.parseInt(rs.getString("YJR")));
+					pstmt1.setString(2, rs.getString("MZ"));
+					pstmt1.setInt(3, yjgz.getId());
+					rs1 = pstmt1.executeQuery();
+					if (rs1.next()) {
+					yjgz.setMz(rs1.getString(1));
+					yjgz.setYjr(rs1.getString(2));
+					}
+				} else {
+					String usesql
+					 = "SELECT USERNAME FROM SSP_TUSERINFO"
+						+ " WHERE SQU=?";
+				   pstmt1 = conn1.prepareStatement(usesql);
+				   pstmt1.setString(1, rs.getString("YJR"));
+					rs1 = pstmt1.executeQuery();
+					if (rs1.next()) {
+						yjgz.setYjr(rs1.getString(1));
+					}
+				}
+				conn1.close();
+				rs1.close();
+				pstmt1.close();
+				list.add(yjgz);
+			}
+			
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (rs1 != null) { rs1.close(); }
+				if (conn != null) { conn.close(); }
+				if (conn1 != null) { conn1.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (pstmt1 != null) { pstmt1.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return list;
+	}
+
+	/** 
+	 * TODO 根据输入模糊查询加载数据
+	 */
+	@Override
+	public List showcitys(String option) {
+		List<Citys> list = new ArrayList<Citys>();
+		try {
+			conn = datasource.getConnection();
+			StringBuffer sb = new StringBuffer("SELECT * FROM");
+			sb.append(" DEP_BMMXB WHERE BMLB "
+				+ "='GB/T 2260.0' AND DMMC like '%四川%'");
+			pstmt = conn.prepareStatement(sb.toString());
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				Citys citys = new Citys();
+				citys.setSQU(rs.getInt("DM"));
+				citys.setCityName(rs.getString("DMMC"));
+				list.add(citys);
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return list;
+	}
+
+	/** 
+	 * TODO 获取当前预警规则跟关联信息
+	 * @see monitor.manage.dao.ManageDao#GetAllYj()
+	 */
+	@Override
+	public Yjgzdto getoneyj(String id) {
+			Yjgzdto yjgz = new Yjgzdto();
+		try {
+			conn = datasource.getConnection();
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT T.ID,T.NAME,T.SEX,T.HJD,"
+					 + "T.ZZ,T.CSRQ1,T.CSRQ2,T.MZ,T.ZJHM,");
+			sb.append(" T.STOPTIME ,T.YJLX,S.DBUSER,"
+					 + "S.DBPWD,S.DBURL,S.SQU,S.DBCLASS");
+			sb.append(" FROM T_YJGZ T, SSP_TREGDATASOURCE S");
+			sb.append(" WHERE  ID=? AND ISSHOW=0 "
+					 + "AND FLAG=1 AND T.DBCONID =S.SQU ");
+			pstmt = conn.prepareStatement(sb.toString());
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				yjgz.setId(rs.getInt(1));
+				yjgz.setName(rs.getString(2));
+				yjgz.setSex(rs.getInt(3));
+				yjgz.setHjd(rs.getString(4));
+				yjgz.setZz(rs.getString(5));
+				yjgz.setCsrq1(rs.getString(6));
+				yjgz.setCsrq2(rs.getString(7));
+				yjgz.setMz(String.valueOf(rs.getInt(8)));
+				yjgz.setZjhm(rs.getString(9));
+				yjgz.setStoptime(rs.getString(10));
+				yjgz.setYjlx(rs.getInt(11));
+				yjgz.setDbname(rs.getString(12));
+				yjgz.setDbpwd(rs.getString(13));
+				yjgz.setDbCon(rs.getString(14));
+				yjgz.setDbid(rs.getString(15));
+				yjgz.setDbcla(rs.getString(16));
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return yjgz;
+	}
+	/** 
+	 * TODO 查找预警规则查询出来的身份证进行比对任务调用
+	 * @see monitor.manage.dao.ManageDao#GetYJSFZS(int, int)
+	 */
+	@Override
+	public String GetYJSFZS(int pageSize, int pageNo) {
+		StringBuffer sb = new StringBuffer();
+		int startIndex = (pageNo - 1) * pageSize + 1;
+		String  sql = "SELECT * FROM "
+		+ "(SELECT T.*,ROWNUM R1 FROM "
+		+ "(SELECT * FROM T_YJSFZ)"
+		+ " T WHERE ROWNUM < " + (pageSize + startIndex) + ")"
+		+ " WHERE R1 >= " + startIndex;
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				sb.append(rs.getString("ZJHM")
+					+ "-" + rs.getString("YJID") + ",");
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return sb.toString();
+	}
+	/** 
+	 * TODO 根据用户条件进行查询人数提示用户
+	 * @see monitor.manage.dao.ManageDao#GetYjSfzCount()
+	 */
+	@Override
+	public int getyjsfzcount(Yjgz yj, Map<String, String> Yjmap) {
+		conn = getCKcon();
+		int count = 0;
+		List<RegField> fields = new ArrayList<RegField>();
+		String [] name = {"XBDM","MZDM","CSRQ","ZZXZ","SSSSXQ",};
+		String [] index = {"SEX","MZ","CSRQ1","ZZ","HJD"};
+		for(int i =0;i<name.length;i++){
+				RegField field = new RegField();
+				field.setName(name[i]);
+				field.setIndexof(index[i]);
+				fields.add(field);
+		}
+		//排除掉布控字段
+		if (fields.size() > 0) {
+		//拼接SQL;
+		StringBuffer sb = new StringBuffer(
+				"SELECT COUNT(CZRKRKID) FROM ZA_CZRK WHERE 1=1 ");
+		for (int i = 0; i < fields.size(); i++) {
+			if (!"".equals(Yjmap.get(
+			fields.get(i).getIndexof()).replaceAll(",", ""))){
+			//民族性别拼写
+			if ("MZ".equals(fields.get(i).getIndexof())){
+				sb.append(" AND " + fields.get(i).getName() + ""
+			+ "=" + Yjmap.get(fields.get(i).getIndexof()) + "");
+			} else if ("HJD".equals(fields.get(i).getIndexof())){
+				//所属省市区(县)拼写
+				String city[] = Yjmap.get(fields.get(i).getIndexof()).split(",");
+				for (int a = 0; a < city.length; a++){
+					if (city[a].trim() != ""
+						|| !"".equals(city[a])){
+						if (a == 0) {
+							sb.append(
+						" AND ("+ fields.get(i).getName() + "='"+city[a].trim() + "'");
+						} else {
+							sb.append(
+						" OR " + fields.get(i).getName() + "='"+city[a].trim() + "'");
+						}
+						if(a==city.length-1){
+							sb.append(")");
+						}
+					}
+				}
+			} else if ("CSRQ1".equals(fields.get(i).getIndexof())){
+				//日期拼写
+					String csrq  []  = Yjmap.get(fields.get(i).getIndexof()).split(",");
+					sb.append(" AND " + fields.get(i).getName()
+							+ " BETWEEN ");
+					sb.append(" To_Date('" + csrq[0]
+					        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+					sb.append(" AND To_Date('" + csrq[1]
+					        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+			} else {
+				//普通字段拼写
+				sb.append(" AND " + fields.get(i).getName()
+					+ "='" + Yjmap.get(fields.get(i).getIndexof()) + "' ");
+				}
+			}
+		}
+		try {
+			pstmt = conn.prepareStatement(sb.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				System.out.println(rs.getInt(1));
+				count= rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		}
+		return count;
+	}
+	public Connection getCKcon(){
+		  Connection conn = null;
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+				conn = DriverManager.getConnection("jdbc:oracle:thin:@10.64.1.89:1521:orcl",
+						"yjywk", "yjywk");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			return conn;
+	}
+	/**
+	 * 
+	  * runYJ:(执行预警身份证查询).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-23 上午11:14:07
+	  * @param: @param id
+	  * @return: void
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public void runYJ(String id,String type){
+		Yjgzdto yjgzdto = getoneyj(id);
+		//执行身份证查找
+		String []name = {"id", "sex" , "hjd" , "zz",
+				"csrq1" , "csrq2" , "mz" , "zjhm" , "yjlx","type"};
+		String []value = {id 
+				 , String.valueOf(yjgzdto.getSex()) ,
+				yjgzdto.getHjd() , yjgzdto.getZz()
+				, yjgzdto.getCsrq1()
+				, yjgzdto.getCsrq2() , yjgzdto.getMz()
+				, yjgzdto.getZjhm(), String.valueOf(
+				yjgzdto.getYjlx()),type };
+		SendHttp.SendPost(
+		"http://localhost:8080/monitor_internet/yjquery.do"
+		 , name , value);
+	}
+	
+	public String QueryRoid(String id){
+		String sql="SELECT SSP_TROLEINFO.ISADMIN FROM SSP_TUSERINFO,SSP_TROLEINFO WHERE " +
+				"SSP_TUSERINFO.ROLESQU = SSP_TROLEINFO.SQU AND  SSP_TUSERINFO.SQU=?";
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return null;
+	}
+	
+}

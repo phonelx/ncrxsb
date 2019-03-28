@@ -1,0 +1,554 @@
+var dataJson = {
+	"option": [{
+		"id": "1",
+		"name": "C型钢 -- 01",
+		"child": [{
+			"id": "11",
+			"name": "单面冲孔 -- 01",
+			"child": [{
+				"id": "111",
+				"name": "高度21mm（δ2.0mm） -- 01"
+			}, {
+				"id": "112",
+				"name": "高度41mm（δ2.0mm） -- 02"
+			}, {
+				"id": "113",
+				"name": "高度41mm（δ2.5mm） -- 03"
+			}, {
+				"id": "114",
+				"name": "高度52mm（δ2.5mm） -- 04"
+			}, {
+				"id": "115",
+				"name": "高度62mm（δ2.5mm） -- 05"
+			}]
+		}, {
+			"id": "12",
+			"name": "双拼冲孔",
+			"child": [{
+				"id": "121",
+				"name": "高度21+21mm"
+			}, {
+				"id": "122",
+				"name": "高度41+41mm"
+			}, {
+				"id": "123",
+				"name": "高度41+62mm"
+			}, {
+				"id": "124",
+				"name": "高度62+62mm"
+			}]
+		}, {
+			"id": "13",
+			"name": "单面无孔",
+			"child": [{
+				"id": "131",
+				"name": "高度21mm（δ2.0mm）"
+			}, {
+				"id": "132",
+				"name": "高度41mm（δ2.0mm）"
+			}, {
+				"id": "133",
+				"name": "高度41mm（δ2.5mm）"
+			}, {
+				"id": "134",
+				"name": "高度52mm（δ2.5mm）"
+			}
+			, {
+				"id": "135",
+				"name": "高度62mm（δ2.5mm）"
+			}]
+		}, {
+			"id": "14",
+			"name": "双拼无孔",
+			"child": [{
+				"id": "141",
+				"name": "高度21+21mm"
+			}, {
+				"id": "142",
+				"name": "高度41+41mm"
+			}, {
+				"id": "143",
+				"name": "高度41+62mm"
+			}, {
+				"id": "144",
+				"name": "高度62+62mm"
+			}]
+		}]
+	}, {
+		"id": "2",
+		"name": "结构底座",
+		"child": [{
+			"id": "21",
+			"name": "6mm底座钢板",
+			"child": [{
+				"id": "211",
+				"name": "长×宽（155×68）mm，2腰孔"
+			}, {
+				"id": "212",
+				"name": "长×宽（155×155）mm，4腰孔"
+			}, {
+				"id": "213",
+				"name": "长×宽（205×205）mm，4腰孔"
+			}]
+		}, {
+			"id": "22",
+			"name": "C钢座",
+			"child": [{
+				"id": "221",
+				"name": "三面单层孔"
+			}, {
+				"id": "222",
+				"name": "三面单层孔"
+			}, {
+				"id": "223",
+				"name": "四面双层孔"
+			}]
+		}]
+	}, {
+		"id": "3",
+		"name": "钢构底座",
+		"child": [{
+			"id": "31",
+			"name": "C型钢梁夹",
+			"child": [{
+				"id": "311",
+				"name": "(C钢型号)，X轴向"
+			}, {
+				"id": "312",
+				"name": "(C钢型号)，Y轴向"
+			}, {
+				"id": "313",
+				"name": "(C钢型号)，Y轴向"
+			}]
+		}, {
+			"id": "32",
+			"name": "螺杆梁夹",
+			"child": [{
+				"id": "321",
+				"name": "C型夹"
+			}, {
+				"id": "322",
+				"name": "虎口夹"
+			}]
+		}, {
+			"id": "33",
+			"name": "C型钢圆柱夹",
+			"child": [{
+				"id": "331",
+				"name": "(C钢型号)，柱径"
+			}]
+		}]
+	}, {
+		"id": "4",
+		"name": "抗震专用座",
+		"child": [{
+			"id": "41",
+			"name": "抗震连接座",
+			"child": [{
+				"id": "411",
+				"name": "结构连接"
+			}, {
+				"id": "412",
+				"name": "支架连接"
+			}, {
+				"id": "413",
+				"name": "支架连接"
+			}]
+		}, {
+			"id": "42",
+			"name": "可调式铰链",
+			"child": [{
+				"id": "421",
+				"name": ""
+			}, {
+				"id": "422",
+				"name": ""
+			}, {
+				"id": "423",
+				"name": ""
+			}]
+		}]
+	}, {
+		"id": "5",
+		"name": "型钢连接座",
+		"child": [{
+			"id": "51",
+			"name": "管束支撑座",
+			"child": [{
+				"id": "551",
+				"name": "2孔内螺纹单座"
+			}, {
+				"id": "552",
+				"name": "2孔内螺纹双座"
+			}, {
+				"id": "553",
+				"name": "内螺纹方平座"
+			}]
+		}, {
+			"id": "52",
+			"name": "螺杆多向座",
+			"child": [{
+				"id": "521",
+				"name": "180°自由调节"
+			}]
+		}, {
+			"id": "53",
+			"name": "C钢多向座",
+			"child": [{
+				"id": "531",
+				"name": "180°自由调节"
+			}]
+		}]
+	}, {
+		"id": "6",
+		"name": "C钢连接件",
+		"child": [{
+			"id": "61",
+			"name": "线性连接",
+			"child": [{
+				"id": "611",
+				"name": "直线二孔"
+			}, {
+				"id": "612",
+				"name": "直线三孔"
+			}, {
+				"id": "613",
+				"name": "直线四孔"
+			}, {
+				"id": "614",
+				"name": "直线五孔"
+			}]
+		}, {
+			"id": "62",
+			"name": "平面连接",
+			"child": [{
+				"id": "621",
+				"name": "L型，3孔"
+			}, {
+				"id": "622",
+				"name": "L型，4孔"
+			}, {
+				"id": "623",
+				"name": "L型，4孔带肋板"
+			}, {
+				"id": "624",
+				"name": "L型，5孔"
+			}, {
+				"id": "625",
+				"name": "V45°，4孔"
+			}, {
+				"id": "626",
+				"name": "Y135°，4孔"
+			}, {
+				"id": "627",
+				"name": "T型，4孔"
+			}, {
+				"id": "628",
+				"name": "T型，5孔"
+			}, {
+				"id": "629",
+				"name": "十字型，5孔"
+			}, {
+				"id": "630",
+				"name": "板型，5孔"
+			}, {
+				"id": "6300",
+				"name": "板型，7孔"
+			}]
+		}, {
+			"id": "63",
+			"name": "二维连接",
+			"child": [{
+				"id": "631",
+				"name": "45°，2孔"
+			}, {
+				"id": "632",
+				"name": "90°，2孔"
+			}, {
+				"id": "633",
+				"name": "90°，4孔"
+			}, {
+				"id": "634",
+				"name": "135°，2孔"
+			}, {
+				"id": "635",
+				"name": "135°，4孔"
+			}]
+		}, {
+			"id": "64",
+			"name": "三维连接",
+			"child": [{
+				"id": "641",
+				"name": "包角"
+			}, {
+				"id": "642",
+				"name": "角撑"
+			}, {
+				"id": "643",
+				"name": "柱撑"
+			}]
+		}]
+	}, {
+		"id": "7",
+		"name": "管束",
+		"child": [{
+			"id": "71",
+			"name": "标准管束",
+			"child": [{
+				"id": "711",
+				"name": "园长培训"
+			}, {
+				"id": "712",
+				"name": "幼师培训"
+			}, {
+				"id": "713",
+				"name": "家长培训"
+			}]
+		}, {
+			"id": "72",
+			"name": "U型管束",
+			"child": [{
+				"id": "721",
+				"name": "管理软件"
+			}, {
+				"id": "722",
+				"name": "管理图书"
+			}, {
+				"id": "723",
+				"name": "管理系统"
+			}]
+		}, {
+			"id": "73",
+			"name": "O型管束",
+			"child": [{
+				"id": "731",
+				"name": "入园指导服务"
+			}, {
+				"id": "732",
+				"name": "外教外派"
+			}, {
+				"id": "733",
+				"name": "体育老师外派"
+			}]
+		}, {
+			"id": "74",
+			"name": "Ω型管束",
+			"child": [{
+				"id": "741",
+				"name": "品牌策划"
+			}, {
+				"id": "742",
+				"name": "ＶＩ设计"
+			}, {
+				"id": "743",
+				"name": "招标设计"
+			}, {
+				"id": "744",
+				"name": "园区规划设计"
+			}, {
+				"id": "745",
+				"name": "装修设计"
+			}]
+		}, {
+			"id": "75",
+			"name": "鞍型管束",
+			"child": [{
+				"id": "751",
+				"name": "品牌策划"
+			}, {
+				"id": "752",
+				"name": "ＶＩ设计"
+			}, {
+				"id": "753",
+				"name": "招标设计"
+			}, {
+				"id": "754",
+				"name": "园区规划设计"
+			}, {
+				"id": "755",
+				"name": "装修设计"
+			}]
+		}, {
+			"id": "76",
+			"name": "保温型管束",
+			"child": [{
+				"id": "761",
+				"name": "品牌策划"
+			}, {
+				"id": "762",
+				"name": "ＶＩ设计"
+			}, {
+				"id": "763",
+				"name": "招标设计"
+			}, {
+				"id": "764",
+				"name": "园区规划设计"
+			}, {
+				"id": "765",
+				"name": "装修设计"
+			}]
+		}, {
+			"id": "77",
+			"name": "风管管束",
+			"child": [{
+				"id": "771",
+				"name": "品牌策划"
+			}, {
+				"id": "772",
+				"name": "ＶＩ设计"
+			}, {
+				"id": "773",
+				"name": "招标设计"
+			}, {
+				"id": "774",
+				"name": "园区规划设计"
+			}, {
+				"id": "775",
+				"name": "装修设计"
+			}]
+		}]
+	}, {
+		"id": "8",
+		"name": "其他支撑",
+		"child": [{
+			"id": "81",
+			"name": "全牙螺杆",
+			"child": [{
+				"id": "811",
+				"name": "园长培训"
+			}, {
+				"id": "812",
+				"name": "幼师培训"
+			}, {
+				"id": "813",
+				"name": "家长培训"
+			}]
+		}, {
+			"id": "82",
+			"name": "镀锌钢管",
+			"child": [{
+				"id": "821",
+				"name": "管理软件"
+			}, {
+				"id": "822",
+				"name": "管理图书"
+			}, {
+				"id": "823",
+				"name": "管理系统"
+			}]
+		}, {
+			"id": "83",
+			"name": "悬臂斜撑",
+			"child": [{
+				"id": "831",
+				"name": "入园指导服务"
+			}, {
+				"id": "832",
+				"name": "外教外派"
+			}, {
+				"id": "833",
+				"name": "体育老师外派"
+			}]
+		}]
+	}]
+}
+
+	var l1 = 0,
+	l2 = 0;
+	var cname1, cname2, cname3;
+	var cid1, cid2, cid3;
+	var canClick = !0;
+	var canClose = !1;
+	
+	
+	$('.select-box').css({
+		left: $('.select-res').offset().left,
+		/*top: $('.select-res').offset().top + $('.select-res').outerHeight(true)*/
+		top: $('.select-res').offset().top + $('.select-res')
+		});
+		$('span', $('.select-res')).on('click', function() {
+		$('.select-box').show();
+		if (canClick) {
+			$('ul', $('.select-box')).html('');
+			fillData();
+			canClick = !1;
+		}
+	});
+		
+		
+	$('span', $('.select-box')).on("click", function() {
+		canClose ? $('.select-box').hide() : alert('请选择下级品类！');
+		canClick = !0;
+	});
+	
+	
+	$('.select-res').on('click', 'a', function() {
+		$(this).parent().remove();
+		$('.select-box').css({
+			/*top: $('.select-res').offset().top + $('.select-res').outerHeight(true)*/
+			top: $('.select-res').offset().top + $('.select-res')
+		});
+	})
+	
+	
+	$('ul.first', $('.select-box')).on('click', 'li', function() {
+		$(this).addClass('selected').siblings().removeClass('selected');
+		$('ul.third').html('');
+		fillData($(this).index());
+		l1 = $(this).index();
+		cname1 = $(this).text();
+		cid1 = $(this).attr('val');
+		canClose = !1;
+		$('input.cid', $('.select-res')).val(cid1);
+		$('input.cname', $('.select-res')).val(cname1);
+	});
+	
+	
+	$('ul.second', $('.select-box')).on('click', 'li', function() {
+		$(this).addClass('selected').siblings().removeClass('selected');
+		fillData(l1, $(this).index());
+		l2 = $(this).index();
+		cname2 = $(this).text();
+		cid2 = $(this).attr('val');
+		canClose = !1;
+		$('input.cid', $('.select-res')).val(cid1 + ',' + cid2);
+		$('input.cname', $('.select-res')).val(cname1 + ',' + cname2);
+	});
+	
+	
+	$('ul.third', $('.select-box')).on('click', 'li', function() {
+		$(this).addClass('selected').siblings().removeClass('selected');
+		cname3 = $(this).text();
+		cid3 = $(this).attr('val');
+		canClose = !0;
+		var hasExist = !1;
+		$('.select-res').find("p").each(function() {
+			if ($(this).text().split(' > ')[2] == cname3) hasExist = !0;
+		})
+		hasExist ? alert('所选品类已被添加！') : $('.select-res').append('<p>' + cname1 + ' > ' + cname2 + ' > ' + cname3 + '<a title="删除"><i class="icon-remove"></i></a><input type="hidden" value="' + cid1 + ',' + cid2 + ',' + cid3 + '" name="cid[]" /><input type="hidden" value="' + cname1 + ',' + cname2 + ',' + cname3 + '" name="cname[]" /></p>');
+		$('.select-box').css({
+			top: $('.select-res').offset().top + $('.select-res').outerHeight(true)
+		});
+		$('input.cid', $('.select-res')).val(cid1 + ',' + cid2 + ',' + cid3);
+		$('input.cname', $('.select-res')).val(cname1 + ',' + cname2 + ',' + cname3);
+	});
+	
+	//填充级联数据
+	
+	function fillData(l1, l2) {
+		var temp_html = "";
+		if (typeof(dataJson.option) != 'undefined' && arguments.length == 0) {
+			$.each(dataJson.option, function(i, pro) {
+				temp_html += '<li val="' + pro.id + '">' + pro.name + '</li>';
+			});
+		} else if (typeof(dataJson.option[l1].child) != 'undefined' && arguments.length == 1) {
+			$.each(dataJson.option[l1].child, function(i, pro) {
+				temp_html += '<li val="' + pro.id + '">' + pro.name + '</li>';
+			});
+		} else if (typeof(dataJson.option[l1].child[l2].child) != 'undefined' && arguments.length == 2) {
+			$.each(dataJson.option[l1].child[l2].child, function(i, pro) {
+				temp_html += '<li val="' + pro.id + '">' + pro.name + '</li>';
+			});
+		}
+		$('.select-box ul:eq(' + arguments.length + ')').html(temp_html);
+	}

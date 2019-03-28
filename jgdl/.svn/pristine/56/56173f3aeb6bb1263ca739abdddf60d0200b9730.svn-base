@@ -1,0 +1,87 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:KzzjServiceImpl.java
+	* Date:2017-10-17下午4:44:35   
+	***/
+package monitor.kzzj.service.impl;
+
+import java.sql.SQLException;
+
+import javax.jws.WebService;
+
+
+import monitor.kzzj.bean.entity.KzzjBean;
+import monitor.kzzj.dao.IKzzjDao;
+import monitor.kzzj.service.IKzzjService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:KzzjServiceImpl
+ * @dateTime: 2017-10-17 下午4:44:35
+ * @Description: TODO
+ * @version 
+ * @author: 康正秋
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+@WebService
+public class KzzjServiceImpl implements IKzzjService {
+
+	
+	private IKzzjDao kzzjDao;
+	
+	
+	public IKzzjDao getKzzjDao() {
+		return kzzjDao;
+	}
+
+	public void setKzzjDao(IKzzjDao kzzjDao) {
+		this.kzzjDao = kzzjDao;
+	}
+
+	
+	@Override
+	public PageInfoVo listKzzj(PageInfoVo pageVo, String searchKey)throws SQLException {
+		
+		return kzzjDao.listKzzj(pageVo, searchKey);
+	}
+
+	/** 
+	 * TODO 简单描述该方法的实现功能
+	 * @see monitor.kzzjJbpz.service.IKzzjService#addKzzj(monitor.kzzjJbpz.bean.entity.KzzjBean)
+	 */
+	@Override
+	public String addKzzj(KzzjBean kzzj) {
+		
+		return kzzjDao.addKzzj(kzzj);
+	}
+
+	/** 
+	 * TODO 简单描述该方法的实现功能
+	 * @see monitor.kzzjJbpz.service.IKzzjService#delKzzj(java.lang.String)
+	 */
+	@Override
+	public String delKzzj(String dxSqu){
+		// TODO Auto-generated method stub
+		return kzzjDao.delKzzj(dxSqu);
+	}
+
+	/** 
+	 * TODO 简单描述该方法的实现功能
+	 * @return 
+	 * @see monitor.kzzjJbpz.service.IKzzjService#editKzzj(monitor.kzzjJbpz.bean.entity.KzzjBean)
+	 */
+	@Override
+	public String editKzzj(KzzjBean kzzj){
+		
+		return kzzjDao.editKzzj(kzzj);
+		
+		
+	}
+
+	
+}

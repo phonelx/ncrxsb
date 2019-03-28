@@ -1,0 +1,14 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="calculationReport" extends="monitor-struts-default" >
+	
+		<!-- 计算报告中项目信息 -->
+		<action name="getProjectInfo" class="calculationReportAction" method="getProjectInfo"/>
+		<!-- 跳转到计算报告页面 -->
+		<action name="geToCalculationIndex" class="calculationReportAction" method="geToCalculationIndex">
+			<result name="success">pages/kzzj/calculationReport.jsp</result>
+		</action> 
+	</package>	
+</struts>

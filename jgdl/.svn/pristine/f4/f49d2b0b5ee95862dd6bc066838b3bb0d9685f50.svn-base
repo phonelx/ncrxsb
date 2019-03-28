@@ -1,0 +1,26 @@
+package monitor.goodsHouse.service.impl;
+
+import monitor.goodsHouse.dao.IStentsDao;
+import monitor.goodsHouse.service.IStentsService;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:43:48
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class StentsServiceImpl implements IStentsService{
+	private IStentsDao stentsDao;
+
+	public IStentsDao getStentsDao() {
+		return stentsDao;
+	}
+
+	public void setStentsDao(IStentsDao stentsDao) {
+		this.stentsDao = stentsDao;
+	}
+
+	
+	
+}

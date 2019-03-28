@@ -1,0 +1,534 @@
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="/struts-tags" prefix="s"%>
+<%@ include file="/pages/head.jsp"%>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>菜单配置</title>
+	<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+	<link rel="stylesheet" type="text/css" href="resource/new/css/iconfont/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="pages/ality/css/set.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/addStyle.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/level/levelStyle.css" />
+	<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+	
+	<style>
+	.add-style1{
+		background-color: #f5f5f5;
+	}
+	.container-fluid {
+	    padding-right: 10px;
+	    padding-left: 0px;
+	}
+	.topnav li:last-child{
+		border-bottom:none;
+	}
+	.form-horizontal .control-group {
+    margin-bottom: 8px;
+	}
+	.control-group h4{
+	    margin-top:4px;
+	}
+	
+	.zhphotoBox{
+	border: 1px dashed #bbb;
+    height: 150px;
+    width: 150px;
+    line-height: 150px;
+	}
+	
+	</style>
+	
+	
+<script type="text/javascript">
+		$(document).ready(function() {
+			$(".topnav").accordion({
+				accordion:true,
+				speed: 500,
+				closedSign: '[+]',
+				openedSign: '[-]'
+			});
+		});
+		function ac(){
+		 $(this).attr("checked","true");
+		}
+</script> 
+       
+</head>
+
+<body onkeydown="keyDown(event);">
+	
+	<ul class="breadcrumb" id="" style="list-style:none;">
+		<li id="titleName1" style="color: #369BD7;">
+			当前页面：抗震支架配置管理&nbsp;&gt;
+			<span> 
+				<a href="javascript:void(0)"> 
+					抗震支架明细配置
+				</a>
+			</span>
+		</li>
+	</ul>
+	
+	
+ 
+  <div class="container-fluid">
+	<div class="row-fluid">
+	<!-- 左边菜单 start-->
+		<div class="leftSideBar span3">
+			<ul style="width:100%;" class="parNav">
+			
+				<li class="nav-header hidden-tablet border-bottom">
+					<a class="ajax-link" style="padding-left:10px;"
+						href="javascript:void(0);" flag="1" id="0" tier="0" title="功能目录"
+						isend="1" onclick="parentload(this);"><b>功能目录</b>
+					</a>
+				</li>
+				
+				<li>
+					<ul class="topnav">
+					         
+						<div id = "menu"></div>
+						
+					</ul>
+				</li>
+			</ul>
+			
+			<div id="menuPageDiv"></div>
+			 
+		</div>
+		
+	<!-- 左边菜单 end-->	
+	
+	
+	
+	<!-- 右边内容 start-->	
+		<div class="span9" id ="span9" style = "display:none">
+			
+				 <div class="container-fluid">
+					 <div class="row-fluid tooltip-demo">
+					     <!--左边图片-->
+					     <div class="span2">
+					     	<div class="photoBox" align="center" style="margin-bottom:10px;">
+								<img id = "kzzjImg" src="resource/images/1208160.png" />
+							</div>
+					     </div>
+					      <!--左边图片-->
+					     
+					      <!--右边内容-->
+					     <div class="span10">
+					     	<div class="box-content">
+								<form class="form-horizontal">
+									<fieldset>
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">支架名称：</label>
+										<div class="controls">
+											 <h4 id = "kzzjDXMC"></h4>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">管道类型：</label>
+										<div class="controls">
+											  <h4 id = "kzzjGDLX"></h4>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">安装方式：</label>
+										<div class="controls">
+											  <h4 id = "kzzjAZFS"></h4>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">支架形式：</label>
+										<div class="controls">
+											  <h4 id= "kzzjZJXS"></h4>
+										</div>
+									  </div>
+									 </fieldset>
+								</form>
+					     </div>
+					   </div>
+				 </div>
+			</div>
+			
+			
+			
+		<div id="content" style = "display:none; height:450px;border:2px solid #f5f5f5">  
+            
+          <div id="tab_bar" style ="height:30px;margin-top: 12px;">   
+    		  
+			 <ul   style="list-style:none;margin-top:-12px;">
+				
+				<li style="float: left;" id = "tab0" name = "tab_li" style ="background-color:#ddd;border:1px solid #ddd">
+					<a  onclick = "showBjList(1,0)" href="javascript:void(0);" id = "showPtbj" style ="width:80px;font-size:16px">
+					<i class="ptbj"></i> 普通部件</a>
+				</li>
+				
+				<li style="float: left;width:80px;font-size:16px" id = "tab1" name = "tab_li">
+					<a onclick = "showBjList(1,1)" href="javascript:void(0);" id = "showZhbj">
+					<i class="zhbj"></i> 组合部件</a>
+				</li>
+				
+			</ul> 
+		</div>
+		
+		<!-- 普通部件 -->
+		<div class="tab_css"  id="tab0_content" style="display: block">
+			<ul>
+				<li style="float: right;">
+					<a style="margin-top:-3px;"  class="btn btn-primary" onclick="appRegister();" href="javascript:void(0);">
+					<i class="icon-plus-sign icon-white"></i> 新增普通部件</a>
+				</li>
+				
+				<li id="ss" style="float:right;margin-right: 5px;">
+						<input id="input_search0" type="text" style="width:200px;color:#ccc;" value="关键字搜索"
+						onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+						<a style="margin-top:-10px;" class="btn" onclick="searchWord();" href="javascript:void(0);">
+						<i class="icon-search"></i> 检索</a>
+				</li> 
+			
+			</ul>
+			
+			
+			<table class="table table-striped table-bordered bootstrap-datatable datatable" id = "t_table">
+			
+				
+			</table>
+			
+			<div id="pageDiv"></div>
+		
+		</div>
+		
+		<!-- 组合部件 -->
+		<div class="tab_css"  id="tab1_content" style="display: none">
+			<ul>
+				<li style="float: right;">
+					<a style="margin-top:-3px;margin-right:1px;"  class="btn btn-primary" onclick="addZhbj();" href="javascript:void(0);">
+					<i class="icon-plus-sign icon-white"></i> 新增组合部件</a>
+				</li>
+				
+				<li id="ss" style="float:right;margin-right: 5px;">
+						<input id="input_search1" type="text" style="width:200px;color:#ccc;" value="关键字搜索"
+						onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+						<a style="margin-top:-10px;" class="btn" onclick="searchWord();" href="javascript:void(0);">
+						<i class="icon-search"></i> 检索</a>
+				</li> 
+			
+			</ul>
+			
+			
+			<table class="table table-striped table-bordered bootstrap-datatable datatable" id = "t_table1">
+			</table>
+			
+			<div id="pageDiv1"></div>
+		
+		</div>
+		
+	</div><!-- content结束 -->
+			
+</div>
+<!-- 右边内容 end-->
+
+</div>
+</div>		
+	
+	<!--新增普通部件弹出框内容 -->	
+	
+		<div id="example" class="modal hide fade in windowBoxBig" style="display: none;width: 1070px;height: 550px;left: 520px">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a> <h3 id="userTitleName">新增普通支架明细</h3>
+			</div>
+			
+			<div class="modal-body" id = "modal-body">
+							
+				<div class="select-res" align="center" style="margin-top1:10px;" id = "selectButton">
+					<span>
+						<button class="btn btn-large btn-warning">普通部件明细选择</button>
+					</span>
+				</div>
+				
+				<!-- 普通部件选择框 -->
+				<div class="select-box" align="center" style="margin-top:10px;width: 900px" id = "pt-select-box">
+					<!-- 弹出产品明细选择关闭键 -->
+					<span class="close-btn" id ="pt_close">
+						<i class="icon-remove"></i>
+					</span>
+					<div class="wrap">
+						<ul class="first"></ul>
+						<ul class="second"></ul>
+						<ul class="third"></ul>
+						 <ul class="foure"></ul>
+						<ul class="five"></ul> 
+					</div>
+				</div> 
+				
+				
+			<!-- 隐藏结果内容 -->
+			  <div id="hideConBox" style="display1:none;">
+				<p id = "select_result">
+					<h4><b>选择结果如下：</b></h4>
+				</p>
+				
+				 <div class="container-fluid">
+					 <div class="row-fluid tooltip-demo" style="margin-left:-5px;">
+					     <!--左边图片-->
+					     <div class="span2">
+					     	<div class="photoBox" align="center" style="margin-bottom:10px;" id = "photoBox">
+								<img src="resource/images/product/product_SDDZ1_65.jpg" id = "cpZP" />
+							</div>
+					     </div>
+					      <!--左边图片-->
+					     <form id="uploadForm" action=""  method="post" enctype="multipart/form-data">
+					      <!--右边内容-->
+					     <div class="span5">
+					     	<div class="box-content">
+							
+									<fieldset>
+									
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">产品编号：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="cpmb"   disabled/>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">产品型号：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="cpxh"  disabled/>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">成本单价：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="cbdj"  disabled/>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">数量：</label>
+										<div class="controls">
+											 <input type="text" placeholder="请输部件入数量..." name="zhVo.SJ" id = "bjsl" value ="1"/>
+										</div>
+									  </div>
+									 </fieldset>
+								
+					     </div>
+					   </div>
+					   
+					   <div class="span5">
+					     	<div class="box-content">
+								
+									<fieldset>								 
+									
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">常用名称：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="cymc" disabled/>
+										</div>
+									  </div>
+									  
+									   <div class="control-group" id = "forCPZMMC">
+										<label class="control-label" for="focusedInput">产品子目名称：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="cpzmmc" disabled/>
+										</div>
+									  </div>
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">计量单位：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="jldw"  disabled/>
+										</div>
+									  </div>
+									  
+									  <div class="control-group" id = "forEDHL">
+										<label class="control-label" for="focusedInput">额定耗量：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="edhl"  disabled/>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput"></label>
+										<div class="controls">
+											 <input type="hidden" class="disabled" id="bjsqu"  disabled/>
+										</div>
+									  </div>
+									  <!-- 部件标记 -->
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput"></label>
+										<div class="controls">
+											 <input type="hidden" class="disabled" id="bjop"  disabled/>
+										</div>
+									  </div>
+									  
+								 	<input type="reset" id="clearForm" name="reset" style="display:none;"/>
+									  
+									 </fieldset>
+								
+					     </div>
+					   </div>
+					</form>   
+					</div>
+				</div>
+			 </div>
+		  <!-- 隐藏结果内容 -->		
+								
+		<!-- 弹出框内容 -->						
+			</div>
+			
+			<div class="bottomBtnBox">
+				<a title="确定" href="javaScript:void(0);" class="btn btn-success" id="appBtn" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+				<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;"> 
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div>			
+		</div>
+	
+	
+	
+	
+	
+	<!--新增组合部件弹出框内容 -->	
+	
+		<div id="zhexample" class="modal hide fade in windowBoxBig" style="display: none;width: 1070px;height: 550px;left: 520px">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a> <h3 id="zhuserTitleName">新增组合支架明细</h3>
+			</div>
+			
+			<div class="modal-body" id = "modal-body">
+							
+				<div class="select-res" align="center" style="margin-top1:10px;" id = "zhselectButton">
+					<span id = "zhSpan">
+						<button class="btn btn-large btn-warning">组合部件明细选择</button>
+					</span>
+				</div>
+				
+				<!-- 组合部件选择框 -->
+				<div class="select-box" align="center" style="margin-top:10px;width: 300px;margin-left:350px;top:90px;" id = "zh-select-box">
+					<!-- 弹出产品明细选择关闭键 -->
+					<span class="close-btn" id = "zh_close">
+						<i class="icon-remove"></i>
+					</span>
+					<div class="wrap">
+						<ul class="zhfirst" style = "width:295px"></ul>
+						
+					</div>
+				</div> 
+				
+				
+			<!-- 隐藏结果内容 -->
+			  <div id="hideConBox" style="display1:none;">
+				<p id = "select_result">
+					<h4><b>选择结果如下：</b></h4>
+				</p>
+				
+				 <div class="container-fluid">
+					 <div class="row-fluid tooltip-demo" style="margin-left:-5px;">
+					     <!--左边图片-->
+					     <div class="span2">
+					     	<div class="zhphotoBox" align="center" style="margin-bottom:10px;" id = "zhphotoBox">
+								<img src="resource/images/product/product_SDDZ1_65.jpg" id = "zhcpZP" />
+							</div>
+					     </div>
+					      <!--左边图片-->
+					     <form id="uploadForm" action=""  method="post" enctype="multipart/form-data">
+					      <!--右边内容-->
+					     <div class="span5">
+					     	<div class="box-content">
+							
+									<fieldset>
+									
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">管道类型：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="zhgdlx"   disabled/>
+										</div>
+									  </div>
+									  
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput">安装方式：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="zhazfs"  disabled/>
+										</div>
+									  </div>
+									  
+									  
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">数量：</label>
+										<div class="controls">
+											 <input type="text" placeholder="请输部件入数量..." name="zhVo.SJ" id = "zhbjsl" value ="1"/>
+										</div>
+									  </div>
+									 </fieldset>
+								
+					     </div>
+					   </div>
+					   
+					   <div class="span5">
+					     	<div class="box-content">
+								
+									<fieldset>								 
+									
+									   <div class="control-group">
+										<label class="control-label" for="focusedInput">支架形式：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="zhzjxs" disabled/>
+										</div>
+									  </div>
+									  
+									   <div class="control-group" id = "forCPZMMC">
+										<label class="control-label" for="focusedInput">组合部件名称：</label>
+										<div class="controls">
+											 <input type="text" class="disabled" id="zhbjmc" disabled/>
+										</div>
+									  </div>
+									 
+									  <div class="control-group">
+										<label class="control-label" for="focusedInput"></label>
+										<div class="controls">
+											 <input type="hidden" class="disabled" id="zhbjsqu"  disabled/>
+										</div>
+									  </div>
+									  
+								 	<input type="reset" id="zhclearForm" name="reset" style="display:none;"/>
+									  
+									 </fieldset>
+								
+					     </div>
+					   </div>
+					</form>   
+					</div>
+				</div>
+			 </div>
+		  <!-- 隐藏结果内容 -->		
+								
+		<!-- 弹出框内容 -->						
+			</div>
+			
+			<div class="bottomBtnBox">
+				<a title="确定" href="javaScript:void(0);" class="btn btn-success" id="zhappBtn" style="margin:14px 0;">
+					<i class="icon-ok icon-white"></i> 确定
+				</a> 
+				<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="zhcloseWin" style="margin:14px;"> 
+					<i class="icon-remove"></i> 取消
+				</a>
+			</div>			
+		</div>
+
+
+	<script type="text/javascript" src="resource/js/kzzjMxpz/kzzjMxpz.js"></script>
+	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+  <script type="text/javascript" src="resource/js/kzzjMxpz/kzzjPtbjxz.js"></script> 
+  <script type="text/javascript" src="resource/js/kzzjMxpz/kzzjZhbjxz.js"></script>
+
+</body>
+</html>

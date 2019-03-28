@@ -1,0 +1,228 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildSiteServiceImpl.java
+	* Date:2018-2-6上午11:06:16   
+	***/
+package monitor.projectConfig.service.impl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import monitor.common.service.BaseServicce;
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.projectConfig.dao.impl.ProjectChildSiteDaoImpl;
+import monitor.projectConfig.service.IProjectChildSiteService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectChildSiteServiceImpl
+ * @dateTime: 2018-2-6 上午11:06:16
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildSiteServiceImpl extends BaseServicce implements IProjectChildSiteService {
+	private Connection conn = null;
+	
+	@Resource(name = "projectChildSiteDao")
+	private ProjectChildSiteDaoImpl projectChildSiteDao;
+	
+	/**
+	 * 
+	  * closed:(关闭数据库连接).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午4:55:56
+	  * @param conn void
+	  * @since JDK 1.7
+	 */
+	private void closed(Connection conn){
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public void addChildSite( Project_Child_Site site)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.addChildSite(conn, site);
+		} catch (Exception e) {
+			throw new Exception("新增部位失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	@Override
+	public void delChildSite( String siteSqu)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.delChildSite(conn, siteSqu);
+		} catch (Exception e) {
+			throw new Exception("删除部位失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+	}
+
+	@Override
+	public void updateChildSite( Project_Child_Site site)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.updateChildSite(conn, site);
+		} catch (Exception e) {
+			throw new Exception("修改部位失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+	}
+
+	@Override
+	public List<Project_Child_Site> listChildSite(String childSqu) throws Exception {
+		try {
+			conn = datasource.getConnection();
+			return projectChildSiteDao.listChildSite(conn, childSqu);
+		} catch (Exception e) {
+			throw new Exception("获取部位列表失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+		
+	}
+
+	@Override
+	public void addDxInfo(T_Project_Zj proZj)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.addDxInfo(conn, proZj);
+		} catch (Exception e) {
+			throw new Exception("添加支架失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	@Override
+	public void delDxInfo(String proZjSqu) throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.delDxInfo(conn, proZjSqu);
+		} catch (Exception e) {
+			throw new Exception("修改支架失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	@Override
+	public void updateDxInfo( T_Project_Zj proZj)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.updateDxInfo(conn, proZj);
+		} catch (Exception e) {
+			throw new Exception("修改支架失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	@Override
+	public PageInfoVo listDxInfoPageInfo(PageInfoVo pageVo,String siteSqu)
+			throws Exception {
+		pageVo.setStartIndex((pageVo.getPageNumber() - 1) * pageVo.getPageSize() + 1);
+		pageVo.setEndIndex(pageVo.getStartIndex() + pageVo.getPageSize());
+		try {
+			conn = datasource.getConnection();
+			pageVo.setTotal(projectChildSiteDao.selectCountChilSite(conn, siteSqu));
+			pageVo.setRows(projectChildSiteDao.listDxInfoPageInfo(conn, pageVo, siteSqu));
+		} catch (Exception e) {
+			throw new Exception("获取支架列表失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		return pageVo;
+	}
+
+	@Override
+	public List<Map<String, String>> countChilSite(String childSqu)
+			throws Exception {
+		List<Map<String, String>>  list = new ArrayList<Map<String, String>>(); 
+		Map<String, String> map = new HashMap<String, String>();
+		try {		
+			String countSite = projectChildSiteDao.countChilSite(conn, childSqu);
+			String siteSqu = projectChildSiteDao.selectChilSiteSqu(conn, childSqu);
+			siteSqu = siteSqu.substring(0,siteSqu.length()-1);
+			map.put("countSite", countSite);
+			map.put("siteSqu", siteSqu);
+			list.add(map);
+		} catch (Exception e) {
+			throw new Exception("统计部位个数"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+		return list;
+	}
+
+	@Override
+	public List<Map<String, String>> countSiteDxInfo(String siteSqu)
+			throws Exception {
+		
+		List<Map<String, String>>  list = new ArrayList<Map<String, String>>(); 
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			String countDxInfo = projectChildSiteDao.countChilSite(conn, siteSqu);
+			String dxInfoSqu = projectChildSiteDao.selectChilSiteSqu(conn, siteSqu);
+			siteSqu = siteSqu.substring(0,siteSqu.length()-1);
+			map.put("countDxInfo", countDxInfo);
+			map.put("dxInfoSqu", dxInfoSqu);
+			list.add(map);
+		} catch (Exception e) {
+			throw new Exception("统计支架个数"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		return list;
+	}
+
+	@Override
+	public String countParts(String siteSqu) throws Exception {	
+		try {
+			return projectChildSiteDao.countChilSite(conn, siteSqu);
+		} catch (Exception e) {
+			throw new Exception("统计部件个数"+e.getMessage());
+		}
+		
+		
+	}
+
+}

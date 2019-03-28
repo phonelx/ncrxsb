@@ -1,0 +1,11 @@
+package monitor.manage.dao;
+
+import java.util.List;
+
+import monitor.manage.bean.dto.BKMessageDto;
+
+public interface IBKMessageDao {
+	public List<BKMessageDto> bkMessage(String session);
+	
+	public String deleteMess(BKMessageDto bkMessageDto,String user);
+}

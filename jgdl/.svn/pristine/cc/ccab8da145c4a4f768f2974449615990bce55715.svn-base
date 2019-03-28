@@ -1,0 +1,51 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ControlServiceImpl.java
+	* Date:2017-5-12上午10:47:33   
+	***/
+package monitor.manage.service.impl;
+
+import java.sql.SQLException;
+
+import monitor.manage.dao.ControlDao;
+import monitor.manage.service.ControlService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ControlServiceImpl
+ * @dateTime: 2017-5-12 上午10:47:33
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ControlServiceImpl implements ControlService {
+
+	private ControlDao controlDao;
+
+	public ControlDao getControlDao() {
+		return controlDao;
+	}
+
+	public void setControlDao(ControlDao controlDao) {
+		this.controlDao = controlDao;
+	}
+
+	/**
+	  * listControlInPage:查询布控配置列表
+	  * @author 黄月
+	  * @date  2017-5-12 上午11:48:22
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public PageInfoVo listControlInPage(String searchKey, PageInfoVo page) throws SQLException {
+		return controlDao.listControlInPage(searchKey, page);
+	}
+	
+}

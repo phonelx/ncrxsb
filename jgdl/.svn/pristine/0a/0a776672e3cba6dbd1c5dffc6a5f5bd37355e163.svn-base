@@ -1,0 +1,248 @@
+package monitor.goodsHouse.action;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
+import net.sf.json.JSONObject;
+
+import monitor.common.BaseAction;
+import monitor.goodsHouse.bean.entity.Cpmxb;
+import monitor.goodsHouse.service.IStentsService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:44:29
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class StentsAction extends BaseAction{
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.7
+	*/
+	private static final long serialVersionUID = 1L;
+	private IStentsService stentsService;
+	private PageInfoVo pageVo = new PageInfoVo();
+
+	private Cpmxb cp; 
+	
+	public PageInfoVo getPageVo() {
+		return pageVo;
+	}
+
+	public void setPageVo(PageInfoVo pageVo) {
+		this.pageVo = pageVo;
+	}
+	/**
+	 * 
+	  * goStentsIndex:(跳转抗震支架部件配置页面).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-18 下午6:28:47
+	  * @return String
+	  * @since JDK 1.7
+	 */
+	public String goStentsIndex(){
+		/*System.out.println(11);*/
+		List<Map<String, String>> listMenu;
+		try {
+			listMenu = stentsService.getStentsMenu("");
+			getRequest().setAttribute("list", listMenu);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "success";
+	}
+	
+	
+	public void queryChileStents(){
+		
+		 /*File file = new File(path);
+		 
+		 if  (!file .exists()  && !file .isDirectory())      
+		 {       
+		     System.out.println("//不存在");  
+		     file .mkdir();    
+		 } */
+		String squ = getRequest().getParameter("squ");
+		String pageStr = getRequest().getParameter("page");
+		String rowsStr = getRequest().getParameter("rows");
+		System.out.println(pageStr);
+		System.out.println(rowsStr);
+		if (pageStr != null || !"".equals(pageStr)) {
+			this.pageVo.setPageNumber(Integer.parseInt(pageStr));
+		}
+		if (rowsStr != null) {
+			this.pageVo.setPageSize(Integer.parseInt(rowsStr));
+		}
+
+		try {
+			this.pageVo = stentsService.selectChildCp(pageVo, squ);
+			//jsonObj.accumulate("pageVo", pageVo);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		JSONObject jsonObj = JSONObject.fromObject(pageVo); 
+System.out.println(jsonObj);
+		writeJsonBack(jsonObj.toString());
+	}
+	/**
+	 * 添加
+	  * addStents:(这里用一句话描述这个方法的作用).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-18 下午6:51:07 void
+	  * @since JDK 1.7
+	 */
+	@SuppressWarnings({ "unchecked", "null" })
+	public void addStents(){
+		 String city=null;
+		 String des=null;
+		// getResponse.setCharacterEncoding("utf-8");
+		// getResponse.setContentType("text/html;charset=utf-8");
+		//	getResponse().setContentType(arg0)
+	       // DiskFileItemFactory factory = new DiskFileItemFactory(); 
+		 String path = getRequest().getSession().getServletContext().getRealPath("/"); 
+		 File prjPath = new File(path);
+	        File sourcePath = new File( prjPath.getParentFile().getAbsoluteFile()+"/gkapp_source" );
+	        if(!sourcePath.exists()){
+	        	sourcePath.mkdirs();
+	        }
+	        
+	        String fileName=null;
+		List<String> urls = new ArrayList<String>();
+		ServletRequest getRequest = null;
+		/*String serverpath = getRequest.getScheme()+"//"+getRequest.getServerName()+":"+getRequest.getServerPort()+"/";
+		//System.out.println(serverpath);
+		//StringBuilder bu = null;
+*/		DiskFileItemFactory dfif=new DiskFileItemFactory();
+		ServletFileUpload sfu=new ServletFileUpload(dfif);
+		try {
+			//将Request对象通过ServletFileUpload处理成List<FileItem>
+			List<FileItem> list;  
+			list = sfu.parseRequest(getRequest());
+			//if(((File) list).isFile()){
+				for (FileItem fi : list) {
+					if(fi.isFormField()){
+						//System.out.println("不是文件");
+						String ClName = fi.getFieldName();
+						if("code1".equals(ClName)){
+							city=fi.getString();
+						}else if("des".equals(ClName)){
+							//des=StringUtils.toStringUTF8(fi.getString());
+						}
+						/*fi.getName();
+						 city=fi.getString();
+						 des=fi.getString();
+	                     String value=new String(city.getBytes("ISO-8859-1"),"utf-8"); 
+	                     String value1=new String(des.getBytes("ISO-8859-1"),"utf-8");  
+	                     System.out.println("文本框中的值:"+value);
+	                     System.out.println("文本框中的值1:"+value1);*/
+						
+					}else{
+//					System.out.println("提交的是文件");
+//					System.out.println("上传文件名"+fi.getName());
+//					System.out.println("上传文件的字段名"+fi.getFieldName());
+					//String basePath = request.getSession().getServletContext().getRealPath("/images/");
+					//String filePath = "G:\\Upload\\images";
+					String realName = fi.getName();
+					fileName = (long)(Math.random()*10000000000L)+realName.substring(realName.lastIndexOf("."));
+//					System.out.println("保存图片的地址"+filePath);
+//					System.out.println("保存名"+fileName);
+					/*String realFilePath = filePath+"//"+fileName;
+					File file = new File(realFilePath);
+					fi.write(file);
+					urls.add(serverpath+fileName);*/
+					}
+	
+				}
+			
+			
+		/*	AreaFood areafood = new AreaFood(-1,fileName,des,city);
+		
+		    System.out.println(areafood);
+		    areafoodservice.save(areafood);*/
+			
+			
+		} catch (FileUploadException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		/*PrintWriter pw = response.getWriter();
+		pw.println(JSONArray.fromObject(urls).toString());
+		pw.flush();
+		pw.close();*/
+	}
+	
+	/**
+	 * 修改
+	  * editStents:(这里用一句话描述这个方法的作用).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-18 下午6:52:04 void
+	  * @since JDK 1.7
+	 */
+	public void editStents(){
+		try {
+			int i = stentsService.editCp(cp);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	  * deleteStents:(删除).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-18 下午6:53:23 void
+	  * @since JDK 1.7
+	 */
+	public void deleteStents(){
+		String squ = getRequest().getParameter("squ");
+		try {
+			stentsService.deleteCp(squ);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Cpmxb getCp() {
+		return cp;
+	}
+
+	public void setCp(Cpmxb cp) {
+		this.cp = cp;
+	}
+
+	public IStentsService getStentsService() {
+		return stentsService;
+	}
+
+	public void setStentsService(IStentsService stentsService) {
+		this.stentsService = stentsService;
+	}
+	
+	
+}

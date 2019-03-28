@@ -1,0 +1,59 @@
+package monitor.manage.bean.dto;
+
+public class BKMessageDto {
+	private int count;
+	private int bid;
+	private String bkhm;
+	private String isTable;
+	private int isTableId;
+
+	private String bksource;
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public int getBid() {
+		return bid;
+	}
+
+	public void setBid(int bid) {
+		this.bid = bid;
+	}
+
+	public String getBkhm() {
+		return bkhm;
+	}
+
+	public void setBkhm(String bkhm) {
+		this.bkhm = bkhm;
+	}
+
+	public String getIsTable() {
+		return isTable;
+	}
+
+	public void setIsTable(String isTable) {
+		this.isTable = isTable;
+	}
+
+	public int getIsTableId() {
+		return isTableId;
+	}
+
+	public void setIsTableId(int isTableId) {
+		this.isTableId = isTableId;
+	}
+
+	public String getBksource() {
+		return bksource;
+	}
+
+	public void setBksource(String bksource) {
+		this.bksource = bksource;
+	}
+}

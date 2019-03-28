@@ -1,0 +1,53 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+	<package name="goodsHouse" extends="monitor-struts-default">
+		
+		<!-- 跳转到应用管理页面 -->
+		 <action name="goStentsIndex" class="stentsAction" method="goStentsIndex">
+			<result name="success">pages/goodsHouse/stentsTree.jsp</result>
+		</action> 
+		<!--  查询部件-->
+		<action name="queryChileStents" class="stentsAction" method="queryChileStents">
+		</action> 
+		<!-- 添加部件 -->
+		<action name="addStents" class="stentsAction" method="addStents">
+		</action> 
+		<!-- 修改部件 -->
+		<action name="editStents" class="stentsAction" method="editStents">
+		</action> 
+		<!-- 删除部件 -->
+		<action name="deleteStents" class="stentsAction" method="deleteStents">
+		</action> 
+		<!--查询部件详情  -->
+		<action name="queryStentsBySqu" class="stentsAction" method="queryStentsBySqu">
+		</action> 
+		<!-- 下载模板 -->
+		<action name="dowloadStentsMB" class="stentsAction" method="dowloadStentsMB">
+		</action> 
+		<!--批量导入部件  -->
+		<action name="addBatchStents" class="stentsAction" method="addBatchStents">
+		</action>
+		<!--跳转到组合部件页面  -->
+		<action name="goZhBjIndex" class="stentsAction" method="goZhBjIndex">
+		<result name="success">pages/goodsHouse/zhbj.jsp</result>
+		</action>
+		<!-- 组合部件菜单 -->
+		<action name="queryZhbjMenu" class="stentsAction" method="queryZhbjMenu">		
+		</action>
+		<!--  组合部件信息-->
+		<action name="queryZhbjInfo" class="stentsAction" method="queryZhbjInfo">		
+		</action>
+		<!--  添加组合部件选择部件系列信息-->
+		<action name="queryLbInfo" class="stentsAction" method="queryLbInfo">		
+		</action>
+		<!-- 添加组合部件时获取部件信息 -->
+		<action name="queryBjInfo" class="stentsAction" method="queryBjInfo">		
+		</action>
+		<!--  获取组合部件详情-->
+		<action name="queryZhbjXq" class="stentsAction" method="queryZhbjXq">		
+		</action>
+	</package>
+</struts>

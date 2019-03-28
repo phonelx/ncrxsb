@@ -1,0 +1,32 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:IProjectChildSiteDao.java
+	* Date:2018-2-6上午11:06:27   
+	***/
+package monitor.projectConfig.dao;
+
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+
+/**
+ * @ClassName:IProjectChildSiteDao
+ * @dateTime: 2018-2-6 上午11:06:27
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IProjectChildSiteDao {
+
+	void addChildSite(Project_Child_Site site);
+	
+	void delChildSite();
+	
+	void updateChildSite();
+	
+//	List<Project_Child_Site> listChildSite();
+}

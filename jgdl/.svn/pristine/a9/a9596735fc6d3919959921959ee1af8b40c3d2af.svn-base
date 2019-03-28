@@ -1,0 +1,32 @@
+package monitor.goodsHouse.action;
+
+import monitor.common.BaseAction;
+import monitor.goodsHouse.service.IStentsService;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:44:29
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class StentsAction extends BaseAction{
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.7
+	*/
+	private static final long serialVersionUID = 1L;
+	private IStentsService stentsService;
+
+	public String goStentsIndex(){
+		return "success";
+	}
+	public IStentsService getStentsService() {
+		return stentsService;
+	}
+
+	public void setStentsService(IStentsService stentsService) {
+		this.stentsService = stentsService;
+	}
+	
+}

@@ -1,0 +1,202 @@
+package monitor.dispatched.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.dao.BaseDAO;
+import monitor.dispatched.bean.dto.DispatchedDto;
+import monitor.dispatched.dao.IOverdueDao;
+
+public class OverdueDaoImpl extends BaseDAO implements IOverdueDao
+{
+	/**
+	 * 申请续期
+	 */
+
+	@Override
+	public String updateOverdue(String gmsfhm)
+	{
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try
+		{
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			String sql = "UPDATE T_BKRY SET BKZT = ?,SXSJ=null WHERE GMSFHM = ? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, 0);
+			pstmt.setString(2, gmsfhm);
+			pstmt.executeUpdate();
+			conn.commit();
+		} catch (Exception e)
+		{
+			return "updateErr";
+		} finally
+		{
+			try
+			{
+				if (rs != null)
+				{
+					rs.close();
+				}
+				if (pstmt != null)
+				{
+					pstmt.close();
+				}
+				if (conn != null)
+				{
+					conn.close();
+				}
+			} catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		return "updateSuccess";
+	}
+
+	/**
+	  * listDispatchedInPage:分页查询已过期人员
+	  * @author 黄月
+	  * @date  2017-5-22 上午10:57:37
+	  * @param dispatchedDto
+	  * @param param
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public DispatchedDto listOverdueInPage(DispatchedDto dispatchedDto,
+			String paramSql) throws SQLException {
+		StringBuffer sql = new StringBuffer();
+		StringBuffer sqlTotal = new StringBuffer();
+		sql.append(" SELECT ID,GMSFHM,XM,RYLX,TO_CHAR(CJSJ,'yyyy-mm-dd hh24:mm:ss') AS CJSJ, ");
+		sql.append(" TO_CHAR(SXSJ,'yyyy-mm-dd hh24:mm:ss') AS SXSJ,LRRSQU,HJDZ,BKZT,BKSY, ");
+		sql.append(" BZ,SPRSQU,LRRNAME,SPRNAME FROM ( "); 
+		sql.append(" SELECT ROWNUM RN,T.*,T1.USERNAME AS LRRNAME,T2.USERNAME AS SPRNAME FROM T_BKRY T, "); 
+		sql.append(" SSP_TUSERINFO T1,SSP_TUSERINFO T2 WHERE T.LRRSQU = T1.SQU AND T.SPRSQU = T2.SQU ");
+		sql.append(paramSql + ")");
+		//数据条数查询
+		sqlTotal.append("SELECT COUNT(*) FROM (" + sql + ")");
+		int total = 0;
+		total = queryTotal(sqlTotal.toString(), datasource.getConnection());
+		
+		sql.append(" WHERE  RN >= " + dispatchedDto.getPageInfo().getStartIndex());
+		sql.append(" AND RN < " + dispatchedDto.getPageInfo().getEndIndex());
+		//System.out.println("已部署：" + sql.toString());
+		//列表查询
+		List<Map<String, Object>> ls = new ArrayList<Map<String,Object>>();
+		ls = queryList(sql.toString(), datasource.getConnection());
+		//封装分页数据
+		DispatchedDto dto = new DispatchedDto();
+		dto.getPageInfo().setRows(ls);
+		dto.getPageInfo().setTotal(total);
+		return dto;
+	}
+	
+	/**
+	  * queryTotal:(查询总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午10:59:21
+	  * @param sql
+	  * @param con
+	  * @return int
+	  * @since JDK 1.7
+	*/
+	public int queryTotal(String sql, Connection con) {
+		int totalCount=0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = con;//打开连接
+			pstmt = conn.prepareStatement(sql);//创建执行
+			rs = pstmt.executeQuery();
+			ResultSetMetaData metaData=rs.getMetaData();
+			while (rs.next()) {
+				for (int i = 1; i <= metaData.getColumnCount(); i++) {
+					totalCount = rs.getInt(i);
+				} 
+			}			
+		} catch (Exception ex) {
+		} finally {
+			close(con,pstmt,rs);
+		}
+		return totalCount;
+	}
+	
+	/**
+	  * queryList:(执行查询返回多条记录).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午10:59:53
+	  * @param sql
+	  * @param con
+	  * @return List<Map<String,Object>>
+	  * @since JDK 1.7
+	*/
+	public List<Map<String, Object>> queryList(String sql,Connection con) {
+		List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rest = null;//结果集
+		try {
+			conn = con;//连接
+			pstmt = conn.prepareStatement(sql);//创建
+			rest = pstmt.executeQuery();//获取结果集
+			ResultSetMetaData metaData = rest.getMetaData();
+			while(rest.next()){
+				LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>() ;
+				for (int i = 1; i <= metaData.getColumnCount(); i++) {
+					map.put(metaData.getColumnName(i), rest.getString(i) == null ? "" : rest.getString(i).trim());
+					String txt = rest.getString(i);
+					if (txt != null) {
+						txt = txt.replace("<@>", "'");
+					}
+					map.put(metaData.getColumnName(i), txt);
+				} 
+				ret.add(map);
+			}
+			return ret;
+		} catch (Exception ex) {
+			return null;
+		} finally {
+			close(conn,pstmt,rest);
+		}
+	}
+	
+	/**
+	 * close:(关闭本类中的数据库连接相关对象).<br/>
+	 * @author: 桂人杰
+	 * @datetime: 2017-4-17 下午2:52:58
+	 * @param: @param conn
+	 * @param: @param pstmt
+	 * @param: @param rs
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public static void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd">  
+	<!-- 数据源处理Action -->
+	<bean id="dataSourceAction" class="monitor.registry.action.DataSourceAction" scope="prototype">
+		<property name="service" ref="dataSourceService"/>
+	</bean>
+	<!-- 实体处理Action -->
+	<bean id="entityAction" class="monitor.registry.action.EntityAction" scope="prototype">
+		<property name="service" ref="entityService"/>
+	</bean>
+	<!-- 字段处理Action -->
+	<bean id="fieldAction" class="monitor.registry.action.FieldAction" scope="prototype">
+		<property name="service" ref="fieldService"/>
+	</bean>
+	<!-- 查询Action -->
+	<bean id="regQueryAction" class="monitor.registry.action.RegQueryAction" scope="prototype">
+		<property name="service" ref="regQueryService"/>
+	</bean>
+	<!-- 实体关系Action -->
+	<bean id="relationAction" class="monitor.registry.action.RelationAction" scope="prototype">
+		<property name="service" ref="relationService"/>
+	</bean>
+</beans>

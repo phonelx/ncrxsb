@@ -1,0 +1,41 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:ISelectCMDao.java
+ * Date:2016-3-14下午3:00:51
+ ***/
+package monitor.manage.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.manage.bean.dto.CMDto;
+
+/**
+ * @ClassName:ISelectCMDao
+ * @dateTime: 2016-3-14 下午3:00:51
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public interface ISelectCMDao {
+	public int selectCount(CMDto cmDto);
+
+	public List<?> selectList(CMDto cmDto);
+
+	public List<Map<String,Object>> selectDetail(CMDto cmDto);
+	
+	public List<?> detialTabPage(CMDto cmDto);
+	
+	public int detialTabCount(CMDto cmDto);
+
+	public List<?> chooseSource(CMDto cmDto);
+
+	public List<?> chooseTable(CMDto cmDto);
+	
+	public List<?> chooseBKHM(CMDto cmDto);
+
+	public List<?> getBKTJ();
+}

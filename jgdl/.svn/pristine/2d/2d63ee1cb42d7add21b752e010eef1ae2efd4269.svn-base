@@ -1,0 +1,171 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 11, 2011 1:13:13 PM
+*/
+package monitor.registry.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import monitor.common.BaseAction;
+import monitor.common.exception.SysException;
+import monitor.registry.bean.entity.Relation;
+import monitor.registry.service.IRelationService;
+
+/**
+ * 实体关系注册Action类 
+ * @author  liangxj
+ * @datetime  May 11, 2011 1:13:13 PM
+ */
+public class RelationAction extends BaseAction {
+	/**
+	 * @field serialVersionUID
+	*/
+	private static final long serialVersionUID = 1L;
+	//注入service
+	private IRelationService service;
+	//注入实体bean
+	private Relation relation;
+	// 实体编号
+	private int entitySqu;
+	// 字段数据类型
+	private String dataType;
+	// 数据源编号
+	private int dbsSqu;
+	//---------------- main methods
+	/**
+	 * @description  添加 实体关系
+	 * @return String
+	 */
+	public String addRelation(){
+		service.addRelation(relation);
+		setOperationDescb("实体名称：" + relation.getName());
+		return null;
+	}
+	/**
+	 * @description 编辑实体关系
+	 * @return String
+	 */
+	public String editRelation(){
+		service.editRelation(relation);
+		setOperationDescb("实体名称：" + relation.getName());
+		return null;
+	}
+	/**
+	 * @description 删除实体关系
+	 * @return String
+	 */
+	public String deleteRelation(){
+		service.deleteRelation(relation.getSqu());
+		setOperationDescb("实体名称：" + relation.getName());
+		return null;
+	}
+	/**
+	 * @description 显示所有实体关系
+	 * @return String
+	 */
+	public String listRelations(){
+		return writeString(
+		service.listRelations(
+		 Integer.parseInt(getRequest().getParameter("page")) - 1,
+		 Integer.parseInt(getRequest().getParameter("rows")) , dbsSqu));
+	}
+	/**
+	 * @description 显示所有表
+	 * @return String
+	 */
+	public String fetchTables(){
+		return writeString(service.fetchEntity(dbsSqu));
+	}
+	/**
+	 * @description 显示字段
+	 * @return String
+	 */
+	public String fetchFields(){
+		return writeString(service.fetchField(entitySqu, dataType));
+	}
+	/**
+	 * @description 跳转到 实体关系注册页面
+	 * @return String
+	 */
+	public String gotoRelationMgr(){
+		return SUCCESS;
+	}
+	/**
+	 * @description 私有方法  使用 PrintWriter打印字符串
+	 * @param  str ： 字符串
+	 * @return String
+	 */
+	private String writeString(String str){
+		PrintWriter out = null;
+		try {
+			out = getResponse().getWriter();
+			out.print(str);
+			out.close();
+		} catch (IOException e) {
+			throw new SysException(e);
+		} finally {
+			// 关闭输出流
+			if (out != null) { out.close(); }
+		}
+		return null;
+	}
+	//------- getters  and  setters
+	/**
+	 * @return service
+	 */
+	public IRelationService getService() {
+		return service;
+	}
+	/**
+	 */
+	public void setService(IRelationService service) {
+		this.service = service;
+	}
+	/**
+	 * @return relation
+	 */
+	public Relation getRelation() {
+		return relation;
+	}
+	/**
+	 */
+	public void setRelation(Relation relation) {
+		this.relation = relation;
+	}
+	/**
+	 * @return entitySqu
+	 */
+	public int getEntitySqu() {
+		return entitySqu;
+	}
+	/**
+	 */
+	public void setEntitySqu(int entitySqu) {
+		this.entitySqu = entitySqu;
+	}
+	/**
+	 * @return dataType
+	 */
+	public String getDataType() {
+		return dataType;
+	}
+	/**
+	 */
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
+	}
+	/**
+	 * @return dbsSqu
+	 */
+	public int getDbsSqu() {
+		return dbsSqu;
+	}
+	/**
+	 */
+	public void setDbsSqu(int dbsSqu) {
+		this.dbsSqu = dbsSqu;
+	}
+}

@@ -1,0 +1,147 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-4-18 下午04:59:36
+*/
+package monitor.user.dao;
+
+import java.util.List;
+
+import monitor.user.bean.dto.DatasourceDto;
+import monitor.user.bean.dto.EntityDto;
+import monitor.user.bean.dto.ModuleMainDto;
+import monitor.user.bean.dto.ModuleSubDto;
+import monitor.user.bean.dto.QueryDto;
+import monitor.user.bean.dto.RoleDto;
+import monitor.user.bean.entity.RoleEntity;
+import monitor.user.bean.vo.PageInfoVo;
+
+/** 
+ * <description> 
+ * @author  cl
+ * @datetime  2011-4-18 下午04:59:36
+ */
+public interface IRoleDAO {
+	public List<RoleDto> listRoles();
+
+	/**
+	 * 返回通过PageInfoVo封装后的角色列表，已通过分页处理
+	 * @author:  cl 
+	 * @param PageInfoVo
+	 * @return PageInfoVo
+	 */
+	public PageInfoVo listRolesInPage(PageInfoVo pageVo);
+	
+	/**
+	 * 查询所有功能模块，ModuleMainDto包含ModuleSubDto
+	 * @author:  cl 
+	 * @param 
+	 * @return List<ModuleMainDto>
+	 */
+	public List<ModuleMainDto> queryModules();
+
+	/**
+	 * 根据角色squ查询已授权的模块
+	 * @author:  cl 
+	 * @param roleSqu
+	 * @return List<ModuleSubDto>
+	 */
+	public List<ModuleSubDto> queryModulesByRoleSqu(int roleSqu);
+
+	public String addRole(RoleDto roleDto, List<ModuleSubDto> moduleSubList);
+	
+	public String editRole(RoleDto roleDto, List<ModuleSubDto> moduleSubList);
+
+	public String deleteRoleBySqu(int squ);
+
+	/**
+	 * 查询出所有已注册的实体信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryAllEntities();
+
+	/**
+	 * 查询出所有已注册的数据源信息
+	 * @author:  cl 
+	 * @param 
+	 * @return List<DatasourceDto>
+	 */
+	public List<DatasourceDto> queryAllDatasources();
+
+	/**
+	 * 查询出所有已注册的查询信息,包括查询关联的实体List
+	 * @author:  cl 
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryAllQueries();
+
+	/**
+	 * 根据角色squ查询出所有注册并已授权实体信息
+	 * @author:  cl 
+	 * @param roleSqu 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByRoleSqu(int roleSqu);
+	
+	/**
+	 * 根据角色squList查询出所有注册并已授权实体信息
+	 * @author:  cl
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByRoleSqu(List<String> roleSquList);
+	
+	
+	/**
+	 * 根据name查询出所有注册并已授权实体信息
+	 * @author:  cl 
+	 * @param roleSqu 
+	 * @param 
+	 * @return List<EntityDto>
+	 */
+	public List<EntityDto> queryGrantedEntitiesByName(String  squName);
+	/**
+	 * 保存实体的授权信息
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String saveGrantedEntities(RoleDto roleDto,List<EntityDto> entityDtoList);
+
+	/**
+	 * 根据角色squ查询出所有注册并已授权查询信息,包括查询关联的实体List
+	 * @author:  cl 
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryGrantedQueriesByRoleSqu(int roleSqu);
+	
+	/**
+	 * 根据角色squList查询出所有注册并已授权查询信息,包括查询关联的实体List
+	 * @author:  cl
+	 * @param 
+	 * @return List<QueryDto>
+	 */
+	public List<QueryDto> queryGrantedQueriesByRoleSqu(List<String> roleSquList);
+
+	/**
+	 * 保存查询的授权信息
+	 * @author:  cl 
+	 * @param 
+	 * @return String
+	 */
+	public String saveGrantedQueries(RoleDto roleDto,List<QueryDto> queryDtoList);
+
+	/**
+	 * 根据squ查询角色信息
+	 * @author:  cl 
+	 * @param 
+	 * @return RoleEntity
+	 */
+	public RoleEntity findRoleBySqu(int squ);
+}

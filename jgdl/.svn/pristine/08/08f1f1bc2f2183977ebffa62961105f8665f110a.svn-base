@@ -1,0 +1,57 @@
+package monitor.projectConfig.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+
+
+import monitor.projectConfig.dao.ICalculationReportDao;
+
+/**
+ *@ClassName 支架报告计算
+ *@dataTime 2018-4-9-下午2:39:54
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class CalculationReportDaoImpl implements ICalculationReportDao{
+
+	
+	private PreparedStatement ps = null;
+	/**
+	 * 根据支架SQU查询项目和支架的信息
+	  * selectProjectInfo:接口实现
+	  * @author 唐青
+	  * @date  2018-4-9 下午3:07:02
+	  * @param zjsqu
+	  * @return
+	  * @throws SQLException
+	 */
+	@Override
+	public List<Map<String, String>> selectProjectInfo(Connection conn , String zjsqu)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		return null;
+	}
+
+	private void closed(ResultSet rs, PreparedStatement ps){
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

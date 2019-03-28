@@ -1,0 +1,94 @@
+package monitor.dispatched.bean.entity;
+
+import java.io.Serializable;
+
+public class AddApplicationEntity implements Serializable{
+    /**人员类型常量*/
+    public static final int RYLX_ZTRY = 0;//在逃人员
+    public static final int RYLX_ZDRY = 1;//重点人员
+    public static final int RYLX_LKRY = 2;//临控人员
+    public static final int RYLX_AJXYR = 3;//案件嫌疑人
+
+    /**
+      * @since JDK1.6
+    */
+    private static final long serialVersionUID = 2262120556836506421L;
+    /**主键号 */ 
+    private String squ = null;
+    /** 姓名 */
+    private String name = null;
+    /** 身份证号码*/
+    private String idcard = null;
+    /** 人员类型*/
+    private int rylx = -1;
+    /**居住地址*/
+    private String jzdz = null;
+    /**民族*/
+    private String mz = null;
+    /**操作人序号*/
+    private int czrsqu = 0;
+    
+    public int getCzrsqu() {
+		return czrsqu;
+	}
+	public void setCzrsqu(int czrsqu) {
+		this.czrsqu = czrsqu;
+	}
+	public String getSqu()
+    {
+        return squ;
+    }
+    public void setSqu(String squ)
+    {
+        this.squ = squ;
+    }
+    public String getName()
+    {
+        return name;
+    }
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+    public String getIdcard()
+    {
+        return idcard;
+    }
+    public void setIdcard(String idcard)
+    {
+        this.idcard = idcard;
+    }
+    public int getRylx()
+    {
+        return rylx;
+    }
+    public void setRylx(int rylx)
+    {
+        this.rylx = rylx;
+    }
+    public String getJzdz()
+    {
+        return jzdz;
+    }
+    public void setJzdz(String jzdz)
+    {
+        this.jzdz = jzdz;
+    }
+    public String getMz()
+    {
+        return mz;
+    }
+    public void setMz(String mz)
+    {
+        this.mz = mz;
+    }
+	@Override
+	public String toString() {
+		return "AddApplicationEntity [squ=" + squ + ", name=" + name
+				+ ", idcard=" + idcard + ", rylx=" + rylx + ", jzdz=" + jzdz
+				+ ", mz=" + mz + ", czrsqu=" + czrsqu + "]";
+	}
+   
+    
+    
+}

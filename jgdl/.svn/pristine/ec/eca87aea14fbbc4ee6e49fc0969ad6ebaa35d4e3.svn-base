@@ -1,0 +1,24 @@
+package monitor.approvalPending.dao;
+
+
+import monitor.approvalPending.bean.vo.PageInfoVo;
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+public interface IApprovlDao {
+	/**
+	 * 修改审批意见
+	 * @param approval
+	 * @return
+	 */
+	public int editApproval(String bz,String gmsfhm);
+	
+	/**
+	 * 取消审批意见
+	 * @param approval
+	 * @return
+	 */
+	public int quxiaoApproval(String bz,String gmsfhm);
+	
+	public DispatchedDto listDispatchedInPage(DispatchedDto dispatchedDto,String param,int page,int rows);
+	
+}

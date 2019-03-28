@@ -1,0 +1,29 @@
+package monitor.manage.service.impl;
+
+import java.util.List;
+
+import monitor.manage.bean.dto.BKMessageDto;
+import monitor.manage.dao.IBKMessageDao;
+import monitor.manage.service.IBKMessageService;
+
+public class BKMessageServiceImpl implements IBKMessageService {
+	private IBKMessageDao iBKMessageDao;
+
+	public IBKMessageDao getiBKMessageDao() {
+		return iBKMessageDao;
+	}
+
+	public void setiBKMessageDao(IBKMessageDao iBKMessageDao) {
+		this.iBKMessageDao = iBKMessageDao;
+	}
+
+	@Override
+	public List<BKMessageDto> bkMessage(String session) {
+		return iBKMessageDao.bkMessage(session);
+	}
+
+	@Override
+	public String deleteMess(BKMessageDto bkMessageDto,String username) {
+		return iBKMessageDao.deleteMess(bkMessageDto,username);
+	}
+}

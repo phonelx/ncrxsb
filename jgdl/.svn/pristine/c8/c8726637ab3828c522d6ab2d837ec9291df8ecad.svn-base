@@ -1,0 +1,563 @@
+package monitor.manage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import monitor.common.dao.BaseDAO;
+import monitor.common.exception.DaoException;
+import monitor.manage.bean.dto.SfzQueryDto;
+import monitor.manage.bean.dto.SourceDto;
+import monitor.manage.bean.dto.TableDto;
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.bean.entity.TRegfieldEntity;
+import monitor.manage.dao.QueryDao;
+import monitor.user.bean.dto.UserDto;
+
+import org.apache.struts2.ServletActionContext;
+
+public class QueryDaoImpl extends BaseDAO  implements QueryDao {
+	private Connection conn = null;
+	private PreparedStatement pstmt = null ;
+	private ResultSet rs = null ;
+	
+	/**
+	 * 获取身份证总数
+	 */
+	@Override
+	public int GetCount(String sfhm,String yjbt) {
+		try {
+			HttpServletRequest request = ServletActionContext.getRequest();
+			UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+			int userid = _userDto.getSqu();
+			String roid = QueryRoid(String.valueOf(userid));
+			conn = datasource.getConnection();
+			StringBuffer sql = new StringBuffer("SELECT COUNT(YJID) FROM T_YJSFZ,T_YJGZ"
+				+ " WHERE T_YJGZ.ID= T_YJSFZ.YJID AND ISSHOW = 0");
+			if("0".equals(roid)){
+				sql.append(" AND T_YJGZ.YJR = "+userid);
+			}
+			if(!"".equals(sfhm)){
+				sql.append(" AND T_YJSFZ.ZJHM like '%"+sfhm+"%'");
+			}
+			if(!"".equals(yjbt)){
+				sql.append(" AND T_YJGZ.YJBT like '%"+yjbt+"%'");
+			}
+			pstmt = conn.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return 0;
+	}
+	/**
+	 * 获取查询身份证数据
+	 */
+	@Override
+	public List QuerySFZ(int pageSize, int pageNo,String sfhm,String yjbt) {
+		List<SfzQueryDto> list = new ArrayList<SfzQueryDto>();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		UserDto _userDto = (UserDto) request.getSession().getAttribute("user");
+		int userid = _userDto.getSqu();
+		String roid = QueryRoid(String.valueOf(userid));
+		int startIndex = (pageNo - 1) * pageSize + 1;
+		StringBuffer sql = new StringBuffer("SELECT * FROM "
+				+ "(SELECT T.*,ROWNUM R1 FROM "
+				+ "(SELECT T_YJGZ.YJBT,T_YJSFZ.CKID,T_YJSFZ.ZJHM,T_YJGZ.ID FROM T_YJSFZ,T_YJGZ "
+				+ "WHERE ISSHOW=0 AND T_YJGZ.ID= T_YJSFZ.YJID");
+		if("0".equals(roid)){
+			sql.append(" AND T_YJGZ.YJR = "+userid);
+		}
+		if(!"".equals(sfhm)){
+			sql.append(" AND T_YJSFZ.ZJHM like '%"+sfhm+"%'");
+		}
+		if(!"".equals(yjbt)){
+			sql.append(" AND T_YJGZ.YJBT like '%"+yjbt+"%'");
+		}
+		sql.append(")T WHERE ROWNUM < " + (pageSize + startIndex) + ")"
+				+ " WHERE R1 >= " + startIndex);
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql.toString());
+			rs = pstmt.executeQuery();
+			while(rs.next()){
+				SfzQueryDto dto = new SfzQueryDto();
+				dto.setTitle(rs.getString(1));
+				dto.setCkid(rs.getString(2));
+				dto.setZjhm(rs.getString(3));
+				dto.setId(rs.getString(4));
+				list.add(dto);
+			}
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return null;
+	}
+	public List chooseTable(String yjid) {
+		List<TableDto> list = new ArrayList<TableDto>();
+		TableDto tabDto=null;
+		Connection conn1 = null;
+		PreparedStatement pstmt1 = null ;
+		ResultSet rs1 = null ;
+		try {
+			// 0是布控预警表，1不是
+			String sql = "SELECT SQU,DATASOURCESQU,NAME,TITLE FROM SSP_TREGENTITY "
+						+"WHERE ISYJQUYER=0 AND DATASOURCESQU=("
+						+"SELECT DBCONID FROM T_YJGZ WHERE T_YJGZ.ID=?)";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, yjid);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				tabDto = new TableDto();
+				tabDto.setSqu(rs.getInt("squ"));
+				tabDto.setDataSourceSqu(rs.getInt("datasourcesqu"));
+				tabDto.setName(rs.getString("name"));
+				tabDto.setTitle(rs.getString("title"));
+				String countsql = "SELECT COUNT(1) FROM "+tabDto.getName()+" WHERE "
+				+ " YJID = ?";
+				conn1 = datasource.getConnection();
+				pstmt1 = conn1.prepareStatement(countsql);
+				pstmt1.setInt(1, Integer.parseInt(yjid));
+				rs1 = pstmt1.executeQuery();
+				if(rs1.next()){
+					tabDto.setCount(rs1.getInt(1));
+				}
+				list.add(tabDto);
+				pstmt1.close();
+				rs1.close();
+				conn1.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+				if (rs1 != null) { rs1.close(); }
+				if (pstmt1 != null) { pstmt1.close(); }
+				if (conn1 != null) { conn1.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+
+		return list;
+	}
+	/**
+	 * 提供选择框
+	 */
+	@Override
+	public List chooseSource(String yjid) {
+		List<SourceDto> list = new ArrayList<SourceDto>();
+		SourceDto souDto=null;
+
+		try {
+			String sql = "SELECT SQU,TITLE FROM SSP_TREGDATASOURCE WHERE SQU=("
+						+"SELECT DBCONID FROM T_YJGZ WHERE T_YJGZ.ID=?)";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, yjid);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				souDto = new SourceDto();
+				souDto.setSqu(rs.getInt("squ"));
+				souDto.setTitle(rs.getString("title"));
+
+				list.add(souDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return list;
+	}
+	public String QueryRoid(String id){
+		String sql="SELECT SSP_TROLEINFO.ISADMIN FROM SSP_TUSERINFO,SSP_TROLEINFO WHERE " +
+				"SSP_TUSERINFO.ROLESQU = SSP_TROLEINFO.SQU AND  SSP_TUSERINFO.SQU=?";
+		try {
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			if(rs.next()){
+				return rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return null;
+	}
+	/** 
+	 * TODO 获取第一页信息
+	 */
+	@Override
+	public List<Map<String,Object>> selectDetail(Yjgzdto Yjgzdto) {
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();// 定义LIST， 以map形式存储
+		// 根据ID得到相应的表名
+		String[] tabID = getArray(Yjgzdto.getChecked());
+		String[] tabName = new String[tabID.length];
+		for (int id = 0; id < tabID.length; id++) {
+			tabName[id] = getTable(tabID[id]);
+		}
+
+		int pageNo=Yjgzdto.getPageNo();
+		int pageSize=Yjgzdto.getPageSize();
+		Yjgzdto  yj = new Yjgzdto();
+		int countPageNo=0;
+		// 开始执行
+		for (int k = 0; k < tabName.length; k++) {
+			try {
+				yj.setChecked(tabID[k]);
+				yj.setId(Yjgzdto.getId());
+				yj.setSfhm(Yjgzdto.getSfhm());
+				yj.setCsrq1(Yjgzdto.getCsrq1());
+				yj.setCsrq2(Yjgzdto.getCsrq2());
+				countPageNo=detialTabCount(yj);
+				String SQL = getSQL(tabName[k], String.valueOf(Yjgzdto.getId()), Yjgzdto.getDbConID(),yj);// 得到SQL语句
+				//分页SQL语句
+				String sql="SELECT * FROM (SELECT T.*,ROWNUM R1 FROM ("+SQL
+						+") T WHERE ROWNUM <="
+						+pageNo*pageSize+")  WHERE R1 >"+((pageNo-1)*pageSize);
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+
+				// 得到SQL语句的字段名字
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int count = rsmd.getColumnCount();
+				String[] name = new String[count];
+				for (int i = 0; i < name.length; i++) {
+					name[i] = rsmd.getColumnName(i + 1);
+				}
+				List<Map<String,Object>> claList = new ArrayList<Map<String,Object>>();
+				Map<String,Object> tabMap = new HashMap<String,Object>();
+				Map<String,Object> rsMap = null;
+				while (rs.next()) {
+					rsMap = new HashMap<String,Object>();
+					for (int j = 0; j < name.length; j++) {
+						if(rs.getString(name[j])==null ||"".equals(rs.getString(name[j]))){
+							rsMap.put(name[j], "无");
+						}else{
+							rsMap.put(name[j], rs.getString(name[j]));
+						}
+					}
+					claList.add(rsMap);
+				}
+
+				tabMap.put(tabName[k]+"@"+countPageNo, claList);
+				listMap.add(tabMap);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}finally {
+				try {
+					if (rs != null) { rs.close(); }
+					if (pstmt != null) { pstmt.close(); }
+					if (conn != null) { conn.close(); }
+				} catch (Exception e) {
+					throw new DaoException(e);
+				}
+			}
+		}
+
+		return listMap;
+	}
+	/**
+	 * 
+	  * getArray:(转换数组).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-4-21 上午10:20:30
+	  * @param: @param str
+	  * @param: @return
+	  * @return: String[]
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String[] getArray(String str) {
+		str = str.substring(0, str.length() - 1);
+		String[] a = str.split(",");
+		return a;
+	}
+	
+	public int detialTabCount(Yjgzdto Yjgzdto){
+		int count=0;
+		String tableID="";
+		
+		if(Yjgzdto.getChecked().indexOf(",")>0){
+			tableID=getArray(Yjgzdto.getChecked())[0];
+		}else{
+			tableID=Yjgzdto.getChecked();
+		}
+		
+		String tableName=getTable(tableID);
+		StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM "+tableName+" WHERE YJID =?");
+		if(!"".equals(Yjgzdto.getSfhm())){
+			String name=detialTabName(tableID);
+			sql.append(" AND "+name+" like '%"+Yjgzdto.getSfhm()+"%'");
+		}
+		if(!"".equals(Yjgzdto.getCsrq1())&& !"".equals(Yjgzdto.getCsrq2())){
+			sql.append(" AND DEP_ACTION_TIME BETWEEN ");
+			sql.append(" To_Date('" + Yjgzdto.getCsrq1()
+			        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+			sql.append(" AND To_Date('" + Yjgzdto.getCsrq2()
+			        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+		}
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql.toString());
+			pstmt.setString(1, String.valueOf(Yjgzdto.getId()));
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				count=rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+
+		return count;
+	}
+	public String detialTabName(String nameID){
+		String name="";
+		String sql="select name from ssp_tregfield where ASCONDITION=1 and entitysqu=?";
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, nameID);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				name=rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+
+		
+		return name;
+	}
+	public String getTable(String id) {
+		String result = "";
+
+		try {
+			String sql = "select name from ssp_tregentity where squ=?";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result = rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}  finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+
+		return result;
+	}
+	/**
+	 * 
+	  * getSQL:(拼接sql).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-4-21 上午10:20:41
+	  * @param: @param tabName
+	  * @param: @param zjhm
+	  * @param: @param sourceID
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String getSQL(String tabName, String yjid, int sourceID,Yjgzdto dto) {
+		StringBuffer sb = new StringBuffer("select ");
+		TRegfieldEntity tFieldEntity = null;
+		String tableID="";
+		if(dto.getChecked().indexOf(",")>0){
+			tableID=getArray(dto.getChecked())[0];
+		}else{
+			tableID=dto.getChecked();
+		}
+		try {
+			String sql = "select * from ssp_tregfield where entitysqu=(select squ from ssp_tregentity where datasourcesqu=? and name=?)";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sourceID);
+			pstmt.setString(2, tabName);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				tFieldEntity = new TRegfieldEntity();
+				tFieldEntity.setSqu(rs.getInt("squ"));
+				tFieldEntity.setEntitysqu(rs.getInt("entitysqu"));
+				tFieldEntity.setName(rs.getString("name"));
+				tFieldEntity.setTitle(rs.getString("title"));
+				tFieldEntity.setDescb(rs.getString("descb"));
+				tFieldEntity.setRegdatetime(rs.getString("regdatetime"));
+				tFieldEntity.setType(rs.getString("type"));
+				tFieldEntity.setPrecision(rs.getInt("precision"));
+				tFieldEntity.setScale(rs.getInt("scale"));
+				tFieldEntity.setIskey(rs.getInt("iskey"));
+				tFieldEntity.setIsnullable(rs.getInt("isnullable"));
+				tFieldEntity.setIsautoincrement(rs.getInt("isautoincrement"));
+				tFieldEntity.setIsunique(rs.getInt("isunique"));
+				tFieldEntity.setAscondition(rs.getInt("ascondition"));
+				tFieldEntity.setDictypesqu(rs.getString("dictypesqu"));
+				tFieldEntity.setDisplayprio(rs.getInt("displayprio"));
+				tFieldEntity.setIssimpleel(rs.getInt("issimpleel"));
+				tFieldEntity.setBkindexof(rs.getString("bkindexof"));
+				tFieldEntity.setIsyjquery(rs.getString("ISYJQUERY"));
+				sb.append(tFieldEntity.getName() + " " + tFieldEntity.getTitle() + ",");
+			}
+			// 拼接SQL语句
+			sb.delete(sb.length() - 1, sb.length());
+			sb.append(" from " + tabName + " where YJID = '" + yjid + "'");
+			if(!"".equals(dto.getSfhm())){
+				String name=detialTabName(tableID);
+				sb.append(" AND "+name+" like '%"+dto.getSfhm()+"%'");
+			}
+			if(!"".equals(dto.getCsrq1())&& !"".equals(dto.getCsrq2())){
+				sb.append(" AND DEP_ACTION_TIME BETWEEN ");
+				sb.append(" To_Date('" + dto.getCsrq1()
+				        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+				sb.append(" AND To_Date('" + dto.getCsrq2()
+				        + "', 'yyyy-mm-dd hh24:mi:ss') ");
+			}
+			sb.append(" ORDER BY DEP_ACTION_TIME desc");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return sb.toString();
+	}
+	/** 
+	 * TODO 简单描述该方法的实现功能
+	 * @see monitor.manage.dao.QueryDao#detialTabPage(monitor.manage.bean.dto.Yjgzdto)
+	 */
+	@Override
+	public List detialTabPage(Yjgzdto Yjgzdto) {
+		int pageNo=Yjgzdto.getPageNo();
+		int pageSize=Yjgzdto.getPageSize();
+		String tableName=getTable(Yjgzdto.getChecked());
+		String SQL=getSQL(tableName, String.valueOf(Yjgzdto.getId()), Yjgzdto.getDbConID(), Yjgzdto);
+		//分页SQL语句
+		String sql="SELECT * FROM (SELECT T.*,ROWNUM R1 FROM ("+SQL
+				+") T WHERE ROWNUM <="
+				+pageNo*pageSize+")  WHERE R1 >"+((pageNo-1)*pageSize);
+
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();// 定义LIST， 以map形式存储
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			
+			// 得到SQL语句的字段名字
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int count = rsmd.getColumnCount();
+			String[] name = new String[count];
+			for (int i = 0; i < name.length; i++) {
+				name[i] = rsmd.getColumnName(i + 1);
+			}
+
+			List<Map<String,Object>> claList = new ArrayList<Map<String,Object>>();
+			Map<String,Object> tabMap = new HashMap<String,Object>();
+			Map<String,Object> rsMap = null;
+			while(rs.next()){
+				rsMap = new HashMap<String,Object>();
+				for (int j = 0; j < name.length; j++) {
+					if(rs.getString(name[j])==null ||"".equals(rs.getString(name[j]))){
+						rsMap.put(name[j], "无");
+					}else{
+						rsMap.put(name[j], rs.getString(name[j]));
+					}
+				}
+				claList.add(rsMap);
+			}
+			tabMap.put(tableName, claList);
+			listMap.add(tabMap);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null) { conn.close(); }
+			} catch (Exception e) {
+				throw new DaoException(e);
+			}
+		}
+		return listMap;
+	}
+}

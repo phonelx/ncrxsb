@@ -1,0 +1,77 @@
+package monitor.approvalPending.service.impl;
+
+import monitor.approvalPending.bean.vo.PageInfoVo;
+import monitor.approvalPending.dao.IApprovlDao;
+import monitor.approvalPending.service.IApprovalService;
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+
+public class ApprovalServiceImpl implements IApprovalService {
+	/**
+	 * 是否是管理员（审批）角色
+	 */
+	public static final int ISSPR = 1;
+	
+	/**
+	 * 是否是最新已部署信息
+	 */
+	public static final int ISNEW = 1;
+	
+	private IApprovlDao approvalDao;
+
+	public IApprovlDao getApprovalDao() {
+		return approvalDao;
+	}
+
+	public void setApprovalDao(IApprovlDao approvalDao) {
+		this.approvalDao = approvalDao;
+	}
+
+	@Override
+	public int editApproval(String bz, String gmsfhm) {
+		return approvalDao.editApproval(bz, gmsfhm);
+	}
+	@Override
+	public DispatchedDto listDispatchedInPage(DispatchedDto dispatchedDto,int page,int rows) {
+		StringBuffer sbParam = new StringBuffer();
+		//判断用户的权限
+		if (ISSPR == dispatchedDto.getUserdto().getRoleEntity().getIsAdmin()) {
+			//审批人id
+			sbParam.append("　AND　SPRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+			sbParam.append(" AND BKZT = ");
+			sbParam.append(dispatchedDto.getBkzt());
+			//此处为临时数据
+			if (dispatchedDto.getIsnew() == 1 && dispatchedDto.getBkzt() == 1) {
+				sbParam.append(" AND ISNEW = 1");
+			}
+		} else if (dispatchedDto.getIsnew() == 1 && dispatchedDto.getBkzt() == 1) {
+			//如果是最新已部署
+			sbParam.append("　AND　LRRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+			sbParam.append(" AND BKZT = ");
+			sbParam.append(dispatchedDto.getBkzt());
+			sbParam.append(" AND ISNEW = 1");
+		} else {
+			sbParam.append("　AND　LRRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+			sbParam.append(" AND BKZT = ");
+			sbParam.append(dispatchedDto.getBkzt());
+		}
+		return approvalDao.listDispatchedInPage(dispatchedDto, sbParam.toString(),page,rows);
+	}
+	/**
+	*@ClassName
+	*@dataTime 2017-5-9-下午7:04:59
+	*@version
+	*@author:唐青
+	*@since
+	*/
+	@Override
+	public int quxiaoApproval(String bz, String gmsfhm) {
+	
+		return approvalDao.quxiaoApproval(bz, gmsfhm);
+	}
+	
+	
+}

@@ -1,0 +1,15 @@
+package monitor.projectConfig.action;
+
+import monitor.common.BaseAction;
+
+/**
+ *@ClassName
+ *@dataTime 2018-4-9-下午3:11:30
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class CalculationReportAction extends BaseAction{
+
+
+}

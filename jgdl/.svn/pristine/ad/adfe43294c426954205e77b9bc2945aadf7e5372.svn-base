@@ -1,0 +1,272 @@
+package monitor.dispatched.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.dispatched.bean.entity.AddApplicationEntity;
+import monitor.dispatched.bean.entity.SSPTuserinfo;
+import monitor.dispatched.service.AppApplicationService;
+import monitor.user.bean.dto.UserDto;
+
+
+public class AddApplicationAction extends BaseAction{
+    private static final long serialVersionUID = 1128575896389349294L;
+    private AppApplicationService appApplicationService ;
+    private AddApplicationEntity appApplicationEntity = new AddApplicationEntity();
+    
+    /**
+      * findByIDCard:(根据身份证号码去临时库查询返回查询结果).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-3 下午5:51:59
+     */
+    static List<String> idVector = new Vector<String>();
+    public void findByIDCard(){
+        String idNum = getRequest().getParameter("idNum");
+        if(!(idVector.contains(idNum))){
+            idVector.add(idNum);
+        }
+        UserDto user = (UserDto)getSession().getAttribute("user");
+        Vector<AddApplicationEntity> vector = this.appApplicationService.findByIDCardVectors(idVector,user);
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("victory", vector);
+        JSONObject jsonObject = JSONObject.fromObject(map);
+        this.writeIt(jsonObject.toString());
+        return;
+    }
+    
+    /**
+     * 添加临时过渡表的数据
+      * @author: 张家俊
+      * @dateTime: 2017-5-23 上午11:34:50
+      * @since JDK 1.6
+     */
+    public void addTransition(){
+        String idcard = getRequest().getParameter("idcard");
+        AddApplicationEntity singleFind = this.appApplicationService.singleFind(idcard);
+        String rylx = getRequest().getParameter("rylx");
+        UserDto user = (UserDto)getSession().getAttribute("user");
+        int dealresult = this.appApplicationService.addTransitionData(singleFind, rylx,user);
+        HashMap<String,Object> map = new HashMap<String, Object>();
+        map.put("result", dealresult);
+        JSONObject jsonObject = JSONObject.fromObject(map);
+        this.writeIt(jsonObject.toString());
+    }
+  
+    
+    /**
+     * 添加布控人员的数据
+      * addInforToBkry:接口实现
+      * @param: @param bkryEntity
+      * @param: @return
+     */
+    public void addInforToBkry(){
+        String sprsqu = getRequest().getParameter("sprsqu");
+        String squs[] = getRequest().getParameterValues("squs");
+        Vector<String> victory = new Vector<String>();
+        List<String> result = new ArrayList<String>();  
+        boolean flag;  
+        for(int i=0;i<squs.length;i++){  
+            flag = false;  
+            for(int j=0;j<result.size();j++){  
+                if(squs[i].equals(result.get(j))){  
+                    flag = true;  
+                    break;  
+                }  
+            }  
+            if(!flag){  
+                result.add(squs[i]);  
+            }  
+        }  
+        String[] arrayResult = (String[]) result.toArray(new String[result.size()]);  
+        
+        for (int i = 0; i < arrayResult.length; i++) {
+            victory.add(arrayResult[i]);
+        }
+        //这里直接进行保存，所有逻辑写到DaoImpl里面
+        UserDto _user = (UserDto)getSession().getAttribute("user");
+        HashMap<String,Object> map = new HashMap<String, Object>();
+        try {
+            this.appApplicationService.insertRecordToBKRY(victory, _user, sprsqu);
+            map.put("result", 1);
+        }catch (Exception e) {
+            map.put("result", 0);
+        }
+        JSONObject json = JSONObject.fromObject(map);
+        this.writeIt(json.toString());
+        
+        return;
+    }
+    
+    /**
+     * 
+      * listAdminRole:(查找列出为默认为admin(管理员)的登录用户).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-4-26 下午2:22:15
+     */
+    public String listAdminRole(){
+        List<SSPTuserinfo> list = null;
+        
+        try {
+            list = this.appApplicationService.listAdminRole();
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("mc", list);
+            map.put("len", list.size());
+            JSONObject json = JSONObject.fromObject(map);
+            this.writeIt(json.toString());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return SUCCESS;
+    }
+    
+    /**
+      * ajaxShowDetailed:(AJAX展示详细数据).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-23 上午11:35:16
+      * @return: void
+      * @since JDK 1.6
+     */
+    public void ajaxShowDetailed(){
+        String id = getRequest().getParameter("id");
+        Vector<String> v = new Vector<String>();
+        v.add(id);
+        Vector<AddApplicationEntity> vector = this.appApplicationService.findIDCardVector(v,null);
+        Map<String,  Vector<AddApplicationEntity>> map = new HashMap<String, Vector<AddApplicationEntity>>();
+        map.put("victory", vector);
+        JSONObject fromObject = JSONObject.fromObject(map);
+        this.writeIt(fromObject.toString());
+    }
+    
+    /**
+      * deleteRecordById:(根据ID删除临时的数据).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-18 下午5:44:32
+      * @param: 
+      * @return: void
+      * @throws
+      * @since JDK 1.6
+     */
+    public void deleteRecordById(){
+        String id = getRequest().getParameter("id");
+        String rylx = getRequest().getParameter("rylx");
+        int deleteRecordById = this.appApplicationService.deleteRecordById(id,rylx);
+        HashMap<String, Object> map =new HashMap<String, Object>();
+        map.put("result", deleteRecordById);
+        JSONObject jsonObject = JSONObject.fromObject(map);
+        writeIt(jsonObject.toString());
+        return;
+    }
+    
+    /**
+     * 
+      * checkIsBked:(检查该身份证是否是否布控过的).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-19 上午9:38:42
+      * @param: 
+      * @return: void
+      * @throws
+      * @since JDK 1.6
+     */
+    public void checkIsBked(){
+        String idNum = getRequest().getParameter("idNum");
+        UserDto _user = (UserDto)getSession().getAttribute("user");
+        String canUse = null;
+        canUse = this.appApplicationService.checkIsBkedBy(idNum,_user);
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("result", canUse);
+        JSONObject jsonObject = JSONObject.fromObject(map);
+        writeIt(jsonObject.toString());
+    }
+    
+    
+    /**
+      * existInPage:(检查数据是否存在在页面了).<br/>
+      * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-23 上午11:35:43
+      * @return: void
+      * @since JDK 1.6
+     */
+    public void existInPage(){
+    	String idNum =getRequest().getParameter("idNum") ;
+    	UserDto user = (UserDto)getSession().getAttribute("user");
+    	String existInPage = this.appApplicationService.checkExistInPage(idNum, user);
+    	HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("result", existInPage);
+        JSONObject json = JSONObject.fromObject(map);
+        writeIt(json.toString());
+    }
+    
+    /**
+      * reloadOwn:(重新加载自己用户所有的临时数据，用于和页面保持同步).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-23 上午11:36:21
+      * @return: void
+      * @since JDK 1.6
+     */
+    public void reloadOwn(){
+    	UserDto user = (UserDto)getSession().getAttribute("user");
+    	Vector<AddApplicationEntity> vector = this.appApplicationService.reloadDataBySqu(user);
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	map.put("victory", vector);
+    	JSONObject object = JSONObject.fromObject(map);
+    	writeIt(object.toString());
+    }
+    
+    
+    
+    /**
+     * 
+      * cleanStaticVariable:(页面元素删除完之后调用一次，清除已经存在的静态变量,同时清除临时表的数据).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-4 上午9:35:14
+     */
+    public void cleanStaticVariable(){
+        if(idVector != null || idVector.size() != 0){
+        idVector.clear();
+        }
+        UserDto user = (UserDto)getSession().getAttribute("user");
+        this.appApplicationService.deleteTransitionData(user);
+    }
+
+    /**
+      * writeIt:(响应流输出JSON数据到前台).<br/>
+      * (私有方法，只供本类进行调用).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-4-28 下午4:07:21
+     */
+    private void writeIt(String toWrite){
+        PrintWriter out = null;
+        try {
+           out =  getResponse().getWriter();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        out.write(toWrite);
+        out.flush();
+        out.close();
+    }
+    
+    public AppApplicationService getAppApplicationService(){
+        return appApplicationService;
+    }
+    public void setAppApplicationService(AppApplicationService appApplicationService){
+        this.appApplicationService = appApplicationService;
+    }
+    public AddApplicationEntity getAppApplicationEntity(){
+        return appApplicationEntity;
+    }
+    public void setAppApplicationEntity(AddApplicationEntity appApplicationEntity){
+        this.appApplicationEntity = appApplicationEntity;
+    }
+
+}

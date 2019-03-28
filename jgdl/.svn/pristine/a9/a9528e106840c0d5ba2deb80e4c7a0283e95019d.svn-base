@@ -1,0 +1,131 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildAction.java
+	* Date:2018-2-6上午9:52:25   
+	***/
+package monitor.projectConfig.action;
+
+import java.sql.SQLException;
+import java.util.List;
+import javax.annotation.Resource;
+
+import net.sf.json.JSONArray;
+
+import com.opensymphony.xwork2.ModelDriven;
+import monitor.common.BaseAction;
+import monitor.projectConfig.bean.entity.Project_Child;
+import monitor.projectConfig.service.impl.ProjectChildServiceImpl;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectChildAction   子项目
+ * @dateTime: 2018-2-6 上午9:52:25
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildAction  extends BaseAction implements ModelDriven<Project_Child> {
+	
+	/**
+	 * @Fields serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	 * @since JDK1.7
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Resource(name = "pro_child")
+	private Project_Child pro_child;
+
+	@Resource(name = "projectChildService")
+	private ProjectChildServiceImpl projectChildService;
+	
+	@Resource(name = "pageVo")
+	private PageInfoVo pageVo;
+
+	/**
+	  * listProjectChild:(获取子项目列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-2-6 下午12:05:27 void
+	  * @since JDK 1.7
+	*/
+	public void listChildProjectByProjectSqu(){
+		String projectSqu = pro_child.getProject_squ();
+		List<Project_Child> list = null; 
+		try {
+			list = projectChildService.listChildProjectByProjectSqu(projectSqu);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		JSONArray json = JSONArray.fromObject(list);
+		writeJsonBack(json.toString());
+	}
+
+	/**
+	  * delChildProjectBySqu:根据项目id删除子项目
+	  * @author 黄月
+	  * @date  2018-2-6 下午12:07:26
+	  * @param conn
+	  * @param squ
+	  * @throws SQLException 
+	*/
+	public void delChildProjectBySqu() {
+		String projectSqu = pro_child.getProject_squ();
+		try {
+			projectChildService.delChildProjectBySqu(projectSqu);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("删除子项目异常：" + e);
+		}
+	}
+
+	/**
+	  * updateChildProject:修改子项目
+	  * @author 黄月
+	  * @date  2018-2-6 下午12:07:26
+	  * @param conn
+	  * @param childEntity
+	  * @throws SQLException 
+	*/
+	public void updateChildProject() {
+		try {
+			projectChildService.updateChildProject(pro_child);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("修改子项目异常：" + e);
+		}
+	}
+
+	/**
+	  * addChildProject:新增子项目
+	  * @author 黄月
+	  * @date  2018-2-6 下午12:07:26
+	  * @param conn
+	  * @param childEntity
+	  * @throws SQLException 
+	*/
+	public void addChildProject() {
+		try {
+			projectChildService.addChildProject(pro_child);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.info("新增子项目异常：" + e);
+		}
+	}
+
+	/**
+	  * getModel:接口实现
+	  * @author 黄月
+	  * @date  2018-2-6 下午1:58:25
+	  * @return 
+	*/
+	@Override
+	public Project_Child getModel() {
+		return this.pro_child;
+	}
+}

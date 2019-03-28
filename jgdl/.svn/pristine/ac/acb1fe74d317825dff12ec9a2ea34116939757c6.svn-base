@@ -1,0 +1,116 @@
+#tab_1{
+	height:240mm
+}
+
+ #title{
+	
+	margin-top: 80mm; 
+}
+ 
+.tableBox{
+			border: 1px solid #ccc;
+			border-collapse: separate;			
+			  -webkit-border-radius: 8px;
+			-moz-border-radius: 8px;
+			border-radius: 8px;
+			border-left1:1px solid #ccc;
+			margin-bottom:16px; 
+		}
+		
+		
+		.tableBox tr td table tr td{
+			border:none;
+						
+		}
+		table{
+			width:100%;
+			border-bottom:none;
+			/* text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.2); */
+			border-collapse: separate;	
+		}
+		#tab_2  .tableBox{
+			width1:81.4%;
+		}
+		table tr th,table tr td {
+			border-right: 1px solid #ccc;
+			border-bottom: 1px solid #ccc;
+			padding:5px;
+		}
+		table tr{			
+			border-bottom1: 1px solid #ccc;
+		}
+		
+		table tr th:last-child,table tr td:last-child {
+			border-right:none;
+			border-bottom1: none;
+		}
+		table tr:last-child{
+			
+			border-bottom: none;
+		}
+	
+	/* 	
+		.itemFirst input,.itemFirst1 input{
+			width:160px;
+			height:30px;
+			border:none;
+			border-bottom:1px solid #ccc;
+			outline:none;
+			padding-left:6px;
+		}
+		.itemFirst1 input{
+			margin-top:10px;
+		}
+		.itemFirst2{
+			margin-bottom:10px;
+		}
+		.itemFirst2 input{
+			width:120px;
+			height:30px;
+			border:none;
+			border-bottom:1px solid #ccc;
+			outline:none;
+			padding-left:6px;
+		} */
+		 .tableBox tr td{
+			 padding-left:0.4% ; 
+			 padding-right:0.4%; 
+			  padding-top:0.5% ; 
+			 padding-bottom:0.5%; 
+			/*  */
+		} 
+		
+		.textStyle{
+			font-size:14px;
+		}
+		.textPadding{
+			padding:0 50px;
+		}
+		.titleText{
+			font-weight:bold;
+			text-align:center;
+			font-size:18px;
+			margin:18px auto;
+			/* text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.2); */
+		}
+		
+		.NR input {
+			width1:160px;
+			height:18px;
+			border:none;		
+			outline:none;
+			padding-left:6px;
+			font-size:14px;
+		}
+		#tab_3 .tableBox input{
+			width:70px;
+			height:20px;
+			border:none;
+			outline:none;
+			padding-left:6px;
+			font-size:14px;
+		}
+	.borderBottomNone{
+	    border-bottom:none;
+	}
+	.width50{width:50px;} 

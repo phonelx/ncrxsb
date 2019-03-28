@@ -1,0 +1,4 @@
+struts.custom.i18n.resources=ApplicationMessages
+struts.multipart.saveDir=/tmp
+struts.action.extension=do
+struts.devMode=true

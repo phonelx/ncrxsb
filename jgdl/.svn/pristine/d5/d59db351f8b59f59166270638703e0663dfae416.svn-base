@@ -1,0 +1,66 @@
+
+$().ready(function(){
+	//默认加载项目树菜单
+	loadTree(0, "");
+/*	$(".topnav").accordion({
+		accordion : false,
+		speed : 500,
+		closedSign : '[+]',
+		openedSign : '[-]'
+	});*/
+});
+
+/**
+  * loadTree:(加载树菜单)
+  * TODO(加载项目树时需要分页)
+  * @author: 黄月
+  * @dateTime: 2018-2-6 下午2:41:29
+  * @param: 
+  * @return: void
+ */
+function loadTree(treeLevel, object) {
+	if (treeLevel == 0) {
+		//调用project.js加载项目树
+		loadProjectTree(1);
+		$(".topnav").accordion({
+			accordion : false,
+			speed : 500,
+			closedSign : '[+]',
+			openedSign : '[-]'
+		});
+		//隐藏项目列表
+		$('.list_div').hide();
+		$('.project_list').show();
+		//调用project.js加载项目信息
+		$('.msg_div').hide();
+		//调用project.js加载项目列表
+		listProject("");
+	} else if (treeLevel == 1) {
+		//隐藏项目列表
+		$('.list_div').hide();
+		$('.child_list').show();
+		//调用project.js加载项目信息
+		console.log(object);
+		
+		$('.msg_div').hide();
+		$('.project_msg').show();
+		$('.count_msg').show();
+		
+		//调用child.js加载子项目列表和树
+		loadChildTreeAndList(object.project_squ);
+	} else if (treeLevel == 2) {
+		//隐藏列表
+		$('.list_div').hide();
+		$('.site_list').show();
+		//调用child.js加载项目信息
+		console.log(object);
+		
+		$('.msg_div').hide();
+		$('.project_msg').show();
+		$('.child_msg').show();
+		$('.count_msg').show();
+		
+		//调用child.js加载子项目列表和树
+		loadSiteTreeAndList(object.child_squ);
+	}
+}

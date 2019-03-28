@@ -1,0 +1,251 @@
+/* 由开发人员工具生成。它可能不是原始源文件的准确表示形式。*/
+HTML {
+	
+}
+
+BODY {
+	
+}
+
+BODY {
+	PADDING-BOTTOM: 30px;
+	MARGIN: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	FONT: 14px Arial;
+	PADDING-TOP: 30px
+}
+
+PRE {
+	BORDER-BOTTOM: #ddd 1px solid;
+	BORDER-LEFT: #ddd 1px solid;
+	PADDING-BOTTOM: 5px;
+	LINE-HEIGHT: 20px;
+	PADDING-LEFT: 5px;
+	PADDING-RIGHT: 5px;
+	BACKGROUND: #ffc;
+	BORDER-TOP: #ddd 1px solid;
+	BORDER-RIGHT: #ddd 1px solid;
+	PADDING-TOP: 5px;
+	_letter-spacing: -1px
+}
+
+UL {
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px;
+	PADDING-LEFT: 15px;
+	PADDING-RIGHT: 0px;
+	PADDING-TOP: 0px
+}
+
+OL {
+	PADDING-BOTTOM: 0px;
+	MARGIN: 0px;
+	PADDING-LEFT: 25px;
+	PADDING-RIGHT: 0px;
+	PADDING-TOP: 0px
+}
+
+LI {
+	LINE-HEIGHT: 22px
+}
+
+P {
+	PADDING-BOTTOM: 5px;
+	MARGIN: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	PADDING-TOP: 5px
+}
+
+EM {
+	FONT: bold 14px Arial;
+	COLOR: #066
+}
+
+#page {
+	MARGIN: 0px auto;
+	WIDTH: 1000px;
+	OVERFLOW: hidden
+}
+
+#header {
+	MARGIN: 0px 0px 20px
+}
+
+#header H1 {
+	MARGIN: 0px;
+	FONT-FAMILY: "微软雅黑"
+}
+
+#header H4 {
+	MARGIN: 0px;
+	COLOR: #999;
+	FONT-SIZE: 14px
+}
+
+#intro {
+	POSITION: relative
+}
+
+#intro .changelog UL {
+	LIST-STYLE: square none outside;
+	MARGIN: 0px 0px 0px 30px
+}
+
+#intro H4 {
+	PADDING-BOTTOM: 5px;
+	MARGIN: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	FONT-SIZE: 14px;
+	PADDING-TOP: 5px
+}
+
+#demo H3 {
+	PADDING-BOTTOM: 0px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	FONT-FAMILY: "微软雅黑";
+	CLEAR: both;
+	FONT-SIZE: 18px;
+	BORDER-TOP: #ddd 1px dashed;
+	PADDING-TOP: 15px
+}
+
+#demo UL {
+	PADDING-BOTTOM: 0px;
+	LIST-STYLE-TYPE: none;
+	MARGIN: 0px -10px;
+	PADDING-LEFT: 0px;
+	PADDING-RIGHT: 0px;
+	ZOOM: 1;
+	OVERFLOW: hidden;
+	LIST-STYLE-IMAGE: none;
+	PADDING-TOP: 0px
+}
+
+#demo UL LI {
+	WIDTH: 340px;
+	FLOAT: left
+}
+
+#demo UL LI .kandyTabs {
+	MARGIN: 0px 10px 20px
+}
+
+#demo UL LI .kandyFold {
+	MARGIN: 0px 10px 20px
+}
+
+#demo .kandySlide {
+	MARGIN: 0px 10px 20px
+}
+
+#footer {
+	TEXT-ALIGN: center;
+	COLOR: #999;
+	CLEAR: both;
+	FONT-SIZE: 12px
+}
+
+#footer A {
+	COLOR: #999
+}
+
+.kandyTabs {
+	MARGIN: 0px 0px 20px
+}
+
+.tabtitle {
+	FONT-FAMILY: "微软雅黑";
+	COLOR: #666
+}
+
+.tabbtn {
+	CURSOR: default
+}
+
+.kandyTabs PRE {
+	MARGIN: 0px
+}
+
+.kandyFold PRE {
+	MARGIN: 0px
+}
+
+
+
+#roll .tabtitle {
+	TEXT-ALIGN: right
+}
+
+#roll .tabtitle .tabbtn {
+	BORDER-BOTTOM: #ddd 1px solid;
+	BORDER-LEFT: #ddd 1px solid;
+	MARGIN: 0px 0px 1px 1px;
+	BACKGROUND: none transparent scroll repeat 0% 0%;
+	BORDER-TOP: #ddd 1px solid;
+	CURSOR: pointer;
+	BORDER-RIGHT: #ddd 1px solid
+}
+
+#roll .tabtitle .tabcur {
+	BORDER-BOTTOM: #fff 2px solid;
+	MARGIN: 0px 0px -1px 1px;
+	BACKGROUND: #fff;
+	CURSOR: default
+}
+
+#rollleft .tabtitle {
+	BORDER-BOTTOM: medium none;
+	BORDER-LEFT: medium none;
+	MARGIN: 0px 2px -2px 0px;
+	FLOAT: left;
+	BORDER-TOP: medium none;
+	BORDER-RIGHT: medium none;
+	_margin-right: -1px
+}
+
+#rollleft .tabtitle .tabbtn {
+	BORDER-BOTTOM: #ddd 1px solid;
+	BORDER-LEFT: #ddd 1px solid;
+	MARGIN: 0px 0px 2px;
+	/*WIDTH: 70px;*/
+	WIDTH: 18px;
+	DISPLAY: block;
+	BACKGROUND: none transparent scroll repeat 0% 0%;
+	BORDER-TOP: #ddd 1px solid;
+	CURSOR: pointer;
+	BORDER-RIGHT: #ddd 1px solid
+}
+
+/*当前激活的tab标签样式*/
+#rollleft .tabtitle .tabcur {
+	BORDER-BOTTOM: #ddd 1px solid;
+	BORDER-LEFT: #ddd 1px solid;
+	MARGIN: 0px -2px 2px 0px;
+	/*WIDTH: 72px;*/
+	WIDTH: 19px;
+	BACKGROUND: #ddd;
+	BORDER-TOP: #ddd 1px solid;
+	CURSOR: default;
+	BORDER-RIGHT: #ddd 1px solid;
+	_position: relative
+}
+
+#rollleft .tabbody {
+	BORDER-RIGHT-WIDTH: 1px;
+	BORDER-TOP-WIDTH: 1px;
+	BORDER-BOTTOM-WIDTH: 1px;
+	BORDER-LEFT-WIDTH: 2px;
+	height:100%;
+}
+
+#rollleft .tabcont {
+	MARGIN: 0px 5px;
+	WIDTH: 237px;
+	OVERFLOW: hidden;
+	height:100%;
+}
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+	"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="monitor-struts-default" extends="struts-default" >
+		<interceptors>
+            <interceptor name="authInterceptor" class="authInterceptor"/>
+            <interceptor name="exceptionHandler" class="exceptionHandler"/>
+            <interceptor-stack name="mydefault">
+          	    <!-- --><interceptor-ref name="authInterceptor" /> 
+                <interceptor-ref name="defaultStack" />
+                <interceptor-ref name="exceptionHandler" /> 
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="mydefault" />
+        
+        <global-results>
+			<result name="login">/accessPage.do</result>
+			<result name="noright">/pages/common/noRight.jsp</result>
+			<result name="exception">/pages/common/exception.jsp</result>
+			<result name="notice">/pages/common/notice.jsp</result>
+		</global-results>
+	</package>
+	
+	<package name="monitor-json-default" extends="json-default">
+		<interceptors>
+            <interceptor name="authInterceptor" class="authInterceptor"/>
+            <interceptor name="exceptionHandler" class="exceptionHandler"/>
+            <interceptor-stack name="mydefault">
+            	<!-- --><interceptor-ref name="authInterceptor" /> 
+            	<interceptor-ref name="defaultStack" />
+          	    <interceptor-ref name="exceptionHandler" /> 
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="mydefault" />
+        
+        <global-results>
+			<result name="login" type="redirect">/accessPage.do</result>
+			<result name="noright">/pages/common/noRight.jsp</result>
+			<result name="exception">/pages/common/exception.jsp</result>
+			<result name="notice">/pages/common/notice.jsp</result>
+		</global-results>
+	</package>
+</struts>

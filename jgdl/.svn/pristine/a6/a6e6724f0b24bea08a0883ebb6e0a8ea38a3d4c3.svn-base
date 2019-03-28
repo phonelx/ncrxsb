@@ -1,0 +1,83 @@
+package monitor.manage.action;
+
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+import monitor.common.BaseAction;
+import monitor.manage.bean.dto.BKMessageDto;
+import monitor.manage.service.IBKMessageService;
+
+public class BKMessageAction extends BaseAction implements
+		ModelDriven<BKMessageDto> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private IBKMessageService iBKMessageService;
+	private BKMessageDto bkMessageDto;
+
+	public BKMessageDto getBkMessageDto() {
+		return bkMessageDto;
+	}
+
+	public void setBkMessageDto(BKMessageDto bkMessageDto) {
+		this.bkMessageDto = bkMessageDto;
+	}
+
+	public IBKMessageService getiBKMessageService() {
+		return iBKMessageService;
+	}
+
+	public void setiBKMessageService(IBKMessageService iBKMessageService) {
+		this.iBKMessageService = iBKMessageService;
+	}
+
+	public void selectMess() {
+		JSONObject json = new JSONObject();
+		String hs = (String) getSession().getAttribute("userTitle");
+		List<BKMessageDto> isResult = iBKMessageService.bkMessage(hs);
+
+		getRequest().setAttribute("count", isResult.size());
+		getRequest().setAttribute("bMess", isResult);
+		System.out.println("有" + isResult.size() + "条消息");
+		int count = isResult.size();
+		json.put("count", isResult.size());
+		json.put("bMess", isResult);
+
+		writeStringBack(json.toString());
+	}
+
+	public void bkMessage() {
+		String hs = "";
+		List<BKMessageDto> isResult = iBKMessageService.bkMessage(hs);
+		System.out.println("有" + isResult.size() + "需要提示");
+
+		String str = "holle,world";
+		writeStringBack(str);
+	}
+
+	public String deleteMess() {
+		String username = (String) getSession().getAttribute("userTitle");
+
+		iBKMessageService.deleteMess(bkMessageDto, username);// 删除布控消息
+		List<BKMessageDto> isResult = iBKMessageService.bkMessage(username);
+
+		getRequest().setAttribute("counts", isResult.size());
+		getRequest().setAttribute("bMess", isResult);
+
+		int count = isResult.size();
+		writeStringBack(String.valueOf(count));
+		return null;
+	}
+
+	@Override
+	public BKMessageDto getModel() {
+		if (bkMessageDto == null) {
+			return bkMessageDto = new BKMessageDto();
+		}
+		return bkMessageDto;
+	}
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="approvalPending" extends="monitor-struts-default" >
+	
+		<action name="gotoApprovalIndex" class="approvalAction" method="gotoApprovalIndex">
+			<result name="success">/pages/bk/approvalPending/approval.jsp</result>
+		</action>
+		<!-- 跳转 -->
+		<action name="approvalclock" class="approvalAction" method="approvalclock">
+			<result name="success">/pages/bk/approvalPending/approvalclock.jsp</result>
+		</action>
+		<!--审批-->
+		<action name="editApproval" class="approvalAction" method="editApproval">
+		</action>
+		
+		<!--取消审批-->
+		<action name="quxiaoApproval" class="approvalAction" method="quxiaoApproval">
+		</action>
+				<!-- 跳转待审批人员信息页面 -->
+		<action name="toApprovaldetails" class="approvalAction" method="toApprovaldetails">
+			<result name="success">/pages/bk/approvalPending/approvaldetails.jsp</result>
+		</action>
+		<!-- 跳转待审批人员信息页面 -->
+		
+		<action name="listApprovalInPage" class="approvalAction" method="listApprovalInPage">
+		</action>
+		
+	</package>	
+	
+</struts>

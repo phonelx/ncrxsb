@@ -1,0 +1,57 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:SourceDto.java
+ * Date:2016-3-17下午1:11:24
+ ***/
+package monitor.manage.bean.dto;
+
+import monitor.manage.bean.entity.DBSourceEntity;
+
+/**
+ * @ClassName:SourceDto
+ * @dateTime: 2016-3-17 下午1:11:24
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class SourceDto {
+	private int squ;
+	private String title;
+	private String checkedBox;
+
+	public SourceDto() {
+
+	}
+
+	public SourceDto(DBSourceEntity dbSource) {
+		this.setSqu(dbSource.getSqu());
+		this.setTitle(dbSource.getTitle());
+	}
+
+	public int getSqu() {
+		return squ;
+	}
+
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getCheckedBox() {
+		return checkedBox;
+	}
+
+	public void setCheckedBox(String checkedBox) {
+		this.checkedBox = checkedBox;
+	}
+}

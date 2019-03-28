@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	    	
+	<!-- 用户操作aop -->
+	<bean id="AopUserOperation" class="monitor.common.aop.AOPUserOperation" scope="prototype">
+		<property name="commonService" ref="commonService"></property>
+	</bean>
+	
+	<!-- 调度aop -->
+	<bean id="AopDispatcher" class="monitor.common.aop.AOPDispatcher" scope="prototype">
+	</bean>
+	
+	
+	<!-- -->
+	<aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy> 
+	<aop:config>
+		<aop:aspect id="aopOperation" ref="AopUserOperation">
+			<aop:pointcut id="operationCut"  expression="execution(* monitor.*.action.*.add*(..)) 
+				||execution(* monitor.*.action.*.edit*(..))
+				||execution(* monitor.*.action.*.delete*(..)) 
+				||execution(* monitor.*.action.*.query*(..))||execution(* monitor.*.action.*.ws*(..))||execution(* monitor.*.action.*.login*(..))  "/>
+		  	
+		  	<aop:after-returning pointcut-ref="operationCut" method="logUserOperation" />
+		</aop:aspect>
+		<aop:aspect id="aopLogger" ref="monitorLogAction">
+			<aop:pointcut id="aopCut" expression="execution(* monitor.*.action.*.add*(..)) 
+				||execution(* monitor.*.action.*.edit*(..))
+				||execution(* monitor.*.action.*.delete*(..)) 
+				||execution(* monitor.*.action.*.list*(..))
+				||execution(* monitor.*.action.*.show*(..))
+				||execution(* monitor.*.action.*.select*(..))"/>
+			<aop:after pointcut-ref="aopCut" method="inter_log"/>
+		</aop:aspect>
+		<!--
+		<aop:aspect id="aopDispatcher" ref="AopDispatcher">
+			<aop:pointcut id="dispatcherCut"  expression="execution(* monitor.*.service.impl.*.exp*(..))"/>
+		  	
+		    <aop:before pointcut-ref="dispatcherCut" method="callRequest"/>
+		</aop:aspect>
+		-->
+	</aop:config>
+	
+</beans>

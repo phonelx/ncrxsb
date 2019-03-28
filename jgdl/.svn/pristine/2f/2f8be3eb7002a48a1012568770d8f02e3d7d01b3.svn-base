@@ -1,0 +1,764 @@
+package monitor.manage.dao.impl;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.dao.BaseDAO;
+import monitor.manage.bean.dto.BKHMDto;
+import monitor.manage.bean.dto.CMDto;
+import monitor.manage.bean.dto.SourceDto;
+import monitor.manage.bean.dto.TableDto;
+import monitor.manage.bean.entity.CMEntity;
+import monitor.manage.bean.entity.DBSourceEntity;
+import monitor.manage.bean.entity.TRegfieldEntity;
+import monitor.manage.dao.ISelectCMDao;
+
+/**
+ * @ClassName:SelectCMDaoImpl
+ * @dateTime: 2016-3-14 下午3:02:24
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class SelectCMDaoImpl extends BaseDAO implements ISelectCMDao {
+	Connection conn = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+
+	/**
+	 * @see monitor.manage.dao.ISelectCMDao#selectCount()
+	 */
+	@Override
+	public int selectCount(CMDto cmDto) {
+		int count = 0;
+
+		try {
+			String sql = "SELECT COUNT(BID) FROM T_BKGZ "
+					+"WHERE ISSHOW=1 AND BKR LIKE ? "
+					+"AND (CJSJ BETWEEN TO_DATE(?,'yyyy-MM-dd HH24:mi:ss') AND TO_DATE(?,'yyyy-MM-dd HH24:mi:ss') "
+					+"OR BT LIKE ? AND BID IN(SELECT BK_ID FROM T_BKGZ_HM WHERE BK_BKHM LIKE ?) "
+					+"AND (STATUS=? OR STATUS=?))";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			//判断是否是管理在进行查询
+			if(cmDto.getIsAdmin()=="1"||cmDto.getIsAdmin().equals("1")){
+				pstmt.setString(1, "%%");
+			}else{
+				pstmt.setString(1, "%" + cmDto.getBkr() + "%");
+			}
+			
+			pstmt.setString(2, cmDto.getStartTime());
+			pstmt.setString(3, cmDto.getEndTime());
+			pstmt.setString(4, "%" + cmDto.getBt() + "%");
+			pstmt.setString(5, "%" + cmDto.getBkhm() + "%");
+			if(cmDto.getStatus()==0){
+				pstmt.setInt(6, 1);
+				pstmt.setInt(7, 2);
+			}else{
+				pstmt.setInt(6, cmDto.getStatus());
+				pstmt.setInt(7, cmDto.getStatus());
+			}
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				count = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return count;
+	}
+
+	/**
+	 * getConnection:(这里用一句话描述这个方法的作用).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午3:01:33
+	 * @param: @param dbEntity
+	 * @param: @return
+	 * @return: Connection
+	 * @throws
+	 * @since JDK 1.6
+	 * @see monitor.manage.dao.ISelectCMDao#selectCM(monitor.manage.bean.dto.CMDto)
+	 */
+	@Override
+	public List<?> selectList(CMDto cmDto) {
+		List<CMDto> CMlist = new ArrayList<CMDto>();
+		int pageNo = cmDto.getPageNo();
+		int pageSize = cmDto.getPageSize();
+
+		try {
+			String SQL="SELECT * FROM T_BKGZ WHERE ISSHOW=1	AND BKR LIKE ? "
+					+"AND (CJSJ BETWEEN TO_DATE(?,'yyyy-MM-dd HH24:mi:ss') AND TO_DATE(?,'yyyy-MM-dd HH24:mi:ss') "
+					+"OR BT LIKE ? AND BID IN(SELECT DISTINCT BK_ID FROM T_BKGZ_HM WHERE BK_BKHM LIKE ?) "
+					+"AND (STATUS=? OR STATUS=?))";
+			String sql = "SELECT * FROM "
+					+ "(SELECT T.*,ROWNUM R1 FROM "
+					+ "("+SQL+")"
+					+ " T WHERE ROWNUM <=" + pageNo * pageSize + ")"
+					+ "  WHERE R1 >" + ((pageNo - 1) * pageSize);
+
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			//判断是否是管理在进行查询
+			if(cmDto.getIsAdmin()=="1"||cmDto.getIsAdmin().equals("1")){
+				pstmt.setString(1, "%%");
+			}else{
+				pstmt.setString(1, "%" + cmDto.getBkr() + "%");
+			}
+			
+			pstmt.setString(2, cmDto.getStartTime());
+			pstmt.setString(3, cmDto.getEndTime());
+			pstmt.setString(4, "%" + cmDto.getBt() + "%");
+			pstmt.setString(5, "%" + cmDto.getBkhm() + "%");
+			if(cmDto.getStatus()==0){
+				pstmt.setInt(6, 1);
+				pstmt.setInt(7, 2);
+			}else{
+				pstmt.setInt(6, cmDto.getStatus());
+				pstmt.setInt(7, cmDto.getStatus());
+			}
+			rs = pstmt.executeQuery();
+
+			CMEntity cmEntity = null;
+			while (rs.next()) {
+				cmEntity = new CMEntity();
+				cmEntity.setBid(rs.getInt("bid"));
+				cmEntity.setBt(rs.getString("bt"));
+				cmEntity.setBkhm(selectBKHM(rs.getInt("bid")));
+				cmEntity.setBklx(rs.getInt("bklx"));
+				cmEntity.setDxjsdh(rs.getString("dxjsdh"));
+				cmEntity.setBkr(rs.getString("bkr"));
+				cmEntity.setCjsj(rs.getString("cjsj"));
+				cmEntity.setStopTime(rs.getString("stopTime"));
+				cmEntity.setStatus(rs.getInt("status"));
+
+				cmDto = new CMDto(cmEntity);
+				CMlist.add(cmDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return CMlist;
+	}
+	
+	// 从布控号码表中查询布控规则对应的布控号码
+	public String selectBKHM(int bid){
+		String bkhmStr="";
+		Connection con=null;
+		PreparedStatement ps=null;
+		ResultSet r=null;
+	
+		try {
+			String sql="SELECT BK_BKHM FROM T_BKGZ_HM WHERE BK_ID=?";
+			con=datasource.getConnection();
+			ps=con.prepareStatement(sql);
+			ps.setInt(1, bid);
+			
+			r=ps.executeQuery();
+			while(r.next()){
+				bkhmStr=bkhmStr+r.getString("BK_BKHM")+",";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(con, ps, r);
+		}
+		return bkhmStr.substring(0, bkhmStr.length()-1);
+	}
+
+	/**
+	 * getSQL:(拼接SQL语句,详细查询).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午3:00:40
+	 * @param: @param tabName
+	 * @param: @param bkhm
+	 * @param: @param pjlx
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String getSQL(String tabName, String bkhm, int sourceID) {
+		StringBuffer sb = new StringBuffer("select ");
+		String whereCondition = null;
+		TRegfieldEntity tFieldEntity = null;
+
+		try {
+			String sql = "select * from ssp_tregfield where entitysqu=(select squ from ssp_tregentity where datasourcesqu=? and name=?)";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, sourceID);
+			pstmt.setString(2, tabName);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				tFieldEntity = new TRegfieldEntity();
+				tFieldEntity.setSqu(rs.getInt("squ"));
+				tFieldEntity.setEntitysqu(rs.getInt("entitysqu"));
+				tFieldEntity.setName(rs.getString("name"));
+				tFieldEntity.setTitle(rs.getString("title"));
+				tFieldEntity.setDescb(rs.getString("descb"));
+				tFieldEntity.setRegdatetime(rs.getString("regdatetime"));
+				tFieldEntity.setType(rs.getString("type"));
+				tFieldEntity.setPrecision(rs.getInt("precision"));
+				tFieldEntity.setScale(rs.getInt("scale"));
+				tFieldEntity.setIskey(rs.getInt("iskey"));
+				tFieldEntity.setIsnullable(rs.getInt("isnullable"));
+				tFieldEntity.setIsautoincrement(rs.getInt("isautoincrement"));
+				tFieldEntity.setIsunique(rs.getInt("isunique"));
+				tFieldEntity.setAscondition(rs.getInt("ascondition"));
+				tFieldEntity.setDictypesqu(rs.getString("dictypesqu"));
+				tFieldEntity.setDisplayprio(rs.getInt("displayprio"));
+				tFieldEntity.setIssimpleel(rs.getInt("issimpleel"));
+				tFieldEntity.setBkindexof(rs.getString("bkindexof"));
+
+				sb.append(tFieldEntity.getName() + " " + tFieldEntity.getTitle() + ",");
+//				System.out.println(tFieldEntity.getName() + " " + tFieldEntity.getTitle() + ",");
+				if (tFieldEntity.getBkindexof() != null
+						&& (tFieldEntity.getBkindexof().indexOf("1") >= 0 || tFieldEntity
+								.getBkindexof().indexOf("2") >= 0)) {
+					whereCondition = tFieldEntity.getName();// 得到检索条件
+				}
+			}
+			// 拼接SQL语句
+
+			sb.delete(sb.length() - 1, sb.length());
+			sb.append(" from " + tabName + " where " + whereCondition + " in(" + bkhm + ")");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			 close(conn, pstmt, rs);
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * getConnection:(得到本系统以外的数据连接对象).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午3:01:33
+	 * @param: @param dbEntity
+	 * @param: @return
+	 * @return: Connection
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public Connection getConnection(DBSourceEntity dbEntity) {
+		try {
+			Class.forName(dbEntity.getDbclass());
+			return DriverManager.getConnection(dbEntity.getDburl(),
+					dbEntity.getDbuser(), dbEntity.getDbpwd());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * getSourceObject:(查找配置的所有数据源).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午2:59:13
+	 * @param: @param squ
+	 * @param: @return
+	 * @return: DBSourceEntity
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public DBSourceEntity getSourceObject(int squ) {
+		DBSourceEntity dbEntity = null;
+
+		try {
+			String sql = "select dbclass,dburl,dbuser,dbpwd from ssp_tregdatasource where squ=?";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, squ);
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				dbEntity = new DBSourceEntity();
+				dbEntity.setDbclass(rs.getString("dbclass"));
+				dbEntity.setDburl(rs.getString("dburl"));
+				dbEntity.setDbuser(rs.getString("dbuser"));
+				dbEntity.setDbpwd(rs.getString("dbpwd"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		return dbEntity;
+	}
+
+	/**
+	 * getTable:(从数据库检出要用到的数据表名，用于比对子系统).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-23 上午11:59:52
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String getTable(String id) {
+		String result = "";
+
+		try {
+			String sql = "select name from ssp_tregentity where squ=?";
+
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result = rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return result;
+	}
+
+	/**
+	 * getArray:(将字符串转换为数组).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午2:57:45
+	 * @param: @param str
+	 * @param: @return
+	 * @return: String[]
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String[] getArray(String str) {
+		str = str.substring(0, str.length() - 1);
+		String[] a = str.split(",");
+
+		return a;
+	}
+
+	/**
+	 * selectDetail:(在布控人员查询中查询详细信息).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-23 上午11:59:52
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 * 
+	 * @see monitor.manage.dao.ISelectCMDao#selectDetail(monitor.manage.bean.dto.CMDto)
+	 */
+	@Override
+	public List<Map<String,Object>> selectDetail(CMDto cmDto) {
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();// 定义LIST， 以map形式存储
+
+		// 根据ID得到相应的表名
+		String[] tabID = getArray(cmDto.getChecked());
+		String[] tabName = new String[tabID.length];
+		for (int id = 0; id < tabID.length; id++) {
+			tabName[id] = getTable(tabID[id]);
+		}
+
+		int pageNo=cmDto.getPageNo();
+		int pageSize=cmDto.getPageSize();
+		
+		CMDto cmDtoPage=new CMDto();
+		int countPageNo=0;
+		// 开始执行
+		for (int k = 0; k < tabName.length; k++) {
+			try {
+				cmDtoPage.setChecked(tabID[k]);
+				cmDtoPage.setBkhm(cmDto.getBkhm());
+				countPageNo=detialTabCount(cmDtoPage);
+				
+				String SQL = getSQL(tabName[k], cmDto.getBkhm(), cmDto.getSqu());// 得到SQL语句
+				
+				//分页SQL语句
+				String sql="SELECT * FROM (SELECT T.*,ROWNUM R1 FROM ("+SQL
+						+") T WHERE ROWNUM <="
+						+pageNo*pageSize+")  WHERE R1 >"+((pageNo-1)*pageSize);
+				
+				//System.out.println(cmDto.getBkhm()+"-SIZE:"+countPageNo + "详细信息sql:" + sql);
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+
+				// 得到SQL语句的字段名字
+				ResultSetMetaData rsmd = rs.getMetaData();
+				int count = rsmd.getColumnCount();
+				String[] name = new String[count];
+				for (int i = 0; i < name.length; i++) {
+					name[i] = rsmd.getColumnName(i + 1);
+				}
+				List<Map<String,Object>> claList = new ArrayList<Map<String,Object>>();
+				Map<String,Object> tabMap = new HashMap<String,Object>();
+				Map<String,Object> rsMap = null;
+				while (rs.next()) {
+					rsMap = new HashMap<String,Object>();
+					for (int j = 0; j < name.length; j++) {
+						rsMap.put(name[j], rs.getString(name[j]));
+					}
+					claList.add(rsMap);
+				}
+
+				tabMap.put(tabName[k]+"@"+countPageNo, claList);
+				listMap.add(tabMap);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				close(conn, pstmt, rs);
+			}
+		}
+
+		return listMap;
+	}
+	
+	/**
+	 * chooseSource:(用于给详细信息分页).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-7 上午11:59:52
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 * @see monitor.manage.dao.ISelectCMDao#chooseSource(monitor.manage.bean.dto.SourceDto)
+	 */
+	@Override
+	public List<Map<String,Object>> detialTabPage(CMDto cmDto) {
+		int pageNo=cmDto.getPageNo();
+		int pageSize=cmDto.getPageSize();
+		String tableName=getTable(cmDto.getChecked());
+		String SQL=getSQL(tableName, cmDto.getBkhm(), cmDto.getSqu());
+		
+		//分页SQL语句
+		String sql="SELECT * FROM (SELECT T.*,ROWNUM R1 FROM ("+SQL
+				+") T WHERE ROWNUM <="
+				+pageNo*pageSize+")  WHERE R1 >"+((pageNo-1)*pageSize);
+
+		List<Map<String,Object>> listMap = new ArrayList<Map<String,Object>>();// 定义LIST， 以map形式存储
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+			rs=pstmt.executeQuery();
+			
+			// 得到SQL语句的字段名字
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int count = rsmd.getColumnCount();
+			String[] name = new String[count];
+			for (int i = 0; i < name.length; i++) {
+				name[i] = rsmd.getColumnName(i + 1);
+			}
+
+			List<Map<String,Object>> claList = new ArrayList<Map<String,Object>>();
+			Map<String,Object> tabMap = new HashMap<String,Object>();
+			Map<String,Object> rsMap = null;
+			while(rs.next()){
+				rsMap = new HashMap<String,Object>();
+				for (int j = 0; j < name.length; j++) {
+					rsMap.put(name[j], rs.getString(name[j]));
+				}
+				claList.add(rsMap);
+			}
+			tabMap.put(tableName, claList);
+			listMap.add(tabMap);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			close(conn, pstmt, rs);
+		}
+
+		return listMap;
+	}
+	
+	public String detialTabName(String nameID){
+		String name="";
+		String sql="select name from ssp_tregfield where isbkquery=0 and entitysqu=?";
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, nameID);
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				name=rs.getString("name");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			close(conn, pstmt, rs);
+		}
+		
+		return name;
+	}
+	
+	/**
+	 * chooseSource:(得到分页中的总记录数据).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-4-7 上午11:59:52
+	 * @param: @return
+	 * @return: INT
+	 * @throws
+	 * @since JDK 1.6
+	 * @see monitor.manage.dao.ISelectCMDao#chooseSource(monitor.manage.bean.dto.SourceDto)
+	 */
+	public int detialTabCount(CMDto cmDto){
+		int count=0;
+		String tableID="";
+		
+		if(cmDto.getChecked().indexOf(",")>0){
+			tableID=getArray(cmDto.getChecked())[0];
+		}else{
+			tableID=cmDto.getChecked();
+		}
+
+		String tableName=getTable(tableID);
+		String name=detialTabName(tableID);
+		
+		String sql="select count(*) from "+tableName+" where "+name+" in("+cmDto.getBkhm()+")";
+//System.out.println(sql);
+		try {
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+//			pstmt.setString(1, cmDto.getBkhm());
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				count=rs.getInt(1);
+				//System.out.println(count);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			close(conn, pstmt, rs);
+		}
+
+		return count;
+	}
+
+	/**
+	 * chooseSource:(查询配置的数据源，在布控人员查询的详细信息中给用户选择).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-23 上午11:59:52
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 * @see monitor.manage.dao.ISelectCMDao#chooseSource(monitor.manage.bean.dto.SourceDto)
+	 */
+	public List<?> chooseSource(CMDto cmDto) {
+//		System.out.println("选择数据源");
+		List<SourceDto> list = new ArrayList<SourceDto>();
+		SourceDto souDto=null;
+
+		try {
+			//System.out.println(cmDto.getBkSource());
+			if(cmDto.getBkSource()>0){
+				String sql = "SELECT SQU,TITLE FROM SSP_TREGDATASOURCE WHERE SQU=?";
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, cmDto.getBkSource());
+			}else{
+				String sql = "SELECT SQU,TITLE FROM SSP_TREGDATASOURCE WHERE SQU=("
+						+"SELECT BKSOURCE FROM T_BKGZ WHERE BT=? AND DXJSDH=? AND BKR=?)";
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, cmDto.getBt());
+				pstmt.setString(2, cmDto.getDxjsdh());
+				pstmt.setString(3, cmDto.getBkr());
+			}
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				souDto = new SourceDto();
+				souDto.setSqu(rs.getInt("squ"));
+				souDto.setTitle(rs.getString("title"));
+
+				list.add(souDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return list;
+	}
+
+	/**
+	 * chooseTable:(查询表名，在布控人员查询的详细信息中给用户选择).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-23 上午11:59:52
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 * 
+	 * @see monitor.manage.dao.ISelectCMDao#chooseTable(monitor.manage.bean.dto.TableDto)
+	 */
+	public List<?> chooseTable(CMDto cmDto) {
+		List<TableDto> list = new ArrayList<TableDto>();
+		TableDto tabDto=null;
+
+		try {
+			if(cmDto.getBkSource()>0){
+				// 0是布控预警表，1不是
+				String sql = "SELECT SQU,DATASOURCESQU,NAME,TITLE FROM SSP_TREGENTITY "
+							+"WHERE ISYJQUYER=0 AND DATASOURCESQU=?";
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, cmDto.getBkSource());
+			}else{
+				// 0是布控预警表，1不是
+				String sql = "SELECT SQU,DATASOURCESQU,NAME,TITLE FROM SSP_TREGENTITY "
+							+"WHERE ISYJQUYER=0 AND DATASOURCESQU=("
+							+"SELECT BKSOURCE FROM T_BKGZ WHERE BT=? AND DXJSDH=? AND BKR=?)";
+				conn = datasource.getConnection();
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, cmDto.getBt());
+				pstmt.setString(2, cmDto.getDxjsdh());
+				pstmt.setString(3, cmDto.getBkr());
+			}
+			
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				tabDto = new TableDto();
+				tabDto.setSqu(rs.getInt("squ"));
+				tabDto.setDataSourceSqu(rs.getInt("datasourcesqu"));
+				tabDto.setName(rs.getString("name"));
+				tabDto.setTitle(rs.getString("title"));
+
+				list.add(tabDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return list;
+	}
+	
+	public List<?> chooseBKHM(CMDto cmDto){
+		List<BKHMDto> list=new ArrayList<BKHMDto>();
+		BKHMDto bkhmDto=null;
+
+		try {
+			String sql="SELECT BK_ID,BK_BKHM FROM T_BKGZ_HM WHERE BK_ID=?";
+			conn=datasource.getConnection();
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setInt(1, cmDto.getBid());
+			
+			rs=pstmt.executeQuery();
+			while(rs.next()){
+				bkhmDto=new BKHMDto();
+				bkhmDto.setBk_id(rs.getInt("bk_id"));
+				bkhmDto.setBk_bkhm(rs.getString("bk_bkhm"));
+				
+				list.add(bkhmDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+		
+		return list;
+	}
+
+	/**
+	 * getBKTJ:(得到布控的条件，用于比对子系统).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-23 下午7:35:58
+	 * @param: @return
+	 * @return: List<?>
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public List<?> getBKTJ() {
+		List<CMDto> list = new ArrayList<CMDto>();
+
+		try {
+			String sql = "select * from t_bkgz where sysdate between cjsj and stoptime and isshow=1 and flag=1 and status=1";
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+
+			CMDto cmDto = null;
+			while (rs.next()) {
+				cmDto = new CMDto();
+				cmDto.setBt(rs.getString("bt"));
+				cmDto.setBklx(rs.getInt("bklx"));
+				cmDto.setBkhm(selectBKHM(rs.getInt("bid")));
+				cmDto.setBkr(rs.getString("bkr"));
+				cmDto.setDxjsdh(rs.getString("dxjsdh"));
+				cmDto.setBkSource(rs.getInt("bksource"));
+				cmDto.setMess(rs.getInt("mess"));
+				cmDto.setLastTime(rs.getString("lasttime"));
+
+				list.add(cmDto);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close(conn, pstmt, rs);
+		}
+
+		return list;
+	}
+
+	/**
+	 * close:(关闭本类中的数据库连接相关对象).<br/>
+	 * 
+	 * @author: 张家俊
+	 * @dateTime: 2016-3-25 下午2:52:12
+	 * @param: @param conn
+	 * @param: @param pstmt
+	 * @param: @param rs
+	 * @return: void
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}

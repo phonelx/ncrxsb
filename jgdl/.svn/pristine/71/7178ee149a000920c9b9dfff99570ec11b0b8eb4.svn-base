@@ -1,0 +1,43 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="img" extends="monitor-struts-default">
+		<!-- 跳转到应用管理页面 -->
+		<action name="pictureManage" class="imgAction" method="pictureManage">
+			<result name="success">pages/goodsHouse/imgManage.jsp</result>
+		</action>
+		<!-- 获取图片分类列表 -->
+		 <action name="getImgFlList" class="imgAction" method="getImgFlList">
+		</action>
+		<!-- 获取图片分类详情 -->
+		 <action name="searchImgFlInfo" class="imgAction" method="searchImgFlInfo">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="addImgFl" class="imgAction" method="addImgFl">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="getImgFlBysqu" class="imgAction" method="getImgFlBysqu">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="updateImgFl" class="imgAction" method="updateImgFl">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="delImgFl" class="imgAction" method="delImgFl">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="getImgList" class="imgAction" method="getImgList">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="addImg" class="imgAction" method="addImg">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="editImg" class="imgAction" method="editImg">
+		</action>
+		<!-- 添加图片分类 -->
+		 <action name="deleteImg" class="imgAction" method="deleteImg">
+		</action>
+		
+		
+	</package>
+</struts>

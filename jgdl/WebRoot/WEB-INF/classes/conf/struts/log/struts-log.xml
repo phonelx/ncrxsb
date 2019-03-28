@@ -1,0 +1,82 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="log" extends="monitor-struts-default">
+	
+		<action name="showUserLoginPage" class="queryUserLoginAction" method="showUserLoginPage">
+			<!-- <result name="success">/pages/log/userloginfo.jsp</result> -->
+			<result name="success">/pages/manage/yibushu.jsp</result>
+		</action>
+		
+		<action name="showUserOprPage" class="queryUserOperateAction" method="showUserOprPage">
+			<result name="success">/pages/log/queryuseropr.jsp</result>
+		</action>
+		
+		<action name="showSysRunPage" class="querySystemRunAction" method="showSysRunPage">
+			<result name="success">/pages/log/querySysRun.jsp</result>
+		</action>
+	
+		<action name="doQueryAgain" class="queryUserOperateAction" method="doQueryAgain">
+			<result name="success">/pages/log/queryuseropr.jsp</result>
+		</action>
+		
+		<action name="queryUserLogInfo" class="queryUserLoginAction" method="resultsLogs">
+			<result name="success">/pages/log/userloginfo.jsp</result>
+			<result name="error">/pages/log/listerr.jsp</result>
+		</action>
+		<action name="listUserLogInfo" class="queryUserLoginAction" method="listUsersInPage">
+			<result name="success">/pages/log/userloginfo.jsp</result>
+			<result name="error">/pages/log/listerr.jsp</result>
+		</action>
+		<action name="queryUserOprInfo" class="queryUserOperateAction" method="listUserOpraInPage">
+			<result name="success">/pages/log/queryuseropr.jsp</result>
+			<result name="error">/pages/log/listerr.jsp</result>
+		</action>	
+		<action name="querySystemRun" class="querySystemRunAction" method="listSystemRunInPage">
+			<result name="success">/pages/log/querySysRun.jsp</result>
+			<result name="error">/pages/log/listerr.jsp</result>
+		</action>	
+		<action name="exportUserLgIAsExcel" class="queryUserLoginAction" method="exportUserLgIAsExcel">
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${downFileName}"</param>
+				<param name="bufferSize">5120</param>
+			</result>
+		</action>
+		<action name="exportUserOprAsExcel" class="queryUserOperateAction" method="exportUserOprAsExcel">
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${downFileName}"</param>
+				<param name="bufferSize">5120</param>
+			</result>
+		</action>
+		<action name="exportSysRunAsExcel" class="querySystemRunAction" method="exportSysRunAsExcel">
+			<result name="success" type="stream">
+				<param name="contentType">application/octet-stream</param>
+				<param name="inputName">inputStream</param>
+				<param name="contentDisposition">attachment;filename="${downFileName}"</param>
+				<param name="bufferSize">5120</param>
+			</result>
+		</action>	
+		
+		<action name="deleteUserLoginPage" class="queryUserLoginAction" method="deleteUserLgI">
+			<result name="success" type="chain">
+				listUserLogInfo
+			</result>
+		</action>	
+		
+		<action name="deleteSysRunLog" class="querySystemRunAction" method="deleteSysRunLog">
+			<result name="success" type="chain">
+				querySystemRun
+			</result>
+		</action>	
+		<action name="deleteUserOpr" class="queryUserOperateAction" method="deleteUserOpr">
+			<result name="success" type="chain">
+				queryUserOprInfo
+			</result>
+		</action>												
+	</package>
+</struts>

@@ -1,0 +1,259 @@
+package monitor.manage.bean.dto;
+
+
+public class Yjgzdto {
+	private String name; 		//预警姓名
+	private Integer sex;		//性别
+	private String hjd;			//所属省市区县
+	private String zz;			//住址
+	private String csrq1;		//出生日期开始
+	private String csrq2;		//出生日期结束
+	private String mz;			//民族
+	private String zjhm;		//证件号码
+	private String createtime;  //创建时间
+	private String stoptime; 	//结束时间
+	private Integer status;		//状态  默认 1
+	private Integer yjlx;		//1证件号码 2车牌号码
+	private String yjbt;		//预警标题
+	private String yjr;			//创建人
+	private String flag;		//是否禁用
+	private String tableID;		//已注册表ID
+	private String istime;		//0时间段，1年龄段
+	private Integer dbConID;	//关联数据源
+	private Integer id;			//唯一标识
+	private Integer isShow;		//是否显示
+	private Integer runtime;	//执行时间
+	private String tableName;	//注册表名
+	private String dbCon;		//数据库源连接
+	private String dbname;		//数据库连接名
+	private String dbpwd;		//数据库连接密码
+	private String dbid;		//注册数据源ID
+	private String dbcla;		//注册数据源class
+	private int pageNo;
+	private int pageSize;
+	private String checked;
+	private String sfhm;
+	
+	
+	public String getSfhm() {
+		return sfhm;
+	}
+	public void setSfhm(String sfhm) {
+		this.sfhm = sfhm;
+	}
+	public String getChecked() {
+		return checked;
+	}
+	public void setChecked(String checked) {
+		this.checked = checked;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public Integer getSex() {
+		if(sex==null){
+			return 0;
+		}
+		return sex;
+	}
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+	public String getHjd() {
+		if(hjd==null){
+			return "";
+		}
+		return hjd;
+	}
+	public void setHjd(String hjd) {
+		this.hjd = hjd;
+	}
+	public String getZz() {
+		if(zz==null){
+			return "";
+		}
+		return zz;
+	}
+	public void setZz(String zz) {
+		this.zz = zz;
+	}
+	
+	public String getCsrq1() {
+		if(csrq1==null){
+			return "";
+		}
+		return csrq1;
+	}
+	public void setCsrq1(String csrq1) {
+		this.csrq1 = csrq1;
+	}
+	public String getCsrq2() {
+		if(csrq2==null){
+			return "";
+		}
+		return csrq2;
+	}
+	public void setCsrq2(String csrq2) {
+		this.csrq2 = csrq2;
+	}
+	public String getMz() {
+		if("0".equals(mz)){
+			return "";
+		}
+		return mz;
+	}
+	public void setMz(String mz) {
+		this.mz = mz;
+	}
+	public String getZjhm() {
+		if(zjhm==null){
+			return "";
+		}
+		return zjhm;
+	}
+	public void setZjhm(String zjhm) {
+		this.zjhm = zjhm;
+	}
+	public String getCreatetime() {
+		return createtime;
+	}
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
+	}
+	public String getStoptime() {
+		return stoptime;
+	}
+	public void setStoptime(String stoptime) {
+		this.stoptime = stoptime;
+	}
+	
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public Integer getYjlx() {
+		if(yjlx==null){
+			return 0;
+		}
+		return yjlx;
+	}
+	public void setYjlx(Integer yjlx) {
+		this.yjlx = yjlx;
+	}
+	public String getYjbt() {
+		return yjbt;
+	}
+	public void setYjbt(String yjbt) {
+		this.yjbt = yjbt;
+	}
+	
+	public String getYjr() {
+		if(yjr==null){
+			return "";
+		}
+		return yjr;
+	}
+	public void setYjr(String yjr) {
+		this.yjr = yjr;
+	}
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
+	public String getTableID() {
+		return tableID;
+	}
+	public void setTableID(String tableID) {
+		this.tableID = tableID;
+	}
+	public String getIstime() {
+		return istime;
+	}
+	public void setIstime(String istime) {
+		this.istime = istime;
+	}
+	public Integer getDbConID() {
+		return dbConID;
+	}
+	public void setDbConID(Integer dbConID) {
+		this.dbConID = dbConID;
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public Integer getIsShow() {
+		return isShow;
+	}
+	public void setIsShow(Integer isShow) {
+		this.isShow = isShow;
+	}
+	public Integer getRuntime() {
+		return runtime;
+	}
+	public void setRuntime(Integer runtime) {
+		this.runtime = runtime;
+	}
+	public String getTableName() {
+		return tableName;
+	}
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+	public String getDbCon() {
+		return dbCon;
+	}
+	public void setDbCon(String dbCon) {
+		this.dbCon = dbCon;
+	}
+	public String getDbname() {
+		return dbname;
+	}
+	public void setDbname(String dbname) {
+		this.dbname = dbname;
+	}
+	public String getDbpwd() {
+		return dbpwd;
+	}
+	public void setDbpwd(String dbpwd) {
+		this.dbpwd = dbpwd;
+	}
+	public String getDbid() {
+		return dbid;
+	}
+	public void setDbid(String dbid) {
+		this.dbid = dbid;
+	}
+	public String getDbcla() {
+		return dbcla;
+	}
+	public void setDbcla(String dbcla) {
+		this.dbcla = dbcla;
+	}
+	public int getPageNo() {
+		return pageNo;
+	}
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	
+	
+	
+	
+
+}

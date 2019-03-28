@@ -1,0 +1,90 @@
+body {
+	margin:0px;
+	padding:0px;
+	font:12px 宋体,sans-serif;
+	background: #ffffff;
+}
+
+#prompt {
+	margin:100px 300px auto;
+	width:400px;
+	height:200px;
+	border:0px;
+	background:#ffffff;
+	border:1px solid #709CD2;
+}
+
+#prompt li {
+	list-style-type:none;
+	float:left;
+	width:100%;
+	clear:both;
+	padding:0px;
+}
+
+.prompt_title { 
+	height:24px;
+	background:#709CD2;
+	font-size:14px;
+	font-weight:bold;
+	color:#ffffff;
+	line-height:24px;
+}
+
+.prompt_info {
+	width:100%;
+	height:176px;
+	margin:0px;
+}
+
+.prompt_jump {
+	color:#000000;
+	text-align:center;
+	margin-top:20px;
+}
+
+
+#error {
+	margin:30px 0px 0px 95px;
+	width:300px;
+	height:100px;
+	border:1px solid #BDC6CB;
+	background:#F2F3F5;
+}
+
+#error li {
+	list-style-type:none;
+	float:left;
+	width:98%;
+	clear:both;
+	padding:3px;
+}
+
+.error_info {
+	margin-top:25px;
+	color:#F73740;
+	text-align:center;
+}
+
+.error_jump {
+	color:#000000;
+	text-align:center;
+	margin-top:10px;
+}
+
+a:link {
+	font-size: 12px;
+	color: #06482a;
+	text-decoration: none;
+
+}
+a:visited {
+	font-size: 12px;
+	color: #06482a;
+	text-decoration: none;
+}
+a:hover {
+	font-size: 12px;
+	color: #FF0000;
+	text-decoration: underline;
+}

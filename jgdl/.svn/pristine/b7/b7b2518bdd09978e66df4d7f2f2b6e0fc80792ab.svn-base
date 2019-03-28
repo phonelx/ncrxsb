@@ -1,0 +1,569 @@
+$(function() {
+
+});	
+
+function cancel_clear(){
+	$("#param_where").val("");
+	$("#param_fh").val("");
+}
+
+
+function keyDown(e){ 
+	 var keycode = 0;
+	 keycode = e.keyCode;
+	 if (keycode == 13 ) //回车键是13
+	 {
+		 searchWord();
+	 }
+}
+
+$(function(){
+	//searchWord();
+});
+var i=0;
+
+function parentload(obj){
+	
+	if($(obj).next().hasClass('on')){
+    	$(obj).next().slideUp(500).removeClass('on');  
+    	$(obj).prev().text('[+]');  
+    	
+    }else{  
+    	$(obj).next().slideDown(500).addClass('on');  
+    	$(obj).prev().text('[-]'); 
+    	
+    	
+    }
+	var  zhsqu = $(obj).attr("id")
+	$("#ZHJSQU1").val(zhsqu);
+	var flag = $(obj).attr("flag")
+	$("#flag").val(flag)	
+	loadMenu();
+	searchWord();
+	$("#abj").hide();
+}
+
+
+//重新加载左部菜单列表
+function loadMenu(){
+	/*$("#span").text("[-]")*/
+		$.ajax({
+			type : 'post',
+			url : 'queryZhbjMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			//async : false, //是否发送异步请求	
+			data:{
+				
+			},
+			success : function(data) {
+				
+				var html = "";
+				var list = data.list			
+					for(var i = 0;i < data.list.length; i++){				
+							html+=" <li class='border-bottom' style='display:block; margin-left:15px;'>";			
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  flag='1'  id='"+data.list[i].ZHSQU+"' title ='"+data.list[i].DXZHMC+"' onclick='queryZhbjXq(this)' '>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].DXZHMC+"</a>";									
+							html+=" </li>";
+					
+				}
+				$("#topnav1").css("display","block") ;
+				$("#topnav1").html(html)
+			},
+			/*error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}*/
+		});
+	
+
+}
+var records=0;
+var currentPage=0;
+var total=0;
+var pageShowPage=5;//显示多少个人分页标签
+var pageRowNum=10;//每页显示记录数
+var pager=1;
+/*****关键字检索****/
+var query="";
+function searchWord(){
+	var word = $("#input_search").attr("value");
+	if (word=="关键字搜索") {
+		query ="";
+	}else{
+		query=" TYPENAME LIKE '%"+word+"%'";
+	} 
+	gridload(pager);
+}
+
+//加载表格
+var grid ;
+var pageNo =1;
+function gridload(pager){
+	debugger;
+	$("#uiGrid-uigrid").css("display","block")
+	var key = $("input_search").val();
+	if(key=="关键字搜索"){
+		key = "1";
+	}else{
+		key = $("input_search").val();
+	}
+	var html="";
+	$.ajax( {
+		type : 'post',
+		url : 'queryZhbjInfo.do',
+		dataType : 'json',
+		async : false,
+		data : {
+			rows:pageRowNum,
+			page:pager,
+			key:key,
+		},
+		success : function(data) {
+			
+			records=data.total;
+			currentPage=data.pageNumber;
+			total = data.pageCnt;
+			pageRowNum=data.pageSize;
+			if(data.rows.length==0){
+				$("#box_body").html("");
+				top=1;
+			}
+			html+=" <tr>";
+			html+=" <th></th>";
+			html+=" <th class='td'>组合部件名称</th>";
+			html+=" <th class='td'>管道类型</th>";
+			html+=" <th class='td'>支架形式</th>";
+			html+=" <th class='td'>安装方式</th>";
+			html+=" <th class='td' colspan='2'>操作</th>";
+			html+=" </tr>";
+			list1 = data.rows
+			   
+		for(var i = 0;i<list1.length;i++){
+			
+			html+="<tr class='tr'>";  
+			html+=" <td class='td1'><img class='dashboard-avatar' src='/upload/"+list1[i].ZP+"'></td>";
+			html+=" <td class='td1'>"+list1[i].DXZHMC+"</td>";
+			html+=" <td class='td1'>"+list1[i].GDLX+"</td>";
+			html+=" <td class='td1'>"+list1[i].ZJXS+"</td>";
+			html+=" <td class='td1'>"+list1[i].AZFS+"</td>";
+			
+			html+=" <td style='display:none'>"+list1[i].ZHSQU+"</td>";
+			
+			//html+=" <td><a onclick='' title='查看' href='javascript:void(0);'> <i class='icon-zoom-in icon-black'></i></a>&nbsp";
+			html+=" <td class='td1' colspan='2'><a onclick='editZh(this)' title='编辑' href='javascript:void(0);'><i class='icon-edit icon-black'></i></a>&nbsp";
+			html+=" <a onclick='deleteZh(\""+list1[i].ZHSQU+"\")' title='删除' href='javascript:void(0)'><i class='icon-trash icon-black'></i></a></td>";			
+			html+="</tr>";     
+		}
+			$("#box_body").html("");
+			$("#box_body").html(html);
+			pageDiv(records,total,currentPage);
+		},
+		error : function() {
+			Modal.alert(
+			  {
+			    msg: '应用加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			    	
+			  });
+		}
+	});
+}
+/**
+ * 
+  * queryZhbjXq:(获取组合部件的详细信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 唐青
+  * @dateTime: 2017-10-26 下午4:45:26
+  * @param: @param obj
+  * @return: void
+ */
+function queryZhbjXq(obj){
+	var squ = $(obj).attr("id")
+	var flag = $(obj).attr("flag")
+	$("#ZHJSQU1").val(squ)
+$("#abj").show();
+	$("#flag").val(flag)
+	/*var key = $("input_search").val();
+	if(key=="关键字搜索"){
+		key = "1";
+	}else{
+		key = $("input_search").val();
+	}*/
+	var html="";
+	$.ajax( {
+		type : 'post',
+		url : 'queryZhbjXq.do',
+		dataType : 'json',
+		async : false,
+		data : {
+			rows:pageRowNum,
+			page:pager,
+			squ:squ,
+		},
+		success : function(data) {
+			
+			records=data.total;
+			currentPage=data.pageNumber;
+			total = data.pageCnt;
+			pageRowNum=data.pageSize;
+			if(data.rows.length==0){
+				$("#box_body").html("");
+				top=1;
+			}
+			
+			
+			html+=" <tr>";
+			html+=" <th class='td'></th>";
+			html+=" <th class='td'>部件编码</th>";
+			html+=" <th class='td'>部件名称</th>";
+			html+=" <th class='td'>单价</th>";
+			html+=" <th class='td'>数量</th>";
+			html+=" <th class='td' colspan='2'>操作</th>";
+			html+=" </tr>";
+			list1 = data.rows
+		for(var i = 0;i<list1.length;i++){
+			
+			html+="<tr class='tr'>";     
+			html+=" <td class='td1'><img class='dashboard-avatar' src='/upload/"+list1[i].BZP+"'></td>";
+			html+=" <td class='td1'>"+list1[i].CPBM+"</td>";
+			html+=" <td class='td1'>"+list1[i].CYMC+"</td>";
+			if(list1[i].CBDJ==""||list1[i].CBDJ==null){
+				html+=" <td class='td1'></td>";
+			}else{
+				html+=" <td class='td1'>"+list1[i].CBDJ+"</td>";
+			}
+			
+			html+=" <td class='td1'><i class='icon-minus'  onclick='minus(this)'></i>&nbsp;&nbsp;<span>"+list1[i].SJ+"</span>&nbsp;&nbsp;<i class='icon-plus' onclick='plus(this)'></i></td>";
+			//html+=" <td><a onclick='' title='查看' href='javascript:void(0);'> <i class='icon-zoom-in icon-black'></i></a>&nbsp";
+			html+=" <td class='td1' colspan='2'><a onclick='editZhbj(\""+list1[i].ZBSQU+"\")' title='编辑' href='javascript:void(0);'><i class='icon-edit icon-black'></i></a>&nbsp";
+			html+=" <a onclick='deleteZhbj(\""+list1[i].ZBSQU+"\")' title='删除' href='javascript:void(0)'><i class='icon-trash icon-black'></i></a></td>";			
+			html+="</tr>";     
+		}
+			
+			$("#box_body").html(html);
+			pageDiv(records,total,currentPage);
+		},
+		error : function() {
+			Modal.alert(
+			  {
+			    msg: '应用加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			    	
+			  });
+		}
+	});
+}
+function plus(obj){
+var jia = 	$(obj).prev().text();
+
+$(obj).prev().text(parseInt(jia)+1);
+$("#shul").val(parseInt(jia)+1)
+}
+
+function minus(obj){
+	var jian = 	$(obj).next().text();
+
+		if(jian==0){
+			$(obj).next().text(0)
+			$("#shul").val(0)
+		}else if(jian>0){
+			
+			$(obj).next().text(parseInt(jian)-1)
+			$("#shul").val(parseInt(jian)-1)
+		}
+	}
+
+function appRegister(){
+	var type = $("#flag").val();
+	$("#cpmb").val("")
+	$("#cpxh").val("")
+	$("#cbdj").val("")
+	$("#cymc").val("")
+	$("#jldw").val("")
+	$("#edhl").val("")			
+	$(".photoBox").html("")
+	$("#ZBJSQU").val("")
+
+		$("#example").modal();
+	
+		 $("#appBtn").click(function(){
+				$("#uploadForm").form("submit",{ 
+			    	url:"addZhbj.do",
+			        success:function(data){ 
+			        	/*$("#input_file").val(data);	*/
+			        	$('#example').modal("hide");
+			        	$(".modal-backdrop").remove();
+			        	
+			        }  
+			    });
+				
+			});	
+		 		
+}
+function appRegisterBj(){
+	$("#cpmb1").val("")
+	$("#cpxh1").val("")
+	$("#cbdj1").val("")
+	$("#cymc1").val("")
+	$("#jldw1").val("")	
+	$("#photoBox1").html("")
+	$("#ZBJSQU").val("")
+	$("#ZHJSQU1").val("")
+		$("#example3").modal();
+	
+		 $("#appBtnBj").click(function(){
+				$("#uploadForm").form("submit",{ 
+			    	url:"addBuJian.do",
+			        success:function(data){ 
+			        	/*$("#input_file").val(data);	*/
+			        	$('#example3').modal("hide");
+			        	$(".modal-backdrop").remove();
+			        	//loadMenu(); 
+			        }  
+			    });
+			});	
+
+}
+//编辑分类
+function editZhbj(obj){
+	Modal.confirm(
+			  {
+			    msg: "确认修改？"
+			  })
+			  .on( function (e) {
+				  if(e){
+var sl = $("#shul").val();
+	$.ajax({
+		url:'updateBuJian.do',
+		type:'post',
+		data:{
+			'zhVo.ZZBSQU':obj,
+			'zhVo.SJ':sl,
+		},		
+		success:function(data){
+			
+		},
+	
+	});
+				  }
+			  });
+}
+
+function deleteZhbj(obj) {
+	Modal.confirm(
+  {
+    msg: "确认删除？"
+  })
+  .on( function (e) {
+	  if(e){
+			$.ajax({
+				type : "post",
+				url : "deleteBuJian.do",
+				timeout : 1321231232131213123,
+				data : {
+					"squ" :obj,
+				},
+				success : function(data) {
+				
+					},
+				
+				error : function() {
+					Modal.alert(
+					  {
+					    msg: '删除分类信息出错',
+					    title: '消息提示',
+					    btnok: '确定',
+					    btncl:'取消'
+					    	
+					  });
+				}
+			});
+	  }
+  });
+}
+
+function editZh(obj){
+	
+	var zhsqu = $(obj).parent().prev().text()
+	
+	var azfs = $(obj).parent().prev().prev().text()
+	var zjxs  = $(obj).parent().prev().prev().prev().text()
+	var gdlx = $(obj).parent().prev().prev().prev().prev().text()
+	var dxzhmc = $(obj).parent().prev().prev().prev().prev().prev().text()
+	$("#ZHSQU1").val(zhsqu)
+	$("#AZFS1").val(azfs)
+	$("#ZJXS1").val(zjxs)
+	$("#GDLX1").val(gdlx)
+	$("#DXZHMC1").val(dxzhmc)
+	$("#example2").modal();
+
+	 $("#sortBtn").click(function(){
+		
+			$("#uploadForm2").form("submit",{ 
+		    	url:"updateZhbj.do",
+		        success:function(data){ 
+		        
+		        	
+		        	//loadMenu(); 
+		        }  
+		    });
+			searchWord();
+			$('#example2').modal ("hide");
+        	$(".modal-backdrop").remove();
+        	
+		});
+}
+
+function deleteZh(obj){
+	Modal.confirm({
+		msg: "确认删除？"
+		}).on( function (e) {
+	if(e){
+		$.ajax({
+			type : "post",
+			url : "deleteZhbj.do",
+			timeout : 1321231232131213123,
+			data : {
+				"squ" :obj,
+			},
+			success : function(data) {
+				alert(data)
+				var da = eval("(" + data + ")");
+				var sta = da.staus	
+				if(sta!=0){
+					Modal.alert(
+							  {
+							    msg: '请先删除组合部件下的部件',
+							    title: '消息提示',
+							    btnok: '确定',
+							    btncl:'取消'
+							    	
+							  });
+					}
+				},
+			
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '删除分类信息出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+		 }
+	});
+}
+
+
+
+
+function dowloadMB(){
+
+	location.href="dowloadStentsMB.do";
+}
+
+function addBatchStents(){
+	$('#exampl3').modal();
+	$("#btn_file_ok").click(function(){
+		$("#uploadForm3").form("submit",{ 
+	    	url:"addBatchStents.do",
+	        success:function(data){ 
+	        	$("#input_file").val(data);	
+	        	$('#exampl3').hide();
+	        	$(".modal-backdrop").remove();
+	        	//loadMenu(); 
+	        }  
+	    });
+	});
+	
+}
+
+function pageDiv(records,total,currentPage){
+	var pageTotal=total;// 总共多少页
+	var pageCurrentPage=currentPage;//当前页
+	var pageRecords=records;//总记录数
+	var countt="";
+	var outstr="";
+	pageTotal=parseInt(pageRecords/pageRowNum);
+	if(pageRecords%pageRowNum>0){
+		pageTotal=pageTotal+1;
+	}
+        if(pageTotal<=pageShowPage){
+                for (var count=1;count<=pageTotal;count++){
+                        if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                        if(count!=pageCurrentPage){
+                             outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }else{
+                        	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }
+                }
+        }
+        if(pageTotal>pageShowPage){
+                if(parseInt((pageCurrentPage-1)/pageShowPage) == 0){
+                        outstr = outstr + "<li><a><<</a></li> ";
+                        for (var count=1;count<=pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a  href='javascript:void(0);'>"+countt+"</a></li>";
+                                	
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr+"<li tag='"+count+"' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+                }else if(parseInt((pageCurrentPage-1)/pageShowPage) == parseInt(pageTotal/pageShowPage)){
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt(pageTotal/pageShowPage)*pageShowPage+1;count<=pageTotal;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+                }else{
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+1;count<=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	
+                                        outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+                }
+    }    
+        //共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum +"个　
+   $("#pageDiv").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+    outstr = "";
+    $(".pageCk").unbind();
+    $(".pageCk").bind('click',function(){
+    	gridload($(this).attr("tag"));
+    	$("#pd").val($("#pd").val())
+	});
+    $(".pagePk").unbind();
+    $(".pagePk").bind('click',function(){
+    	gridload($(this).attr("tag"));
+    	$("#pd").val($("#pd").val())
+	});
+}	
+
+
+	

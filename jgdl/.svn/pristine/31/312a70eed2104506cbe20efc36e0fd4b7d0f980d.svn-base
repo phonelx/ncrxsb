@@ -1,0 +1,30 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 21, 2011 3:01:11 PM
+*/
+package monitor.registry.service;
+
+import java.util.List;
+
+import net.sf.json.JSONObject;
+
+import monitor.registry.bean.dto.RegQueryDto;
+import monitor.registry.bean.entity.RegQuery;
+
+/** 
+ * 查询注册管理 Service 
+ * @author  liangxj
+ * @datetime  Apr 21, 2011 3:01:11 PM
+ */
+public interface IRegQueryService {
+	public List getAllQuerys(int pageSize,int pageNo) ;
+	public void addQuery(RegQueryDto queryDto);
+	public void editQuery(RegQuery query) ;
+	public void deleteQuery(int squ);
+	public List getAllDbs();
+	public List getAllEntity(int dbsSqu);
+	public JSONObject getField4ShowField(String entitySqus);
+	public List getField4Combo(String entitySqu);
+}

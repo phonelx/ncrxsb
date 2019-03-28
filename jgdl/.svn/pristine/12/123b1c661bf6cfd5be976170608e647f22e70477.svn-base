@@ -1,0 +1,165 @@
+package monitor.dispatched.bean.entity;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+
+public class SSPTuserinfo implements Serializable{
+
+    /**
+      * @Fields  serialVersionUID:TODO(用来对应数据库ssp_userinfo表)
+      * @since JDK1.6
+    */
+    private static final long serialVersionUID = 6662232547652207148L;
+    /**用户ID */
+    private int squ = -1;
+    /**角色ID */
+    private int rolesqu = -1;
+    
+    /**用户名称 */
+    private String usertitle = null;
+    /**登录名称 */
+    private String username = null;
+    /**登录密码 */
+    private String pwd = null;
+    /**用户备注 */
+    private String descb    = null;
+    
+    /**是否是默认用户1：默认 ,0:非默认 */
+    private int isdefault = -1;
+    /**是否启用1：启用,0:停用 */
+    private int isenabled = -1;
+    
+    /**身份证号码 */
+    private  String sfzhm = null;
+    /** 有效日期*/
+    private Timestamp validtime = null;
+    /**绑定IP */
+    private  String ip = null;
+    /** 创建日期*/
+    private Timestamp crreatetime = null;
+    /**登录代码 */
+    private  String logincode = null;
+    
+    
+    List<Map<String, Object>> listRelo =null;
+    
+    public List<Map<String, Object>> getListRelo()
+    {
+        return listRelo;
+    }
+    public void setListRelo(List<Map<String, Object>> listRelo)
+    {
+        this.listRelo = listRelo;
+    }
+    public int getSqu()
+    {
+        return squ;
+    }
+    public void setSqu(int squ)
+    {
+        this.squ = squ;
+    }
+    public int getRolesqu()
+    {
+        return rolesqu;
+    }
+    public void setRolesqu(int rolesqu)
+    {
+        this.rolesqu = rolesqu;
+    }
+    public String getUsertitle()
+    {
+        return usertitle;
+    }
+    public void setUsertitle(String usertitle)
+    {
+        this.usertitle = usertitle;
+    }
+    public String getUsername()
+    {
+        return username;
+    }
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+    public String getPwd()
+    {
+        return pwd;
+    }
+    public void setPwd(String pwd)
+    {
+        this.pwd = pwd;
+    }
+    public String getDescb()
+    {
+        return descb;
+    }
+    public void setDescb(String descb)
+    {
+        this.descb = descb;
+    }
+    public int getIsdefault()
+    {
+        return isdefault;
+    }
+    public void setIsdefault(int isdefault)
+    {
+        this.isdefault = isdefault;
+    }
+    public int getIsenabled()
+    {
+        return isenabled;
+    }
+    public void setIsenabled(int isenabled)
+    {
+        this.isenabled = isenabled;
+    }
+    public String getSfzhm()
+    {
+        return sfzhm;
+    }
+    public void setSfzhm(String sfzhm)
+    {
+        this.sfzhm = sfzhm;
+    }
+    public Timestamp getValidtime()
+    {
+        return validtime;
+    }
+    public void setValidtime(Timestamp validtime)
+    {
+        this.validtime = validtime;
+    }
+    public String getIp()
+    {
+        return ip;
+    }
+    public void setIp(String ip)
+    {
+        this.ip = ip;
+    }
+    public Timestamp getCrreatetime()
+    {
+        return crreatetime;
+    }
+    public void setCrreatetime(Timestamp crreatetime)
+    {
+        this.crreatetime = crreatetime;
+    }
+    public String getLogincode()
+    {
+        return logincode;
+    }
+    public void setLogincode(String logincode)
+    {
+        this.logincode = logincode;
+    }
+    
+    
+    
+    
+    
+}

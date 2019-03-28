@@ -1,0 +1,55 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="ality" extends="monitor-struts-default" >
+	
+	<!-- 	<action name="gotoSetting" class="alitySetAction" method="gotoSetting">
+			<result name="success">pages/ality/setting.jsp</result>
+		</action> -->
+		<!-- 跳转到应用管理页面 -->
+		<action name="gotoSystemSetIndex" class="alitySetAction" method="gotoSystemSetIndex">
+			<result name="success">pages/ality/systemSet.jsp</result>
+		</action>
+		<!-- 加载功能菜单列表分页 -->
+		<action name="fetchAlityMenu" class="alitySetAction" method="fetchAlityMenu">
+		</action>
+		<!-- 加载最大排序编号 -->
+		<action name="fetchMaxOrder" class="alitySetAction" method="fetchMaxOrder">
+		</action>
+		<!-- 加载模块菜单 -->
+		<action name="fetchParentMenu" class="alitySetAction" method="fetchParentMenu">
+		</action>
+		<!-- 删除模块菜单 -->
+		<action name="delParentMenu" class="alitySetAction" method="delParentMenu">
+		</action>
+		<!-- 新增模块菜单 -->
+		<action name="addParentMenu" class="alitySetAction" method="addParentMenu">
+		</action>
+		<!-- 编辑模块菜单 -->
+		<action name="editParentMenu" class="alitySetAction" method="editParentMenu">
+		</action>
+		<!-- 功能菜单注册 -->
+		<action name="addAlityMenu" class="alitySetAction" method="addAlityMenu">
+		</action>
+		<!-- 删除功能菜单 -->
+		<action name="delAlityMenu" class="alitySetAction" method="delAlityMenu">
+		</action>
+		<!-- 编辑功能菜单 -->
+		<action name="editAlityMenu" class="alitySetAction" method="editAlityMenu">
+		</action>
+		<!-- 加载功能请求列表 -->
+		<action name="fetchAlityUrl" class="alitySetAction" method="fetchAlityUrl">
+		</action>
+		<!-- 修改功能请求 -->
+		<action name="editAlityUrl" class="alitySetAction" method="editAlityUrl">
+		</action>
+		<!-- 删除功能请求 -->
+		<action name="delAlityUrl" class="alitySetAction" method="delAlityUrl">
+		</action>
+		<!-- 新增功能请求 -->
+		<action name="addAlityUrl" class="alitySetAction" method="addAlityUrl">
+		</action>
+		
+	</package>	
+</struts>

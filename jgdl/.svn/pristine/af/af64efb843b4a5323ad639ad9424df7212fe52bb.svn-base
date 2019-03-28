@@ -1,0 +1,62 @@
+package monitor.projectConfig.service.impl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+
+
+import monitor.common.service.BaseServicce;
+import monitor.projectConfig.dao.impl.CalculationReportDaoImpl;
+import monitor.projectConfig.service.ICalculationReportService;
+
+/**
+ *@ClassName
+ *@dataTime 2018-4-9-下午2:40:40
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class CalculationReportServiceImpl  extends BaseServicce implements ICalculationReportService{
+
+	private Connection conn = null;
+	
+	@Resource(name="calculationReportDao")
+	private CalculationReportDaoImpl calculationReportDao;
+	@Override
+	public List<Map<String, String>> selectProjectInfo(String zjsqu) throws Exception {
+		try {
+			conn = datasource.getConnection();
+			List<Map<String, String>> list = calculationReportDao.selectProjectInfo(conn, zjsqu);
+			return list;
+		} catch (Exception e) {
+			throw new Exception("查询项目信息错误"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	/**
+	 * 
+	  * closed:(关闭数据源).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-4-9 下午3:39:43
+	  * @param conn void
+	  * @since JDK 1.7
+	 */
+	private void closed(Connection conn){
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+}

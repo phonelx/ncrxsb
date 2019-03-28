@@ -1,0 +1,185 @@
+package monitor.dispatched.action;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.dispatched.bean.dto.DispatchedDto;
+import monitor.dispatched.service.IDispatchedService;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+
+/**
+ * @ClassName:DispatchedAction
+ * @datetime: 2017-4-17 下午5:09:26
+ * @Description: TODO
+ * @version 
+ * @author: 桂人杰
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class DispatchedAction extends BaseAction implements
+		ModelDriven<DispatchedDto> {
+
+	/**
+	 * @since JDK1.6
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	private IDispatchedService dispatchedService;
+	
+	private DispatchedDto dispatchedDto;
+	
+	/**
+	  * @Fields  ISNEW:TODO(最新部署标识为1)
+	  * @since JDK1.7
+	*/
+	private final int ISNEW = 1;
+	
+	/**
+	  * gotoDeployIndex:(跳转已部署页面).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-17 下午3:02:40
+	  * @return String
+	  * @since JDK 1.7
+	*/
+	public String gotoDeployIndex(){
+		return SUCCESS;
+	}
+	
+	/**
+	  * listDispatchedInPage:(查询人员布控列表).<br/>
+	  * TODO(已部署).<br/>
+	  * @author: 黄月
+	  * @datetime: 2017-4-21 下午4:19:24
+	  * @param: 
+	  * @return: void
+	  * @throws
+	  * @since JDK 1.7
+	 */
+	public void listDispatchedInPage(){
+		DispatchedDto dto = null;
+		int page = Integer.parseInt(getRequest().getParameter("page"));
+		int rows = Integer.parseInt(getRequest().getParameter("rows"));
+		try {
+			dto = getListByAllOrNew(dispatchedDto.getIsnew(),page,rows);
+			JSONObject jsonObj = JSONObject.fromObject(dto.getPageInfo());
+			writeJsonBack(jsonObj.toString());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	  * getNewDataCount:(获取最新部署总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午9:52:14 void
+	  * @since JDK 1.7
+	*/
+	public void getNewDataCount() {
+		DispatchedDto dto = null;
+		JSONObject json = new JSONObject();
+		try {
+			dto = getListByAllOrNew(ISNEW,0,0);
+			json.accumulate("status", "success");
+			json.accumulate("result", dto.getPageInfo().getTotal());
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+			e.printStackTrace();
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	  * getListByAllOrNew:(获取所有或者最新部署信息).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午9:54:25
+	  * @return DispatchedDto
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	private DispatchedDto getListByAllOrNew(int isNew,int page,int rows) throws SQLException{
+		//获取当前用户信息
+		dispatchedDto.setUserdto(userDto);
+		dispatchedDto.getPageInfo().setPageNumber(page);
+		dispatchedDto.getPageInfo().setPageSize(rows);
+		
+		//判断当前请求是否是已部署下的最新数据
+		dispatchedDto.setIsnew(isNew);
+		DispatchedDto dto = new DispatchedDto();
+		dto = dispatchedService.listDispatchedInPage(dispatchedDto);
+		return dto;
+	}
+	/**
+	  * toPersonMsgIndex:(跳转人员流动信息页面).<br/>
+	  * TODO(用于查询已部署人员).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-4-24 下午3:15:45
+	  * @param: 
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.7
+	 */
+	public String toPersonMsgIndex(){
+		String strJson = getRequest().getParameter("strJson");
+		//System.out.println(strJson);
+		getRequest().setAttribute("personMsg", strJson);
+		return SUCCESS;
+	}
+	
+	/**
+	  * selectTrajectory:(查询人员轨迹).<br/>
+	  * TODO(已部署人员/人员信息).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-4-25 下午3:00:41
+	  * @param: 
+	  * @return: void
+	  * @throws
+	  * @since JDK 1.7
+	*/
+	public void selectTrajectory() {
+		List<Map<String, String>> lstTrajectory = null;
+		JSONObject json = new JSONObject();
+		try {
+			lstTrajectory = new ArrayList<Map<String, String>>();
+			lstTrajectory = dispatchedService.selectTrajectory(dispatchedDto);
+			json.accumulate("status", "success");
+			json.accumulate("message", lstTrajectory);
+		} catch (SQLException e) {
+			json.accumulate("status", "error");
+			json.accumulate("message", e.getMessage());
+			e.printStackTrace();
+		}
+		writeStringBack(json.toString());
+	}
+	
+	
+	public IDispatchedService getDispatchedService() {
+		return dispatchedService;
+	}
+	public void setDispatchedService(IDispatchedService dispatchedService) {
+		this.dispatchedService = dispatchedService;
+	}
+	public DispatchedDto getDispatchedDto() {
+		return dispatchedDto;
+	}
+	public void setDispatchedDto(DispatchedDto dispatchedDto) {
+		this.dispatchedDto = dispatchedDto;
+	}
+	@Override
+	public DispatchedDto getModel() {
+		if (dispatchedDto == null) {
+			return dispatchedDto = new DispatchedDto();
+		}
+		return dispatchedDto;
+	}
+	
+}

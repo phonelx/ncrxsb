@@ -1,0 +1,43 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 19, 2011 2:51:13 PM
+*/
+package monitor.registry.bean.vo;
+
+/** 
+ * 实体对象
+ * @author  liangxj
+ * @datetime  Apr 19, 2011 2:51:13 PM
+ */
+public class EntityVo {
+	// 实体类型
+	private String type ;
+	// 实体名称
+	private String name ;
+	/** 
+	 * @return type 
+	 */
+	public String getType() {
+		return type;
+	}
+	/** 
+	 */
+	
+	public void setType(String type) {
+		this.type = type;
+	}
+	/** 
+	 * @return name 
+	 */
+	public String getName() {
+		return name;
+	}
+	/** 
+	 */
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+}

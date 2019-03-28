@@ -1,0 +1,295 @@
+package monitor.projectConfig.dao;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.goodsHouse.bean.entity.Wzzdb;
+import monitor.projectConfig.bean.entity.Project;
+import monitor.projectConfig.bean.entity.Project_Child;
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:IProjectConfigDao
+ * @dateTime: 2017-10-14 下午3:07:25
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IProjectConfigDao {
+	
+	public List<Map<String, String>> getSelectOfGDLX(Connection conn);
+	
+	public List<Map<String, String>> getSelectOfAZFS(Connection conn);
+	
+	/**
+	  * selectHavingHolderOfProject:(查询当前项目是否已有当前支架).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-24 下午8:46:44
+	  * @return Integer
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Integer selectHavingHolderOfProject(Connection conn, String holderSqu,
+			String projectSqu) throws SQLException;
+	
+	/**
+	  * addHolderNumToProject:(对已有支架数量操作).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	 * @throws SQLException 
+	  * @dateTime: 2017-10-24 下午8:47:28 void
+	  * @since JDK 1.7
+	*/
+	void updateHolderNumOfProject(Connection conn, Integer num, String holderSqu,
+			String projectSqu) throws SQLException;
+	
+	/**
+	  * addHolderTopProject:(给项目添加支架).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-24 下午8:44:11
+	  * @throws SQLException void
+	  * @since JDK 1.7
+	*/
+	void insertHolderToProject(Connection conn, String holderSqu,
+			String projectSqu) throws SQLException;
+	
+	/**
+	  * selectCountHolder:(查询支架总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-24 下午7:21:48
+	  * @param conn
+	  * @return Integer
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Integer selectCountHolder(Connection conn, String sql) throws SQLException;
+	
+	/**
+	  * selectHolderPageInfo:(分页查询支架信息).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-24 下午7:21:34
+	  * @param pageVo
+	  * @param conn
+	  * @return
+	  * @throws SQLException List<Project_DXInfo>
+	  * @since JDK 1.7
+	*/
+	List<Project_DXInfo> selectHolderPageInfo(PageInfoVo pageVo, Connection conn, String sql) throws SQLException;
+
+	/**
+	  * selectProjectPageInfo:(分页查询项目列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:10:39
+	  * @return List<T_Project>
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	List<Project> selectProjectPageInfo(PageInfoVo pageVo, Connection conn) throws SQLException;
+	
+	/**
+	 * selectProjectAll:(查询所有项目).<br/>
+	 * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	 * @author: 黄月
+	 * @dateTime: 2017-10-14 下午3:10:39
+	 * @return List<T_Project>
+	 * @throws SQLException 
+	 * @since JDK 1.7
+	 */
+	List<T_Project> selectProjectAll(Connection conn) throws SQLException;
+	
+	/**
+	  * selectCountProject:(查询项目总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午4:11:15
+	  * @return Integer
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	Integer selectCountProject(Connection conn) throws SQLException;
+	
+	/**
+	  * selectProjectBySqu:(查询单个项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:26:43
+	  * @return T_Project
+	  * @since JDK 1.7
+	*/
+	T_Project selectProjectBySqu(String squ, Connection conn);
+	
+	/**
+	  * insertProject:(新增项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:24:34
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void insertProject(Project project, Connection conn);
+	
+	/**
+	  * updateProject:(修改项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:24:57
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void updateProjectBySqu(Project pro, Connection conn);
+	
+	/**
+	  * deleteProjectBySqu:(根据id删除项目).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-14 下午3:25:23
+	  * @param project void
+	  * @since JDK 1.7
+	*/
+	void deleteProjectBySqu(String squ, Connection conn);
+	
+	/**
+	  * deleteHolderOfProjectBySqu:(根据squ删除项目支架).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-11-20 上午10:55:39
+	  * @param squ
+	  * @param conn void
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	void deleteHolderOfProjectBySqu(String squ, Connection conn) throws SQLException;
+	
+	/**
+	  * selectHolderOfProject:(分页查询项目下的支架).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-23 下午7:47:13
+	  * @param squ
+	  * @param conn
+	  * @return List<Project_DXInfo>
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	List<Project_DXInfo> selectHolderOfProjectPageInfo(PageInfoVo pageVo,
+			String squ, Connection conn) throws SQLException;
+	
+	/**
+	  * selectCountHolderOfProject:(项目下的支架总数).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-10-23 下午7:49:10
+	  * @param conn
+	  * @return
+	  * @throws SQLException Integer
+	  * @since JDK 1.7
+	*/
+	Integer selectCountHolderOfProject(Connection conn, String squ) throws SQLException;
+
+	/**
+	  * selectCountProjectBySearch:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-11-13 上午10:07:01
+	  * @param conn
+	  * @param searchWord
+	  * @return
+	  * @throws SQLException Integer
+	  * @since JDK 1.7
+	*/
+	Integer selectCountProjectBySearch(Connection conn, String searchWord)
+			throws SQLException;
+
+	/**
+	  * selectProjectPageInfoBySearch:(这里用一句话描述这个方法的作用).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-11-13 上午10:10:05
+	  * @param pageVo
+	  * @param conn
+	  * @param searchWord
+	  * @return
+	  * @throws SQLException List<T_Project>
+	  * @since JDK 1.7
+	*/
+	List<T_Project> selectProjectPageInfoBySearch(PageInfoVo pageVo,
+			Connection conn, String searchWord) throws SQLException;
+	
+	/**
+	  * getBuildingCategory:(获取建筑类别下拉列表).<br/>
+	  * TODO(项目基本配置).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-11-22 下午4:57:44
+	  * @return List<String>
+	 * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	List<String> getBuildingCategory(Connection conn, String squ) throws SQLException;
+	
+	/**
+	  * listChildProject:(获取子项目对象列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-1-31 下午4:38:04
+	  * @return List<Project_Child>
+	  * @since JDK 1.7
+	*/
+	List<Project_Child> listChildProject(Connection conn);
+	
+	/**
+	  * countChildProject:(子项目数据统计).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-1-31 下午4:39:04
+	  * @return Integer
+	  * @since JDK 1.7
+	*/
+	Integer countChildProject(Connection conn);
+	
+	/**
+	  * listProjectSite:(获取部位对象列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-1-31 下午4:41:01
+	  * @return List<Project_Child_Site>
+	  * @since JDK 1.7
+	*/
+	List<Project_Child_Site> listProjectSite(Connection conn);
+	
+	/**
+	  * countProjectSite:(获取部位统计).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-1-31 下午4:41:38
+	  * @return Integer
+	  * @since JDK 1.7
+	*/
+	Integer countProjectSite(Connection conn);
+	
+	/**
+	  * getParamConfig:(获取参数配置对象).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2018-2-2 下午3:31:46
+	  * @param conn
+	  * @param search	查询条件
+	  * @param param	查询参数
+	  * @return Wzzdb
+	  * @since JDK 1.7
+	*/
+	/*
+	Wzzdb getParamConfig(Connection conn , String search, String param );*/
+}

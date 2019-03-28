@@ -1,0 +1,39 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="projectConfig" extends="monitor-struts-default" >
+	
+		<!-- 跳转已过期页面 -->
+		<action name="toProjectBasicIndex" class="projectAction" method="toProjectBasicIndex">
+			<result name="success" >/pages/projectConfig/projectConfig.jsp</result>
+		</action>
+		<!-- 分页查询 -->
+		<action name="selectProjectPageInfo" class="projectAction" method="selectProjectPageInfo"/>
+		<!-- 根据squ查询 -->
+		<action name="selectProjectBySqu" class="projectAction" method="selectProjectBySqu"/>
+		<!-- 新增 -->
+		<action name="insertProject" class="projectAction" method="insertProject"/>
+		<!-- 修改 -->
+		<action name="updateProjectBySqu" class= "projectAction" method="updateProjectBySqu"/>
+		<!-- 删除 -->
+		<action name="deleteProjectBySqu" class= "projectAction" method="deleteProjectBySqu"/>
+		
+		<action name="toProjectIndex" class= "projectAction" method="toProjectIndex">
+			<result name="success" >/pages/projectConfig/projectMsgConfig.jsp</result>
+		</action>
+		<!-- 分页查询项目支架 -->
+		<action name="loadHolderOfProjectPageInfo" class= "projectAction" method="loadHolderOfProjectPageInfo"/>
+		
+		<action name="getHolderList" class= "projectAction" method="getHolderList"/>
+		
+		<action name="addHolderToProject" class= "projectAction" method="addHolderToProject"/>
+		
+		<action name="deleteHolderOfProjectBySqu" class= "projectAction" method="deleteHolderOfProjectBySqu"/>
+		<action name="updateHolderNumOfProject" class= "projectAction" method="updateHolderNumOfProject"/>
+		
+		<!-- 获取项目属性下拉列表  -->
+		<action name="getSelectOfObject" class= "projectAction" method="getSelectOfObject"/>
+		<action name="getSelectOfGDLX_AZFS" class= "projectAction" method="getSelectOfGDLX_AZFS"/>
+	</package>	
+</struts>

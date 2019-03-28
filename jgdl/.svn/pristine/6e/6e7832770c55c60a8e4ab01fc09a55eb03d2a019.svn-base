@@ -1,0 +1,107 @@
+package monitor.user.bean.vo;
+
+import java.util.List;
+
+
+public class PageInfoVo {
+	/**
+	  * @Fields  total:TODO(总记录数)
+	  * @since JDK1.6
+	*/
+	private int total = 0;
+	/**
+	  * @Fields  pageNumber:TODO(页码)
+	  * @since JDK1.6
+	*/
+	private int pageNumber = 1;
+	/**
+	  * @Fields  pageSize:TODO(页面显示记录数)
+	  * @since JDK1.6
+	*/
+	private int pageSize = 10;
+	/**
+	  * @Fields  rows:TODO(分页内容列表)
+	  * @since JDK1.6
+	*/
+	private List<?> rows;
+	/**
+	  * @Fields  startIndex:TODO(开始数)
+	  * @since JDK1.6
+	*/
+	private int startIndex=0;
+	private String query="";
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		if(org.apache.commons.lang.StringUtils.isNotBlank(query)){
+			this.query = query;
+		}
+		
+	}
+	/**
+	  * @Fields  endIndex:TODO(结束数)
+	  * @since JDK1.6
+	*/
+	private int endIndex = 0;
+	
+	private int pageCnt=1;
+	
+	public int getEndIndex() {
+		endIndex = this.startIndex+this.pageSize;
+		return endIndex;
+	}
+	public void setEndIndex(int endIndex) {
+		this.endIndex = endIndex;
+	}
+	public int getStartIndex() {
+		 startIndex=(this.pageNumber -1)*this.pageSize +1;
+		 return startIndex;
+	}
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+	}
+
+	
+	
+	
+	public int getPageCnt() {
+		return pageCnt;
+	}
+	public void setPageCnt(int pageCnt) {
+		this.pageCnt = pageCnt;
+	}
+	public int getTotal() {
+		return total;
+	}
+	public void setTotal(int total) {
+		if(total<this.pageSize){
+		this.pageCnt=1;
+		}else{
+			if(total%this.pageSize!=0){
+			this.pageCnt=(int) Math.floor(Double.valueOf((total/this.pageSize))) +1;
+			}else{
+				this.pageCnt=(int) Math.floor(Double.valueOf((total/this.pageSize)));
+			}
+		}
+		this.total = total;
+	}
+	public int getPageNumber() {
+		return pageNumber;
+	}
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	public List<?> getRows() {
+		return rows;
+	}
+	public void setRows(List<?> rows) {
+		this.rows = rows;
+	}
+}

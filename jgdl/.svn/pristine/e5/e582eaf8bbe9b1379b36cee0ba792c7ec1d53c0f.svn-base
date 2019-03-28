@@ -1,0 +1,39 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ControlService.java
+	* Date:2017-5-12上午10:47:18   
+	***/
+package monitor.manage.service;
+
+import java.sql.SQLException;
+
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ControlService
+ * @dateTime: 2017-5-12 上午10:47:18
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface ControlService {
+
+	/**
+	  * listControlInPage:(查询布控配置列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-12 下午2:14:25
+	  * @param searchKey
+	  * @param page
+	  * @return
+	  * @throws SQLException PageInfoVo
+	  * @since JDK 1.7
+	*/
+	public PageInfoVo listControlInPage(String searchKey, PageInfoVo page) throws SQLException;
+}

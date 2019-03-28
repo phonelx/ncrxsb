@@ -1,0 +1,58 @@
+package monitor.manage.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.dao.QueryDao;
+import monitor.manage.service.QueryService;
+
+public class QueryServiceImpl implements QueryService {
+	private QueryDao dao;
+
+	public QueryDao getDao() {
+		return dao;
+	}
+
+	public void setDao(QueryDao dao) {
+		this.dao = dao;
+	}
+
+	@Override
+	public List QuerySFZ(int pageSize, int pageNo,String sfhm,String yjbt) {
+		return dao.QuerySFZ(pageSize, pageNo, sfhm, yjbt);
+	}
+
+	@Override
+	public int GetCount(String sfhm,String yjbt) {
+		// TODO Auto-generated method stub
+		return dao.GetCount(sfhm, yjbt);
+	}
+
+	@Override
+	public List chooseSource(String yjid) {
+		// TODO Auto-generated method stub
+		return dao.chooseSource(yjid);
+	}
+	public List chooseTable(String yjid) {
+		return dao.chooseTable(yjid);
+	}
+	@Override
+	public List<Map<String, Object>> selectDetail(Yjgzdto Yjgzdto) {
+		// TODO Auto-generated method stub
+		return dao.selectDetail(Yjgzdto);
+	}
+
+	@Override
+	public List detialTabPage(Yjgzdto Yjgzdto) {
+		// TODO Auto-generated method stub
+		return dao.detialTabPage(Yjgzdto);
+	}
+
+	@Override
+	public int detialTabCount(Yjgzdto Yjgzdto) {
+		// TODO Auto-generated method stub
+		return dao.detialTabCount(Yjgzdto);
+	}
+	
+}

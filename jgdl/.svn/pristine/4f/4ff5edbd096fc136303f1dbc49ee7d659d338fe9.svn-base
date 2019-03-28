@@ -1,0 +1,116 @@
+package monitor.projectConfig.bean.entity;
+
+/**
+ * @ClassName:Project_DXInfo 支架设备信息
+ * @dateTime: 2017-10-23 下午7:43:37
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class Project_DXInfo {
+
+	/**
+	  * @Fields  dxsqu:TODO(支架id)
+	  * @since JDK1.7
+	*/
+	private String dxsqu;
+	
+	/**
+	  * @Fields  gdlx:TODO(管道类型)
+	  * @since JDK1.7
+	*/
+	private String gdlx;
+	
+	/**
+	  * @Fields  azfs:TODO(安装方式)
+	  * @since JDK1.7
+	*/
+	private String azfs;
+	
+	/**
+	  * @Fields  zjxs:TODO(支架形式)
+	  * @since JDK1.7
+	*/
+	private String zjxs;
+	
+	/**
+	  * @Fields  dxmc:TODO(单项名称)
+	  * @since JDK1.7
+	*/
+	private String dxmc;
+	
+	/**
+	  * @Fields  zp:TODO(照片路径)
+	  * @since JDK1.7
+	*/
+	private String zp;
+	
+	/**
+	  * @Fields  sl:TODO(数量)
+	  * @since JDK1.7
+	*/
+	private Integer sl;
+	
+	
+
+	public Integer getSl() {
+		return sl;
+	}
+
+	public void setSl(Integer sl) {
+		this.sl = sl;
+	}
+
+	public String getDxsqu() {
+		return dxsqu;
+	}
+
+	public void setDxsqu(String dxsqu) {
+		this.dxsqu = dxsqu;
+	}
+
+	public String getGdlx() {
+		return gdlx;
+	}
+
+	public void setGdlx(String gdlx) {
+		this.gdlx = gdlx;
+	}
+
+	public String getAzfs() {
+		return azfs;
+	}
+
+	public void setAzfs(String azfs) {
+		this.azfs = azfs;
+	}
+
+	public String getZjxs() {
+		return zjxs;
+	}
+
+	public void setZjxs(String zjxs) {
+		this.zjxs = zjxs;
+	}
+
+	public String getDxmc() {
+		return dxmc;
+	}
+
+	public void setDxmc(String dxmc) {
+		this.dxmc = dxmc;
+	}
+
+	public String getZp() {
+		return zp;
+	}
+
+	public void setZp(String zp) {
+		this.zp = zp;
+	}
+
+	
+}

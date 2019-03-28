@@ -1,0 +1,46 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  May 17, 2011 2:51:38 PM
+*/
+package monitor.registry.dao;
+
+import java.util.List;
+
+import monitor.registry.bean.entity.Relation;
+
+/**
+ * 实体关系注册 DAO 接口类
+ * @author  liangxj
+ * @datetime  May 17, 2011 2:51:38 PM
+ */
+public interface IRelationDao {
+	/**
+	 * @description
+	 * 返回所有已经注册的实体关系
+	 * @param pageNo 当前访问页
+	 * @param pageSize 页大小
+	 * @param dbsSqu 数据源编号
+	 * @return List
+	 */
+	public List listRelations(int pageNo,int pageSize,int dbsSqu);
+	/**
+	 * @description 注册实体关系
+	 * @param  relation
+	 * @return void
+	 */
+	public void addRelation(Relation relation);
+	/**
+	 * @description 编辑实体关系
+	 * @param  relation
+	 * @return void
+	 */
+	public void editRelation(Relation relation);
+	/**
+	 * @description 删除关系
+	 * @param relaSqu 关系编号
+	 * @return void
+	 */
+	public void deleteRelation(int relaSqu);
+}

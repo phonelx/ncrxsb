@@ -1,0 +1,31 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="addapplication" extends="monitor-struts-default" >
+		<action name="findByidCard" class="addApplication" method="findByidCard">
+		</action>
+		<action name="listAdminRole" class="addApplication" method="listAdminRole">
+			<result name="success">/pages/type.jsp</result>
+		</action>
+		
+		<action name="addInforToBkry" class="addApplication" method="addInforToBkry">
+		</action>
+		
+		<action name="findByIDCard" class="addApplication" method="findByIDCard"></action>
+		
+		<action name="cleanStaticVariable" class="addApplication" method="cleanStaticVariable"></action>
+		
+		<action name="ajaxShowDetailed" class="addApplication" method="ajaxShowDetailed" ></action>
+		
+		<action name="addTransition" class="addApplication" method="addTransition"></action>
+		
+		<action name="deleteRecordById" class="addApplication" method="deleteRecordById"></action>
+		
+		<action name="checkIsBked" class="addApplication" method="checkIsBked"></action>
+		
+		<action name="existInPage" class="addApplication" method="existInPage" ></action>
+		
+		<action name="reloadOwn" class="addApplication" method="reloadOwn"></action>
+	</package>	
+</struts>

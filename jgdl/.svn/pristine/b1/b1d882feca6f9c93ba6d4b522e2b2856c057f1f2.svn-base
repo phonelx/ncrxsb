@@ -1,0 +1,344 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 20, 2011 4:39:59 PM
+*/
+package monitor.registry.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import monitor.common.exception.DaoException;
+import monitor.registry.bean.entity.RegDataSource;
+import monitor.registry.bean.entity.RegField;
+import monitor.registry.bean.vo.FieldVo;
+import monitor.registry.dao.IFieldDao;
+
+/**
+ * 字段处理Dao
+ * @author  liangxj
+ * @datetime  Apr 20, 2011 4:39:59 PM
+ */
+public class FieldDaoImpl extends RegistryDao implements IFieldDao {
+	private Connection conn1;
+	/** 添加字段
+	 * @param field
+	*/
+	public int addField(RegField field) {
+		int fieldSqu = -1;
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// 判断 当前字段是否已经注册
+			pstmt = conn.prepareStatement(
+				"SELECT COUNT(*) FROM SSP_TREGFIELD"
+				+ " WHERE NAME = ? AND ENTITYSQU = ?");
+			pstmt.setString(1, field.getName());
+			pstmt.setInt(2, field.getEntitySqu());
+			rs = pstmt.executeQuery();
+			rs.next();
+			if (rs.getInt(1) > 0) {
+				fieldSqu = -2 ;
+			} else {
+				// SQL
+				StringBuffer sql = new StringBuffer(
+					"INSERT INTO SSP_TREGFIELD")
+				.append("(ENTITYSQU,NAME,TITLE, DESCB,"
+						 + " REGDATETIME,TYPE,")
+				.append("PRECISION,SCALE,ISKEY,ISNULLABLE,"
+				   + "ISAUTOINCREMENT,ISUNIQUE,ASCONDITION,"
+				   + "DICTYPESQU,DISPLAYPRIO,ISSIMPLEEL,"
+				   + " ISYJQUERY,INDEXOF,ISBKQUERY,BKINDEXOF)")
+				.append("VALUES(?,?,?,?,SYSDATE,?,?,?,?,?,"
+						 + "?,?,?,?,?,?,?,?,?,?)");
+				pstmt = conn.prepareStatement(sql.toString());
+				// 设置参数
+				pstmt.setInt(1, field.getEntitySqu());
+				pstmt.setString(2, field.getName());
+				pstmt.setString(3, field.getTitle());
+				pstmt.setString(4, field.getDescb());
+				pstmt.setString(5, field.getType());
+				pstmt.setInt(6, field.getPrecision());
+				pstmt.setInt(7, field.getScale());
+				pstmt.setInt(8, field.getIsKey());
+				pstmt.setInt(9, field.getIsNullable());
+				pstmt.setInt(10, field.getIsAutoIncrement()) ;
+				pstmt.setInt(11, field.getIsUnique()) ;
+				pstmt.setInt(12, field.getAsCondition()) ;
+				pstmt.setString(13, field.getDictypesqu()) ;
+				pstmt.setInt(14, field.getDisplayPrio()) ;
+				pstmt.setInt(15, field.getIsSimpleEl()) ;
+				pstmt.setString(16, field.getIsquery());
+				pstmt.setString(17, field.getIndexof());
+				pstmt.setString(18, field.getIsbkquery());
+				pstmt.setString(19, field.getBkindexof());
+				// 执行更新
+				pstmt.executeUpdate();
+				// 查询当前添加 字段  编号
+				pstmt = conn.prepareStatement(
+					"SELECT MAX(SQU) FROM SSP_TREGFIELD"
+					+ " WHERE ENTITYSQU = ? AND NAME = ?");
+				pstmt.setInt(1, field.getEntitySqu());
+				pstmt.setString(2, field.getName());
+				rs = pstmt.executeQuery();
+				rs.next();
+				fieldSqu = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return fieldSqu;
+	}
+
+	/**
+	 * 删除字段
+	 * @param squ
+	*/
+	public void deleteField(int squ) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			pstmt = conn.prepareStatement(
+				"DELETE FROM SSP_TREGFIELD WHERE SQU = ?");
+			pstmt.setInt(1, squ);
+			// 执行更新
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+
+	/**
+	 * 编辑字段
+	 * @param field
+	*/
+	public void editField(RegField field) {
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// SQL
+			StringBuffer sql = new StringBuffer("UPDATE SSP_TREGFIELD"
+				+ " SET REGDATETIME = SYSDATE, NAME = ?,"
+				+ " TITLE = ?,DESCB = ?,ASCONDITION = ? ,"
+				+ " DICTYPESQU=?,DISPLAYPRIO = ?,ISSIMPLEEL = ?"
+				+ " ,ISYJQUERY= ? , INDEXOF = ? ,ISBKQUERY =?,"
+				+ " BKINDEXOF =? WHERE SQU = ?");
+			pstmt = conn.prepareStatement(sql.toString());
+			// 设置参数
+			pstmt.setString(1, field.getName());
+			pstmt.setString(2, field.getTitle());
+			pstmt.setString(3, field.getDescb());
+			pstmt.setInt(4, field.getAsCondition());
+			pstmt.setString(5, field.getDictypesqu());
+			pstmt.setInt(6, field.getDisplayPrio());
+			pstmt.setInt(7, field.getIsSimpleEl());
+			pstmt.setString(8, field.getIsquery());
+			pstmt.setString(9, field.getIndexof());
+			pstmt.setString(10, field.getIsbkquery());
+			pstmt.setString(11, field.getBkindexof());
+			System.out.println(field.getBkindexof());
+			pstmt.setInt(12, field.getSqu());
+			// 执行更新
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+	}
+	/**
+	 * @description 通过实体名获取字段
+	 * @param  entityName  实体名称
+	 * @param  dbsSqu     数据源编号
+	 * @return List
+	 */
+	public List<FieldVo> getFieldByEntityName(String entitySqu ,String entityName,String dbsSqu){
+		// 用于返回结果
+		List<FieldVo> list = new ArrayList<FieldVo>();
+		try {
+			// 获取连接
+			conn = datasource.getConnection();
+			// 查询已经注册 的字段 ------ start
+			// 临时变量 保存已经注册的字段名
+			StringBuffer regField = new StringBuffer("'DEP_ACTION_FLAG','DEP_ACTION_TIME'");
+			pstmt = conn.prepareStatement(
+			"SELECT NAME FROM SSP_TREGFIELD WHERE ENTITYSQU = ?");
+			pstmt.setInt(1, Integer.parseInt(entitySqu));
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				regField.append(",").append(
+					"'" + rs.getString(1) + "'");
+			}
+			// 查询已经注册 的字段 ------ end
+			// 查询数据源 用户、密码、连接URL 和 驱动类  --- start
+			pstmt = conn.prepareStatement(
+					"SELECT DBUSER,DBPWD,DBCLASS,DBURL"
+				+ " FROM SSP_TREGDATASOURCE WHERE squ = ?");
+			pstmt.setInt(1, Integer.parseInt(dbsSqu));
+			rs = pstmt.executeQuery();
+			// 封装数据源
+			RegDataSource rds1 = new RegDataSource();
+			if (rs.next()) {
+				rds1.setDbUser(rs.getString(1));
+				rds1.setDbPwd(rs.getString(2));
+				rds1.setDbClass(rs.getString(3));
+				rds1.setDbUrl(rs.getString(4));
+			}
+			// 查询数据源 用户、密码、连接URL 和 驱动类  --- end
+			// 清空
+			pstmt = null;
+			rs = null;
+			// 通过数据源获取 数据库连接
+			conn1 = getConnByDbs(rds1);
+			// 查询数据库表，视图 sql 语句
+			StringBuffer sql = new StringBuffer(
+				"SELECT COLUMN_NAME,DATA_TYPE,DATA_LENGTH"
+				+ ",DATA_PRECISION,DATA_SCALE,NULLABLE ")
+			.append("FROM USER_TAB_COLUMNS ")
+			.append("WHERE COLUMN_NAME NOT IN (")
+			.append(regField).append(")")
+			.append(" AND TABLE_NAME = ?");
+			pstmt = conn1.prepareStatement(sql.toString());
+			pstmt.setString(1, entityName);
+			rs = pstmt.executeQuery();
+			// 临时变量
+			List<FieldVo> listTemp = new ArrayList<FieldVo>();
+			// 封装结构
+			while (rs.next()) {
+				FieldVo field = new FieldVo();
+				field.setColumnName(rs.getString(1));
+				field.setDataType(rs.getString(2));
+				field.setDataLength(rs.getString(3));
+				field.setDataPrecision(rs.getString(4));
+				field.setDataScale(rs.getString(5));
+				field.setNullable(rs.getString(6));
+				listTemp.add(field);
+			}
+			// 查询列的约束类型
+			//SQL语句
+		StringBuffer sql1 = new StringBuffer(
+		    "SELECT COLUMN_NAME, CONSTRAINT_TYPE ")
+		    .append("FROM USER_CONSTRAINTS T1, USER_CONS_COLUMNS T2 ")
+		    .append("WHERE T1.CONSTRAINT_NAME = T2.CONSTRAINT_NAME ")
+		    .append("AND T1.TABLE_NAME = T2.TABLE_NAME ")
+		    .append("AND T1.CONSTRAINT_TYPE IN ('P','U') ")
+		    .append("AND T1.TABLE_NAME = ?");
+			pstmt = conn1.prepareStatement(sql1.toString());
+			pstmt.setString(1, entityName);
+			rs = pstmt.executeQuery();
+			// map封装 字段名和字段对应的约束类型
+			Map<String, String> map = new HashMap<String, String>();
+			while (rs.next()) {
+				map.put(rs.getString(1), rs.getString(2));
+			}
+			// 设置所有字段的约束类型  没有则设为 null
+			for (FieldVo field : listTemp) {
+				field.setConsType(
+					map.get(field.getColumnName()) + "");
+				list.add(field);
+			}
+		} catch (Exception e) {
+			throw new DaoException(e);
+		} finally {
+			try {
+				// 关闭连接
+				if (rs != null) { rs.close(); }
+				if (pstmt != null) { pstmt.close(); }
+				if (conn != null)  { conn.close(); }
+				if (conn1 != null)  { conn1.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+		return list;
+	}
+    /**
+     *获取字段注释
+     * @param filedName
+     * @param entityName
+     * @param dbsSqu
+     * @return
+     */
+    public String getFieldComments(String filedName, String entityName, String dbsSqu) {
+        Connection conn1 = null;
+        PreparedStatement pstmt1 = null;
+        ResultSet rs1 = null;
+        String comments = null;
+        try {
+            conn1 = datasource.getConnection();
+
+            pstmt1 = conn1.prepareStatement(
+            	"SELECT DBUSER,DBPWD,DBCLASS,DBURL FROM"
+                + " SSP_TREGDATASOURCE WHERE squ = ?");
+            pstmt1.setInt(1, Integer.parseInt(dbsSqu));
+            rs1 = pstmt1.executeQuery();
+            // 封装数据源
+            RegDataSource rds1 = new RegDataSource();
+            if (rs1.next()) {
+                rds1.setDbUser(rs1.getString(1));
+                rds1.setDbPwd(rs1.getString(2));
+                rds1.setDbClass(rs1.getString(3));
+                rds1.setDbUrl(rs1.getString(4));
+            }
+            rs1.close();
+            pstmt1.close();
+            conn1.close();
+
+            conn1 = getConnByDbs(rds1);
+            pstmt1 = conn1.prepareStatement(
+            	"SELECT COMMENTS FROM USER_COL_COMMENTS WHERE"
+            	+ " TABLE_NAME=? AND COLUMN_NAME=?");
+            pstmt1.setString(1, entityName);
+            pstmt1.setString(2, filedName);
+            rs1 = pstmt1.executeQuery();
+            while (rs1.next()) {
+                comments = rs1.getString(1);
+            }
+        } catch (Exception e) {
+            throw new DaoException(e);
+        } finally {
+			try {
+				// 关闭连接
+				if (rs1 != null) { rs1.close(); }
+				if (pstmt1 != null) { pstmt1.close(); }
+				if (conn1 != null)  { conn1.close(); }
+			} catch (SQLException e) {
+				throw new DaoException("数据库异常" , e);
+			}
+		}
+
+        return comments == null?"":comments;
+    }
+}

@@ -1,0 +1,345 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildSiteServiceImpl.java
+	* Date:2018-2-6上午11:06:16   
+	***/
+package monitor.projectConfig.service.impl;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import monitor.common.service.BaseServicce;
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.Project_DXInfo;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.projectConfig.dao.impl.ProjectChildSiteDaoImpl;
+import monitor.projectConfig.service.IProjectChildSiteService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ProjectChildSiteServiceImpl
+ * @dateTime: 2018-2-6 上午11:06:16
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildSiteServiceImpl extends BaseServicce implements IProjectChildSiteService {
+	private Connection conn = null;
+	
+	@Resource(name = "projectChildSiteDao")
+	private ProjectChildSiteDaoImpl projectChildSiteDao;
+	
+	/**
+	 * 
+	  * closed:(关闭数据库连接).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午4:55:56
+	  * @param conn void
+	  * @since JDK 1.7
+	 */
+	private void closed(Connection conn){
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	  * addChildSite:新增部位
+	  * @author 黄月
+	  * @date  2018-2-8 上午11:36:01
+	  * @param site
+	  * @throws Exception 
+	*/
+	@Override
+	public void addChildSite(Project_Child_Site site)
+			throws Exception {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectChildSiteDao.addChildSite(conn, site);
+			conn.commit();
+		} catch (Exception e) {
+			conn.rollback();
+			throw new Exception("新增部位失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+	}
+
+	/**
+	  * delChildSite:删除部位
+	  * @author 黄月
+	  * @date  2018-2-8 下午12:10:01
+	  * @param siteSqu
+	  * @throws Exception 
+	*/
+	@Override
+	public String delChildSite(String siteSqu)
+			throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			int count = projectChildSiteDao.selectCountChilSite(conn, siteSqu);
+			
+			if (count > 0 ) {
+				return "hasHolder";
+			} else {
+				projectChildSiteDao.delChildSite(conn, siteSqu);
+			}
+			conn.commit();
+			return "success";
+		} catch (SQLException e) {
+			conn.rollback();
+			throw new SQLException("删除部位失败"+e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	/**
+	  * updateChildSite:修改部位信息
+	  * @author 黄月
+	  * @date  2018-3-14 下午3:56:01
+	  * @param site
+	  * @throws SQLException 
+	*/
+	@Override
+	public void updateChildSite(Project_Child_Site site) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectChildSiteDao.updateChildSite(conn, site);
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw new SQLException("修改部位失败" + e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	@Override
+	public List<Project_Child_Site> listChildSite(String childSqu) throws Exception {
+		try {
+			conn = datasource.getConnection();
+			return projectChildSiteDao.listChildSite(conn, childSqu);
+		} catch (Exception e) {
+			throw new Exception("获取部位列表失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+		
+	}
+
+	/**
+	  * addDxInfo:新增支架
+	  * @author 黄月
+	  * @date  2018-2-8 下午2:59:24
+	  * @param proZj
+	 * @throws SQLException 
+	  * @throws Exception 
+	*/
+	@Override
+	public void addDxInfo(T_Project_Zj proZj) throws SQLException  {
+		try {
+			conn = datasource.getConnection();
+			projectChildSiteDao.addDxInfo(conn, proZj);
+		} catch (SQLException e) {
+			throw new SQLException("添加支架失败"+e.getMessage());
+		}finally{
+			closed(conn);
+		}
+		
+	}
+
+	/**
+	  * delDxInfo:删除支架
+	  * @author 黄月
+	  * @date  2018-2-8 下午4:19:18
+	  * @param proZjSqu
+	  * @throws SQLException 
+	*/
+	@Override
+	public void delDxInfo(String proZjSqu) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectChildSiteDao.delDxInfo(conn, proZjSqu);
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw new SQLException("删除支架失败" + e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	/**
+	  * updateDxInfo:修改支架数量
+	  * @author 黄月
+	  * @date  2018-2-8 下午4:39:11
+	  * @param proZj
+	  * @throws SQLException 
+	*/
+	@Override
+	public void updateDxInfo( T_Project_Zj proZj)
+			throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			conn.setAutoCommit(false);
+			projectChildSiteDao.updateDxInfo(conn, proZj);
+			conn.commit();
+		} catch (SQLException e) {
+			conn.rollback();
+			throw new SQLException("修改支架失败"+e.getMessage());
+		} finally {
+			closed(conn);
+		}
+	}
+
+	/**
+	  * listDxInfoPageInfo:接口实现
+	  * @author 黄月
+	  * @date  2018-2-8 下午12:37:10
+	  * @param pageVo
+	  * @param siteSqu
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public List<Project_DXInfo> listDxInfo(String siteSqu, String type)
+			throws SQLException {
+		List<Project_DXInfo> list = null;
+		try {
+			conn = datasource.getConnection();
+			list = projectChildSiteDao.listDxInfo(conn, siteSqu, type);
+		} catch (SQLException e) {
+			throw new SQLException("获取支架列表失败"+e.getMessage());
+		} finally {
+			closed(conn);
+		}
+		return list;
+	}
+
+	@Override
+	public List<Map<String, String>> countChilSite(String childSqu)
+			throws Exception {
+		List<Map<String, String>>  list = new ArrayList<Map<String, String>>(); 
+		/*Map<String, String> map = new HashMap<String, String>();
+		try {		
+			String countSite = projectChildSiteDao.countChilSite(conn, childSqu);
+			String siteSqu = projectChildSiteDao.selectChilSiteSqu(conn, childSqu);
+			siteSqu = siteSqu.substring(0,siteSqu.length()-1);
+			map.put("countSite", countSite);
+			map.put("siteSqu", siteSqu);
+			list.add(map);
+		} catch (Exception e) {
+			throw new Exception("统计部位个数"+e.getMessage());
+		}finally{
+			closed(conn);
+		}*/
+		
+		return list;
+	}
+
+	@Override
+	public List<Map<String, String>> countSiteDxInfo(String siteSqu)
+			throws Exception {
+		
+		List<Map<String, String>>  list = new ArrayList<Map<String, String>>(); 
+		/*Map<String, String> map = new HashMap<String, String>();
+		try {
+			String countDxInfo = projectChildSiteDao.countChilSite(conn, siteSqu);
+			String dxInfoSqu = projectChildSiteDao.selectChilSiteSqu(conn, siteSqu);
+			siteSqu = siteSqu.substring(0,siteSqu.length()-1);
+			map.put("countDxInfo", countDxInfo);
+			map.put("dxInfoSqu", dxInfoSqu);
+			list.add(map);
+		} catch (Exception e) {
+			throw new Exception("统计支架个数"+e.getMessage());
+		}finally{
+			closed(conn);
+		}*/
+		return list;
+	}
+
+	@Override
+	public String countParts(String siteSqu) throws Exception {	
+		/*try {
+			return projectChildSiteDao.countChilSite(conn, siteSqu);
+		} catch (Exception e) {
+			throw new Exception("统计部件个数"+e.getMessage());
+		}
+		*/
+		return "";
+	}
+
+	/**
+	  * getHolderNotInSite:获取该部位下没有的支架
+	  * @author 黄月
+	  * @date  2018-2-8 下午12:49:00
+	  * @param pageVo
+	  * @return
+	  * @throws SQLException 
+	*/
+	@Override
+	public PageInfoVo getHolderNotInSite(PageInfoVo pageVo, String site_squ) throws SQLException {
+		try {
+			conn = datasource.getConnection();
+			pageVo.setTotal(projectChildSiteDao.countHolderNotInSite(conn, site_squ));
+			
+			pageVo.setStartIndex((pageVo.getPageNumber() - 1) * pageVo.getPageSize() + 1);
+			pageVo.setEndIndex(pageVo.getStartIndex() + pageVo.getPageSize());
+			//项目列表
+			pageVo.setRows(projectChildSiteDao.listHolderNotInSitePageInfo(pageVo, conn, site_squ));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new SQLException(e.getMessage());
+		} finally {
+			closed(conn);
+		}
+		return pageVo;
+	}
+
+	/**
+	 * 查询类别系数
+	  * selectLbxx:接口实现
+	  * @author 唐青
+	  * @date  2018-4-20 上午9:40:51
+	  * @return
+	  * @throws Exception
+	 */
+	@Override
+	public List<Map<String, String>> selectLbxx() throws Exception {
+
+		try {
+			conn = datasource.getConnection();
+			List<Map<String, String>> list = projectChildSiteDao
+					.selectLbxx(conn);
+			return list;
+		} catch (Exception e) {
+			throw new Exception("查询部位信息错误" + e.getMessage());
+		} finally {
+			closed(conn);
+		}
+
+	}
+
+}

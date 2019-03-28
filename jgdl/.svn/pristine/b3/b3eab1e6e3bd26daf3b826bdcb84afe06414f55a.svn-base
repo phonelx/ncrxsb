@@ -1,0 +1,444 @@
+package monitor.user.action;
+
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+
+import monitor.common.BaseAction;
+import monitor.common.util.MD5;
+import monitor.common.util.OnlineUserList;
+import monitor.common.util.StringConvert;
+import monitor.user.bean.dto.ModuleMainDto;
+import monitor.user.bean.dto.UserDto;
+import monitor.user.bean.dto.UserLoginInfoDto;
+import monitor.user.bean.vo.PageInfoVo;
+import monitor.user.bean.vo.UserVo;
+import monitor.user.service.IUserService;
+import net.sf.json.JSONObject;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+/**
+ * <description>
+ * 
+ * @author cl
+ * @datetime 2011-4-18 上午10:53:12
+ */
+@SuppressWarnings("static-access")
+public class UserAction extends BaseAction implements ModelDriven<UserVo> {
+	private UserVo userVo = new UserVo();
+	private PageInfoVo pageVo = new PageInfoVo();
+	private IUserService userService = null;
+
+	private String randomCode = null;
+	private static final long serialVersionUID = -1061613487843960700L;
+
+	public String getRandomCode() {
+		return randomCode;
+	}
+
+	public void setRandomCode(String randomCode) {
+		this.randomCode = randomCode;
+	}
+
+	public PageInfoVo getPageVo() {
+		return pageVo;
+	}
+
+	public void setPageVo(PageInfoVo pageVo) {
+		this.pageVo = pageVo;
+	}
+
+	public IUserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(IUserService userService) {
+		this.userService = userService;
+	}
+
+	public UserVo getModel() {
+		return userVo;
+	}
+
+	public UserVo getUserVo() {
+		return userVo;
+	}
+
+	public void setUserVo(UserVo userVo) {
+		this.userVo = userVo;
+	}
+
+	public String showUserIndex() {
+		return this.SUCCESS;
+	}
+
+	
+	public String index() throws Exception {
+		return "success";
+	}
+
+	public String type() throws Exception {
+		return "success";
+	}
+
+	public String deployed() throws Exception {
+		return "success";
+	}
+
+	public void listUsersInPage() {
+		String query = getRequest().getParameter("query");
+		String pageStr = getRequest().getParameter("page");
+		String rowsStr = getRequest().getParameter("rows");
+		
+		if (pageStr != null || !"".equals(pageStr)) {
+			this.pageVo.setPageNumber(Integer.parseInt(pageStr));
+		}
+		if (rowsStr != null) {
+			this.pageVo.setPageSize(Integer.parseInt(rowsStr));
+		}
+		this.pageVo.setQuery(query);
+		this.pageVo = userService.listUsersInPage(pageVo);
+
+		JSONObject jsonObj = JSONObject.fromObject(pageVo);
+		jsonObj.put("pageSize", rowsStr);
+		jsonObj.put("pageNumber", pageStr);
+		//System.out.println("JSON:" + jsonObj.toString());
+		writeJsonBack(jsonObj.toString());
+	}
+
+	public static String getIpAddr(HttpServletRequest request) {
+		String ip = request.getRemoteAddr();
+		return ip;
+	}
+
+	/**
+	  * addUser:(新增用户).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @dateTime: 2017-11-10 下午3:08:21 void
+	  * @since JDK 1.7
+	*/
+	public void addUser() {
+		//userVo.setIp(getIpAddr());
+	
+		String result = userService.addUser(new UserDto(userVo));
+		writeJsonBack(result);
+		this.setOperationDescb("用户名称:" + userVo.getUserTitle() + ";登录帐户:"
+				+ userVo.getUsername());
+	}
+
+	/**
+	  * editUser:(修改用户).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @dateTime: 2017-11-10 下午3:25:56 void
+	  * @since JDK 1.7
+	*/
+	public void editUser() {
+		String result = userService.editUser(new UserDto(userVo));
+		writeJsonBack(getText(result));
+		this.setOperationDescb("用户名称:" + userVo.getUserTitle() + ";登录帐户:"
+				+ userVo.getUsername());
+	}
+
+	public void deleteUser() {
+		String result = userService.deleteUser(new UserDto(userVo));
+		writeJsonBack(getText(result));
+
+		this.setOperationDescb("用户名称:" + userVo.getUserTitle() + ";登录帐户:"
+				+ userVo.getUsername());
+	}
+	/**
+	 * 注册
+	 * @return
+	 */
+	public String register()
+	{
+		String msg = "";
+		String rtType = "success";
+		UserDto  user = new UserDto();
+		user.setUsername(getRequest().getParameter("name"));
+		user.setPwd(getRequest().getParameter("pwd"));
+		user.setUserTitle(getRequest().getParameter("usertitle"));
+		user.setSfzhm(getRequest().getParameter("sfzhm"));
+		user.setRepeatPwd(getRequest().getParameter("cpwd"));
+		user.setRoleSqu(43);
+		user.setDescb("测试用户");
+		user.setIsDefault(1);
+		user.setIsEnabled(1);
+		/*user.setIp("127.0.0.1");*/
+		msg = userService.addUser(user);
+		if (msg.equals("pwdNotEqual"))
+		{
+			msg="两次输入的密码不一致！";
+			rtType = "error";
+		}else if (msg.equals("nameHasExist"))
+		{
+			msg="此登录名已存在！";
+			rtType = "error";
+		}
+		getRequest().setAttribute("msg", msg);
+		return rtType;
+	}
+
+	/**
+	  * login:(登录).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-11-10 下午3:38:22
+	  * @return String
+	  * @since JDK 1.7
+	*/
+	public String login() {
+		UserDto _userDto = userService.login(new UserDto(userVo));
+		// 0:登录 1：查询 2：新增 3：修改 4：删除
+		String loginType = "0";
+		// 0：失败 1：成功
+		String isLoginSuccess = "0";
+		if (_userDto != null) {
+			// 验证有效日期
+			if (_userDto.getRoleSqu() != 43) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+				Date d;
+				boolean flag = false;
+				Date dt = new Date();
+				try {
+					d = sdf.parse(_userDto.getValidTime());
+					flag = d.before(dt);// d小于dt时返回true
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				if (!flag) {
+					isLoginSuccess = "1";
+				} else {
+					System.out.print("有效期已过");
+					return "notice";
+				}
+			} else {
+				isLoginSuccess = "1";
+			}
+
+			// 判断用户是否被禁用
+			if (_userDto.getIsEnabled() == 0) {
+				getRequest().setAttribute("info", getText("userDisabled"));
+				return "notice";
+			}
+			
+			OnlineUserList userList = OnlineUserList.getInstance();
+			// 当前在线用户中已经登录了该用户则退出登录
+			if (userList.hasLogin(_userDto.getUsername())) {
+				getRequest().setAttribute("info", getText("userHasLogin"));
+				return "notice";
+			}
+
+			// 记录登录信息
+			UserLoginInfoDto userLoginDto = new UserLoginInfoDto();
+
+			userLoginDto.setUser_id(_userDto.getSfzhm());
+			userLoginDto.setUserInfo(_userDto.getUsername());
+			userLoginDto.setLoginIp(getIpAddr());
+			userLoginDto.setLoginDatetime(StringConvert
+					.getTime("yyyy-MM-dd HH:mm:ss"));
+			userLoginDto.setOperate_type(loginType);
+			userLoginDto.setOperate_result(isLoginSuccess);
+			int loginInfoSqu = userService.recordUserLogin(userLoginDto);
+			userLoginDto.setSqu(loginInfoSqu);
+			this.setUserLoginInfoDto(userLoginDto);
+			this.setUserDto(_userDto);
+			// 保存登录用户信息
+			changeOnLineUserList(userLoginDto, true);
+
+			getSession().setAttribute("user", _userDto);
+			getSession().setAttribute("username", _userDto.getUsername());
+			getSession().setAttribute("userLoginDto", userLoginDto);
+			getSession().setAttribute("userTitle", _userDto.getUserTitle());
+			getSession().setAttribute("userAdmin",
+					_userDto.getRoleEntity().getIsAdmin());
+			getlistModules();
+			// 1管理员登陆状态
+			if (_userDto.getRoleSqu() == 1) {
+				getSession().setAttribute("userAdmin",
+						"U_" + _userDto.getRoleSqu());
+			}
+			System.out.println(_userDto.getUsername() + " has login.("
+					+ userLoginDto.getLoginIp() + ")");
+
+			// 播放声音提示
+		} else {
+			getRequest().setAttribute("info", getText("userOrPwdError"));
+
+			return "notice";
+		}
+		System.out.println("是否是管理员："+_userDto.getRoleEntity().getIsAdmin());
+		HttpServletRequest request = ServletActionContext.getRequest();
+		HttpServletResponse response = ServletActionContext.getResponse();
+		UserDto _user = (UserDto)request.getSession().getAttribute("user");
+		Cookie cookie =new Cookie("username", _user.getUsername());
+		cookie.setMaxAge(Integer.MAX_VALUE);
+		response.addCookie(cookie);
+		// 1管理员登陆状态
+		if (_userDto.getRoleEntity().getIsAdmin() == 1) {
+			//跳转后台页面
+			return "backStage";
+		} else {
+			//跳转手机页面
+			return this.SUCCESS;
+		}
+	}
+
+	public String logout() {
+		UserDto _user = (UserDto) getSession().getAttribute("user");
+		UserLoginInfoDto _userLoginDto = (UserLoginInfoDto) getSession()
+				.getAttribute("userLoginDto");
+		// 在线用户中删除该已登录用户
+		if (_user == null && _userLoginDto == null) {
+			return this.LOGIN;
+		}
+
+		_userLoginDto.setLogoutDatetime(StringConvert
+				.getTime("yyyy-MM-dd HH:mm:ss"));
+		userService.recordUserLogout(_userLoginDto);// 记录用户退出信息，本操作只修改退出时间
+
+		getSession().removeAttribute("user");
+		System.out.println(_user.getUsername() + " has logout.("
+				+ _userLoginDto.getLoginIp() + ")");
+		getSession().removeAttribute("userLoginDto");
+
+		// 将登录信息从在线用户列表中移除
+		changeOnLineUserList(_userLoginDto, false);
+		return this.SUCCESS;
+	}
+	
+	//注销
+	public String goloutout(){
+		HttpServletRequest request = ServletActionContext.getRequest();
+		request.getSession().removeAttribute("user");
+		request.getSession().removeAttribute("userLoginDto");
+		getRequest().getSession().invalidate();
+		return SUCCESS;
+	}
+
+	public String listModules() {
+		UserDto _userDto = (UserDto) getSession().getAttribute("user");
+
+		// 读取功能菜单
+		List<ModuleMainDto> moduleMainDtoList = null;
+		if (_userDto != null) {
+			moduleMainDtoList = userService.listModules(_userDto);
+		}
+		
+		// 过滤掉没有子菜单的主菜单
+		List<ModuleMainDto> filterdMainDtoList = new ArrayList<ModuleMainDto>();
+		for (ModuleMainDto mainDto : moduleMainDtoList) {
+			if (mainDto.getSubModuleList().size() != 0) {
+				/*
+				 * System.out.println(mainDto.getSubModuleList()+"---"+"外部");
+				 * for(ModuleSubDto md : mainDto.getSubModuleList()){
+				 * System.out.println(md.getName()+"--"+md.getSqu()); }
+				 */
+
+				filterdMainDtoList.add(mainDto);
+			}
+		}
+
+		// getRequest().setAttribute("moduleMainDtoList", filterdMainDtoList);
+		getSession().setAttribute("moduleMainDtoList", filterdMainDtoList);
+		// }
+		return this.SUCCESS;
+	}
+
+	public void getlistModules() {
+		UserDto _userDto = (UserDto) getSession().getAttribute("user");
+
+		// 读取功能菜单
+		List<ModuleMainDto> moduleMainDtoList = null;
+		if (_userDto != null) {
+			moduleMainDtoList = userService.listModules(_userDto);
+		}
+		// 过滤掉没有子菜单的主菜单
+		List<ModuleMainDto> filterdMainDtoList = new ArrayList<ModuleMainDto>();
+		for (ModuleMainDto mainDto : moduleMainDtoList) {
+			if (mainDto.getSubModuleList().size() != 0) {
+				/*
+				 * System.out.println(mainDto.getSubModuleList()+"---"+"外部");
+				 * for(ModuleSubDto md : mainDto.getSubModuleList()){
+				 * System.out.println(md.getName()+"--"+md.getSqu()); }
+				 */
+
+				filterdMainDtoList.add(mainDto);
+			}
+		}
+
+		// getRequest().setAttribute("moduleMainDtoList", filterdMainDtoList);
+		getSession().setAttribute("moduleMainDtoList", filterdMainDtoList);
+		// }
+	}
+
+	
+
+	/**
+	 * 获取当前请求的ip地址
+	 * 
+	 * @author: cl
+	 * @param
+	 * @return String
+	 */
+	private String getIpAddr() {
+		String ip = getRequest().getHeader("x-forwarded-for");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = getRequest().getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = getRequest().getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = getRequest().getRemoteAddr();
+		}
+		return ip;
+	}
+
+	/*
+	 * 登陆到其他SSP系统
+	 */
+	public String loginOther() {
+		// 判断是否合法的远程登录
+		String code = getRequest().getParameter("code"); // 远程登录密钥
+		String key = getRequest().getParameter("id"); // 远程登录随机加密密钥
+		if (!(MD5.getMd5("remoteLoginFlag" + key)).equals(code)) {// 不是合法的远程登录
+			return this.LOGIN;
+		}
+
+		// 查询用户信息
+		UserDto _userDto = userService.getUser();
+
+		// 记录登录信息
+		UserLoginInfoDto userLoginDto = new UserLoginInfoDto();
+		userLoginDto.setUserInfo(_userDto.getUsername());
+		userLoginDto.setLoginIp(getIpAddr());
+		userLoginDto.setLoginDatetime(StringConvert
+				.getTime("yyyy-MM-dd HH:mm:ss"));
+		int loginInfoSqu = userService.recordUserLogin(userLoginDto);
+		userLoginDto.setSqu(loginInfoSqu);
+
+		// 保存登录用户信息
+		changeOnLineUserList(userLoginDto, true);
+
+		getSession().setAttribute("user", _userDto);
+		getSession().setAttribute("username", _userDto.getUsername());
+		getSession().setAttribute("userLoginDto", userLoginDto);
+
+		System.out.println("远程用户 has login.(---)");
+		return this.SUCCESS;
+	}
+
+}

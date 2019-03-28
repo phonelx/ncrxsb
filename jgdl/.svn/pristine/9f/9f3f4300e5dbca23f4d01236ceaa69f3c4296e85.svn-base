@@ -1,0 +1,91 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="goodsHouse2" extends="monitor-struts-default">
+		<!-- 跳转到应用管理页面 -->
+		<action name="goPartsIndex" class="partsAction" method="goPartsIndex">
+			<result name="success">pages/goodsHouse/partsTree.jsp</result>
+		</action>
+		<!-- 加载加载部件目录 -->
+		<action name="getPatrsMenu" class="partsAction" method="getPatrsMenu">
+		</action>
+		<!-- 子目录列表 -->
+		<action name="getChildMenu" class="partsAction" method="getChildMenu">
+		</action>
+		<!-- 修改子目 -->
+		<action name="editChildMenu" class="partsAction" method="editChildMenu">
+		</action>
+		<!--添加子目  -->
+		<action name="addChildMenu" class="partsAction" method="addChildMenu">
+		</action>
+		<!--  删除子目-->
+		<action name="delChildMenu" class="partsAction" method="delChildMenu">
+		</action>
+		<!--下载模板  -->
+		<action name="dowloadPartsMB" class="partsAction" method="dowloadPartsMB">
+		</action>
+		<!-- 批量导入部件目录 -->
+		<action name="addBatchParts" class="partsAction" method="addBatchParts">
+		</action>
+		<!--  添加管道类型-->
+		<action name="addGdlx" class="partsAction" method="addGdlx">
+		</action>
+		<!-- 添加安装方式 -->
+		<action name="addAzlx" class="partsAction" method="addAzlx">
+		</action>
+		
+		<!--  分页查询管道类型-->
+		<action name="queryGdlx" class="partsAction" method="queryGdlx">
+		</action>
+		<!-- 分页查询安装方式 -->
+		<action name="queryAzlx" class="partsAction" method="queryAzlx">
+		</action>
+		
+		<!--  查询管道类型-->
+		<action name="queryGdlxMenu" class="partsAction" method="queryGdlxMenu">
+		</action>
+		<!-- 查询安装方式 -->
+		<action name="queryAzlxMenu" class="partsAction" method="queryAzlxMenu">
+		</action>
+		
+		<!-- 修改管道类型 -->
+		<action name="editGdlx" class="partsAction" method="editGdlx">
+		</action>
+		
+		<!--  修改安装方式-->
+		<action name="editAzlx" class="partsAction" method="editAzlx">
+		</action>
+		<!-- 删除管道类型-->
+		<action name="deleteGdlx" class="partsAction" method="deleteGdlx">
+		</action>
+		<!-- 下载管道类型模板 -->
+		<action name="dowloadGDLXMB" class="partsAction" method="dowloadGDLXMB">
+		</action>
+		<!-- 下载安装方式模板 -->
+		<action name="dowloadAZFSMB" class="partsAction" method="dowloadAZFSMB">
+		</action>
+		<!-- 批量导入管道类型 -->
+		<action name="addBatchGdlx" class="partsAction" method="addBatchGdlx">
+		</action>
+		<!-- 批量导入安装方式 -->
+		<action name="addBatchAzfs" class="partsAction" method="addBatchAzfs">
+		</action>
+		
+		<!-- 支架类型目录 -->
+		<action name="goZjLxIndex" class="partsAction" method="goZjLxIndex">
+			<result name="success">pages/goodsHouse/partsTree.jsp</result>
+		</action>
+		<action name="getZjLxMenu" class="partsAction" method="getZjLxMenu">
+		</action>
+		<!-- 地震影响目录 -->
+		<action name="getDzMenu" class="partsAction" method="getDzMenu">
+		</action>
+		<!-- 所属系统目录 -->
+		<action name="getSsXtMenu" class="partsAction" method="getSsXtMenu">
+		</action>
+		
+		<!-- 获取参数配置对象 -->
+		<action name="getParamConfig" class= "partsAction" method="getParamConfig"/>
+	</package>
+</struts>

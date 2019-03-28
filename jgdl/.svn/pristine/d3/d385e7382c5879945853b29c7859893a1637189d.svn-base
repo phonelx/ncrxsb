@@ -1,0 +1,467 @@
+
+/**
+ * 2017-11-7下午6:24:19
+ * TODO
+ */
+var _projectSqu = "";
+
+$().ready(function(){
+	loadTree(1);
+	
+	//数量减少
+    $(".quantity-remove").live("click",function(e){  
+        var elemID = $(this).parent().attr("title");  
+        //var count = $("." + elemID + "inp_hide").val(); 
+        var count = parseInt($(this).parent().find("." + elemID + "inp").val());
+        if (count > 1) {
+        	$("." + elemID + "inp").val(count - 1);  
+        }
+    }); 
+    
+    //数量增加
+    $(".quantity-add").live("click", function(){  
+        var elemID = $(this).parent().attr("title");  
+        var count = parseInt($(this).parent().find("."+elemID+"inp").val());  
+        $(this).parent().find("." + elemID + "inp").val(count + 1);  
+    }); 
+    
+});
+
+function editNum(index){
+	//当前支架数量
+	var count = $(index).parent().parent().parent().find(".hideInp").val();
+	//输入框赋值
+	$(index).parent().parent().parent().find(".quantity-count").val(count);
+	$(index).parent().parent().parent().find(".editAddNum").show();
+	$(index).parent().parent().parent().find(".buttonTeam").hide();
+}
+
+function cancelNum(index){
+	$(index).parent().parent().parent().find(".editAddNum").hide();
+	$(index).parent().parent().parent().find(".buttonTeam").show();
+}
+
+/**
+  * deleteHolder:(删除支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-17 下午3:13:49
+  * @param: @param row
+  * @return: void
+ */
+function deleteHolder(row){
+	Modal.confirm({msg : "确认删除当前支架?"}).on(function(e){
+		if (e) {
+			$.ajax({
+				type : "post",
+				url : "deleteHolderOfProjectBySqu.do",
+				timeout : 1321231232131213123,
+				data : {
+					squ : row.squ,
+				},
+				success : function(data) {
+					//加载当前支架列表
+					loadHolderOfProject();
+				},
+				error : function() {
+					Modal.alert({
+						msg : '删除支架出错！',
+						title : '消息提示',
+						btnok : '确定',
+						btncl : '取消'
+					});
+				}
+			});
+		}
+	});
+}
+
+/**
+  * project_link:(项目树链接，加载支架列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-7 上午9:45:45
+  * @param: @param index
+  * @return: void
+ */
+function project_link(index){
+	//显示工程信息div
+	$('#holderBox').show();
+	//获取工程信息
+	showProjectMsg(index);
+	
+	console.log(index);
+	_projectSqu = index.squ;
+	//加载支架列表
+	loadHolderOfProject();
+}
+
+/**
+  * showProjectMsg:(获取并显示工程信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-7 下午6:31:31
+  * @param: @param projectObject
+  * @return: void
+ */
+function showProjectMsg(projectObject){
+	$('#projectName').html("工程名称：" + projectObject.gcmc);
+	var html1 = "";
+/*	html1 += "<small>工程地址 ：<h4>" + projectObject.gcdz + "</h4></small>";
+	html1 += "<small>建筑类别 ：<h4>" + projectObject.jzlb + "</h4></small>";
+	html1 += "<small>建筑高度 ：<h4>" + projectObject.jzgd + "</h4></small>";
+	html1 += "<small>地震类型 ：<h4>" + projectObject.dzlx + "</h4></small>";
+	html1 += "<small>地震加速度 ：<h4>" + projectObject.dzjsd + "</h4></small>";
+	html1 += "<small>地区设防烈度 ：<h4>" + projectObject.dqsfld + "</h4></small>";*/
+	
+	html1 += '<form class="form-horizontal"><fieldset>';
+	html1 += '<div class="control-group"><label class="control-label">工程地址：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.gcdz + '</h4></div>';
+	html1 += '</div>';
+	html1 += '<div class="control-group"><label class="control-label">建筑类别：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.jzlb + '</h4></div>';
+	html1 += '</div>';
+	html1 += '<div class="control-group"><label class="control-label">建筑高度：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.jzgd + '</h4></div>';
+	html1 += '</div>';
+	html1 += '<div class="control-group"><label class="control-label">地震类型 ：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.dzlx + '</h4></div>';
+	html1 += '</div>';
+	html1 += '<div class="control-group"><label class="control-label">地震加速度：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.dzjsd + '</h4></div>';
+	html1 += '</div>';
+	html1 += '<div class="control-group"><label class="control-label">地区设防烈度：</label>';
+	html1 += '<div class="controls"><h4>' + projectObject.dqsfld + '</h4></div>';
+	html1 += '</div>';
+	html1 += '</fieldset></form>';
+	$('#projectMsg').html(html1);
+}
+
+/**
+  * showAddModal:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午6:38:39
+  * @param: 
+  * @return: void
+ */
+function showAddModal(){
+	$('#holderModal').modal();
+	loadHolderList();
+}
+
+/**
+  * loadHolderList:(分页加载支架信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午7:25:04
+  * @param: 
+  * @return: void
+ */
+function loadHolderList(){
+	$("#holderAll").uiGrid({ 
+		url : "getHolderList.do",
+		rowNum : 5,//每页显示记录数
+		columns : [ {
+			field : 'zp',
+			title : '照片',
+			width : 60,
+			formatter : function(value, rec) {
+					return '<img src="http://localhost:8080/cs/aaa.jpg" width="60px" height="60px">';
+			}
+		},{
+			field : 'dxmc',
+			title : '单项名称',
+			width : 800,
+			formatter : function(value, rec) {
+				return '<p><h4>支架名:' + rec.dxmc + '&nbsp;&nbsp;<small>支架形式:'+rec.zjxs+'</small></h4></p><span><b>管道类型:</b>'
+				+rec.gdlx+'</span>&nbsp;&nbsp;&nbsp;<span><b>安装方式:</b>'+rec.azfs+'</span>';
+		}
+		}],
+		divId : "#holderAll",
+		showPage : 5,//显示
+		toAdd : true,
+		toAddEvent : toAdd,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		}
+	});
+}
+
+/**
+  * toAdd:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午9:11:27
+  * @param: 
+  * @return: void
+ */
+function toAdd(row){
+	$.ajax({
+		type : "post",
+		url : "addHolderToProject.do",
+		timeout : 1321231232131213123,
+		dataType : 'text',
+		data : {
+			projectSqu : _projectSqu,
+			holderSqu : row.dxsqu
+		},
+		success : function(data) {
+			if (data == "success") {
+				Modal.alert({
+					title : "提示",
+					msg : "添加成功！",
+					btnok : "确定"
+				});
+				loadHolderOfProject();
+				loadHolderList();
+			} else {
+				Modal.alert({
+					msg : '执行添加操作异常！',
+					title : '消息提示',
+					btnok : '确定',
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : 'ajax执行添加操作错误！',
+				title : '消息提示',
+				btnok : '确定',
+			});
+		}
+	});
+}
+
+
+var records = 0;
+var currentPage = 0;
+var total = 0;
+var pageShowPage = 5;// 显示多少个人分页标签
+var pageRowNum1 = 10;// 每页显示记录数
+var pager = 1;
+function loadTree(pager) {
+	var html = "";
+	$.ajax({
+		type : 'post',
+		url : 'selectProjectPageInfo.do',
+		dataType : 'json',
+		async : false,
+		timeout : 1321231232131213123,
+		data : {
+			rows : pageRowNum1,
+			page : pager,
+			searchWord : ""
+		},
+		success : function(data) {
+			if (data.rows.length != 0) {
+				aData = data.rows;
+			}
+			records = data.total;
+			currentPage = data.pageNumber;
+			total = data.pageCnt;
+			pageRowNum1 = data.pageSize;
+			if (data.rows.length == 0) {
+				html += "<li class='border-bottom'>";
+				html += "<a href='javascript:void(0);'>未查询到项目列表</a>";
+				html += "</li>";
+			}
+			
+			for ( var i = 0; i < data.rows.length; i++) {
+				html += "<li class='border-bottom'>";
+				html += "<a href='javascript:void(0);' onclick='project_link(" + JSON.stringify(data.rows[i]) + ");' id='" + data.rows[i].squ + "' title='" + data.rows[i].gcmc + "'>" + data.rows[i].gcmc + "</a>";
+				html += "</li>";
+			}
+			$("#tree").html(html);
+			pageDiv1(records, total, currentPage);
+		},error : function() {
+				Modal.alert({
+					msg : '功能菜单加载出错！',
+					title : '消息提示',
+					btnok : '确定',
+					btncl : '取消'
+				});
+			}
+		});
+}
+
+
+function pageDiv1(records, total, currentPage) {
+	var pageTotal = total;// 总共多少页
+	var pageCurrentPage = currentPage;// 当前页
+	var pageRecords = records;// 总记录数
+	var countt = "";
+	var outstr = "";
+	pageTotal = parseInt(pageRecords / pageRowNum1);
+	if (pageRecords % pageRowNum1 > 0) {
+		pageTotal = pageTotal + 1;
+	}
+	if (pageTotal <= pageShowPage) {
+		for ( var count = 1; count <= pageTotal; count++) {
+			if (count < 10) {
+				countt = "0" + count + "";
+			} else {
+				countt = "" + count + "";
+			}
+			if (count != pageCurrentPage) {
+				outstr = outstr + "<li tag='" + count
+						+ "' class='pageCk'><a href='javascript:void(0);'>"
+						+ countt + "</a></li>";
+			} else {
+				outstr = outstr
+						+ "<li class='active'><a href='javascript:void(0);'>"
+						+ countt + "</a></li>";
+			}
+		}
+	}
+	if (pageTotal > pageShowPage) {
+		if (parseInt((pageCurrentPage - 1) / pageShowPage) == 0) {
+			outstr = outstr + "<li><a><<</a></li> ";
+			for ( var count = 1; count <= pageShowPage; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr
+							+ "<li tag='"
+							+ count
+							+ "' class='pageCk'><a  href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+
+				} else {
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr
+					+ "<li tag='"
+					+ count
+					+ "' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+		} else if (parseInt((pageCurrentPage - 1) / pageShowPage) == parseInt(pageTotal
+				/ pageShowPage)) {
+			outstr = outstr
+					+ "<li tag='"
+					+ (parseInt((pageCurrentPage - 1) / pageShowPage) * pageShowPage)
+					+ "' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+			for ( var count = parseInt(pageTotal / pageShowPage) * pageShowPage
+					+ 1; count <= pageTotal; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr + "<li  tag='" + count
+							+ "' class='pageCk'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				} else {
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+		} else {
+			outstr = outstr
+					+ "<li tag='"
+					+ (parseInt((pageCurrentPage - 1) / pageShowPage) * pageShowPage)
+					+ "' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+			for ( var count = parseInt((pageCurrentPage - 1) / pageShowPage)
+					* pageShowPage + 1; count <= parseInt((pageCurrentPage - 1)
+					/ pageShowPage)
+					* pageShowPage + pageShowPage; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr + "<li tag='" + count
+							+ "' class='pageCk'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				} else {
+
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr
+					+ "<li  tag='"
+					+ count
+					+ "' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+		}
+	}
+	// 共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum
+	// +"个
+	$("#pageInfo").html(
+			"<div class='pagination pagination-centered'  align='right'><ul>"
+					+ outstr + "<a href='javascript:void(0);'>共" + pageTotal
+					+ "页/" + pageRecords + "条数据</a></li></ul></div>");
+	outstr = "";
+	$(".pageCk").unbind();
+	$(".pageCk").bind('click', function() {
+		loadTree($(this).attr("tag"));
+	});
+	$(".pagePk").unbind();
+	$(".pagePk").bind('click', function() {
+		loadTree($(this).attr("tag"));
+	});
+}
+
+/**
+ * loadHolderOfProject:(加载项目下的支架列表)
+ * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+ * @author: 黄月
+ * @dateTime: 2017-10-23 下午7:30:04
+ * @param: 
+ * @return: void
+*/
+function loadHolderOfProject() {
+	$().projectGrid({
+		url : 'loadHolderOfProjectPageInfo.do',
+		data : {
+			squ : _projectSqu,
+		}
+	});
+}
+
+/**
+  * updateHolderNum:(执行修改支架数量)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-11-20 下午12:11:20
+  * @param: @param index
+  * @param: @param row
+  * @return: void
+ */
+function updateHolderNum(index, row){
+	var count = $(index).parent().parent().find(".quantity-count").val();
+	$.ajax({
+		type : "post",
+		url : "updateHolderNumOfProject.do",
+		timeout : 1321231232131213123,
+		data : {
+			num : count,
+			holderSqu : row.dxsqu,
+			projectSqu : _projectSqu
+		},
+		success : function(data) {
+			//加载当前支架列表
+			loadHolderOfProject();
+		},
+		error : function() {
+			Modal.alert({
+				msg : '修改支架出错！',
+				title : '消息提示',
+				btnok : '确定',
+				btncl : '取消'
+			});
+		}
+	});
+}

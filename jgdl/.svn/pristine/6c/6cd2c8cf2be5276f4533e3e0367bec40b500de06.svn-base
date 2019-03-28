@@ -1,0 +1,57 @@
+package monitor.dispatched.service;
+
+import java.util.List;
+import java.util.Vector;
+
+import monitor.dispatched.bean.entity.AddApplicationEntity;
+import monitor.dispatched.bean.entity.SSPTuserinfo;
+import monitor.user.bean.dto.UserDto;
+
+public interface AppApplicationService{
+    
+    
+    
+    public List<SSPTuserinfo> listAdminRole();
+    
+    
+    
+    /**
+     * findByIDCardVector:(通过身份证集合查询在逃和重点人员的显示信息).<br/>
+     * @author: 张家俊
+     * @dateTime: 2017-5-3 下午5:22:23
+     * @param: @param v
+     * @param: @return
+     * @return: Vector<AddApplicationEntity>
+     * @since JDK 1.6
+    */
+    public Vector<AddApplicationEntity> findIDCardVector(Vector<String> v,String rylx);
+    
+    /**
+     * 
+      * insertRecordToBKRY:(获取主键值，用户主键值，审批人主键信息添加新的人员布控记录).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-3 下午5:22:23
+      * @param: @param v
+      * @param: @return
+      * @return: Vector<AddApplicationEntity>
+      * @throws
+      * @since JDK 1.6
+     */
+    public void insertRecordToBKRY(Vector<String> v,UserDto _user,String sprsqu);
+    
+    public AddApplicationEntity singleFind(String idcard);
+    
+    public int addTransitionData(AddApplicationEntity entity,String rylx,UserDto user);
+    
+    public Vector<AddApplicationEntity> findByIDCardVectors(List<String> v,UserDto user);
+    
+    public int deleteTransitionData(UserDto user);
+    
+    public int deleteRecordById(String id,String rylx);
+    
+    public String checkIsBkedBy(String id,UserDto _user);
+    
+    public String checkExistInPage(String id,UserDto user);
+    
+    public Vector<AddApplicationEntity> reloadDataBySqu(UserDto user);
+}

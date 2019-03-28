@@ -1,0 +1,19 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="registry-field" extends="monitor-struts-default" >
+		<!-- 列表显示已经注册的 字段 -->
+		<action name="doGetRegistedField" class="fieldAction" method="listRegistedField"/>
+		<!-- 列表显示已经注册的 字段 -->
+		<action name="doGetFields" class="fieldAction" method="listFields"/>
+		<!-- 注册 字段 -->
+		<action name="doAddField" class="fieldAction" method="addField"/>
+		<!-- 删除 字段 -->
+		<action name="doDelField" class="fieldAction" method="deleteField"/>
+		<!-- 编辑 字段 -->
+		<action name="doEditField" class="fieldAction" method="editField"/>
+        <!--获取字段注释 -->
+        <action name="getFieldComments" class="fieldAction" method="getFieldComments"/>
+	</package>	
+</struts>

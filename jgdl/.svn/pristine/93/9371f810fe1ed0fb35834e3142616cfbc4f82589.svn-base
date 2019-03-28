@@ -1,0 +1,21 @@
+package monitor.registry.service;
+
+import java.util.List;
+
+import net.sf.json.JSONArray;
+
+import monitor.registry.bean.entity.RegEntity;
+
+public interface IEntityService {
+	public List getDbsObject(String squ,String lvl) ;
+	public List getEntityByDbs(String dbsSqu,String dbsName,int[] page);
+	public List getRegistedObject(String dbsSqu);
+	public int addEntity(RegEntity entity) ;
+	public boolean deleteEntity(int squ);
+	public void editEntity(RegEntity entity) ;
+	public List getAllType(long pid);
+	//查询所有数据字典类型
+	public List listAllDicType() ;
+    public String getEntityComments(String entityName,String dbsSqu);
+    public JSONArray ListRegEntity(String dbsSqu);
+}

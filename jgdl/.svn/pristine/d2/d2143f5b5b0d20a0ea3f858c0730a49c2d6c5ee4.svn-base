@@ -1,0 +1,34 @@
+package monitor.manage.bean.dto;
+
+public class SfzQueryDto {
+	private String title; //预警标题
+	private String ckid;  //常口id
+	private String zjhm;  //证件号码
+	private String id;	  //预警id
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getCkid() {
+		return ckid;
+	}
+	public void setCkid(String ckid) {
+		this.ckid = ckid;
+	}
+	public String getZjhm() {
+		return zjhm;
+	}
+	public void setZjhm(String zjhm) {
+		this.zjhm = zjhm;
+	}
+	
+}

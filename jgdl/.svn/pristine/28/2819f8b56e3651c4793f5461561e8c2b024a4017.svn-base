@@ -1,0 +1,24 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="registry-dbs" extends="monitor-struts-default" >
+		<!-- 注册数据源 -->
+		<action name="doRegDataSource" class="dataSourceAction" method="addDataSource"/>
+		<!-- 显示 数据源列表 -->
+		<action name="listDataSource" class="dataSourceAction" method="listDataSource"/>
+		<!-- 删除 指定数据源 -->
+		<action name="doDeleteDbs" class="dataSourceAction" method="deleteDbs"/>
+		<!-- 编辑 指定数据源 -->
+		<action name="doEditDbs" class="dataSourceAction" method="editDbs"/>
+		<!-- 测试数据源是否可用 -->
+		<action name="doTestConn" class="dataSourceAction" method="testConn"/>
+		<!-- 测试数据源名称是否重名 -->
+		<action name="doCheckDbsName" class="dataSourceAction" method="checkDbsName"/>
+		<!-- 跳转到数据源管理页面 -->
+		<action name="gotoDbsMgr" class="dataSourceAction" method="gotoDbsMgr">
+			<result name="success">/pages/registry/dataSource.jsp</result>
+		</action>
+		
+	</package>	
+</struts>

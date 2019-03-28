@@ -1,0 +1,798 @@
+
+function parentload1(obj){
+	
+	var ssmc = $(obj).attr("ssmc")
+
+	var squ = $(obj).attr("id");
+	var zbm = $(obj).attr("title");
+
+	$("#jdlx").html(zbm);
+	$("#fla").val( $(obj).attr("flag"))
+		
+	loadMenu1(obj);
+	
+}
+
+var menuSqu = null;
+function loadMenu1(obj){
+	
+	menuSqu=$(obj).attr("id");
+
+	var flag = $(obj).attr("flag");
+	var isEnd = $(obj).attr("isEnd");
+	$("#ifEnd").val(isEnd);
+	if(flag==1){
+		$.ajax({
+			type : 'post',
+			url : 'getPatrsMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			async : false, //是否发送异步请求	
+			data:{
+				squ:menuSqu,
+				
+			},
+			success : function(data) {
+			
+				if(data.list == null || data.list == ""){
+					loadMenu(pager,menuSqu);
+				}
+				var html = "";
+				var list = data.list				
+				if(data.list[0]!=undefined){
+					
+					for(var i = 0;i < data.list.length; i++){
+						
+							html+=" <li class='nav-header hidden-tablet border-bottom' style='display:block; padding-left:15px;'>";
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  ssmc='"+data.list[i].SSMC+"' zbm='"+data.list[i].DMLB+"' flag='1' id='"+data.list[i].SQU+"'  title ='"+data.list[i].LBMC+"' isEnd = "+data.list[i].JD+" onclick='parentload1(this);'>";
+							html+=" <i class='icon-darkgray '></i>&nbsp;"+data.list[i].LBMC+"</a>";
+							if(data.list[i].JD==0){
+								html+=" <ul class='topnav' >";
+								html+=" </ul>";
+							}
+							html+=" </li>";
+					}
+					
+					$(obj).parent().find("ul").html(html);
+					$(obj).next("ul").accordion({
+							accordion:false,
+							speed: 300,
+							closedSign: '[+]',
+							openedSign: '[-]'
+						});
+					//}
+				}
+			},
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+		$(obj).attr("flag","0");
+	}else{
+		$(obj).attr("flag","1");
+	}
+
+}
+
+
+function keyDown(e){ 
+	 var keycode = 0;
+	 keycode = e.keyCode;
+	 if (keycode == 13 ) //回车键是13
+	 {
+		 loadMenu(pager);
+	 }
+}
+
+var obj1 = null;
+function parentload(obj){
+	
+    obj1 = obj;
+    document.getElementById("span9").style.display = "block";
+	showKzzj(obj);
+	showBjList(pager1,1);
+	
+}
+
+var records=0;
+var currentPage=0;
+var total=0;
+var pageShowPage=2;//显示多少个人分页标签
+var pageRowNum=10;//每页显示记录数
+var pager =1;
+//加载左部菜单列表
+function loadMenu(pager,obj){
+	
+	var html="";
+		$.ajax({
+			type : 'post',
+			url : 'getKzzjMenu.do',
+			timeout : 1321231232131213123,
+			dataType:"json",
+			data:{
+				rows:pageRowNum,
+				page:pager,
+				zjlx:obj
+			},
+			success : function(data) {
+				
+				records=data.total;
+				currentPage=data.pageNumber;
+				total = data.pageCnt;
+				pageRowNum=data.pageSize;
+				
+				
+				for(var i = 0;i<data.rows.length;i++){
+						   
+							html+=" <li class='border-bottom' style='display:block; padding-left:0px;'>";
+							html+=" <a href='javascript:void(0);'  style='color:#3f9fd9;' class='ajax-link'  flag='1' id='"+data.rows[i].dxSqu+"'  title ='"+data.rows[i].dxmc+"' onclick='parentload("+JSON.stringify(data.rows[i])+");'>";
+							html+=" &nbsp;"+data.rows[i].dxmc+"</a>";
+							html+="<ul class='topnav'></ul>"
+							html+=" </li>";
+					}
+				    $('#menu').empty();//让列表置空
+					$("#menu").append(html);
+					
+					$(".topnav #menu").accordion({
+						accordion:false,
+						speed: 500,
+						closedSign: '[+]',
+						openedSign: '[-]'
+					});
+					
+				
+					menuPageDiv(records,total,currentPage);
+			},
+			error : function() {
+				Modal.alert(
+				  {
+				    msg: '资源分离列表加载出错',
+				    title: '消息提示',
+				    btnok: '确定',
+				    btncl:'取消'
+				    	
+				  });
+			}
+		});
+
+}
+
+function menuPageDiv(records,total,currentPage){
+	var pageTotal=total;// 总共多少页
+	var pageCurrentPage=currentPage;//当前页
+	var pageRecords=records;//总记录数
+	var countt="";
+	var outstr="";
+	pageTotal=parseInt(pageRecords/pageRowNum);
+	if(pageRecords%pageRowNum>0){
+		pageTotal=pageTotal+1;
+	}
+        if(pageTotal<=pageShowPage){
+                for (var count=1;count<=pageTotal;count++){
+                        if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                        if(count!=pageCurrentPage){
+                             outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }else{
+                        	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }
+                }
+        }
+        if(pageTotal>pageShowPage){
+                if(parseInt((pageCurrentPage-1)/pageShowPage) == 0){
+                        outstr = outstr + "<li><a><<</a></li> ";
+                        for (var count=1;count<=pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a  href='javascript:void(0);'>"+countt+"</a></li>";
+                                	
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr+"<li tag='"+count+"' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+                }else if(parseInt((pageCurrentPage-1)/pageShowPage) == parseInt(pageTotal/pageShowPage)){
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt(pageTotal/pageShowPage)*pageShowPage+1;count<=pageTotal;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+                }else{
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+1;count<=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	
+                                        outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li  tag='"+count+"' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+                }
+    }    
+        //共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum +"个　
+   $("#menuPageDiv").html("<div class='pagination pagination-centered'  align='right'><ul style = 'width:300px;'>" + outstr + "<a href='javascript:void(0);' style = 'padding-left:0px;'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+    outstr = "";
+    $(".pageCk").unbind();
+    
+    $(".pageCk").bind('click',function(){
+    	loadMenu($(this).attr("tag"),menuSqu);
+	});
+    
+    $(".pagePk").unbind();
+    $(".pagePk").bind('click',function(){
+    	loadMenu($(this).attr("tag"),menuSqu);
+	});
+}
+
+
+//右边上半部分
+function showKzzj(obj){
+	
+	$("#azfs").val(obj.azfs);//隐藏安装方式赋值
+	$("#gdlx").val(obj.gdlx);//隐藏管道类型赋值
+	
+	$.ajax({
+		url:'loadKzzjBySqu.do',
+		type:'post',
+		data:{
+			'squ':obj.dxSqu,			
+		},		
+		success:function(data){
+			
+			var da = eval("(" + data + ")");
+				var list = da.list;
+
+				$("#kzzjDXMC").html(list[0].dxmc);
+				$("#kzzjGDLX").html(list[0].gdlx);
+				$("#kzzjAZFS").html(list[0].azfs);
+				$("#kzzjZJXS").html(list[0].zjxs);
+				
+				if(list[0].zp == null){
+					document.getElementById("kzzjImg").src ="resource/images/120.png";
+				}else{
+					document.getElementById("kzzjImg").src = "/upload/"+list[0].zp;
+				}
+							
+		},
+	
+	});
+	
+}
+
+/*****关键字检索****/
+var query="";
+function searchWord(){
+	showBjList(pager1,bjfl);
+}  
+
+var records1=0;
+var currentPage1=0;
+var total1=0;
+var pageShowPage1=2;//显示多少个人分页标签
+var pageRowNum1=5;//每页显示记录数
+var pager1 =1;
+
+//右边下半部分表格
+var bjfl = 1;//部件类型标记
+function showBjList(pager1,op1){
+	bjfl = op1;
+	document.getElementById("content").style.display = "block";
+	 var llis = document.getElementsByName("tab_li"); 
+     
+     for(var i = 0; i < llis.length; i++) {  
+         var lli = llis[i];  
+         if(lli == document.getElementById("tab" + op1)) {  
+             lli.style.backgroundColor = "#cfdefc"; 
+             lli.style.border = "1px solid #ddd";
+         } else {  
+             lli.style.backgroundColor = "#f5f5f5";  
+         }  
+     } 
+     
+     
+     var divs = document.getElementsByClassName("tab_css");  
+     for(var i = 0; i < divs.length; i++) {  
+
+         var divv = divs[i];  
+
+         if(divv == document.getElementById("tab" + op1 + "_content")) {  
+             divv.style.display = "block";  
+         } else {  
+             divv.style.display = "none";  
+         }  
+     }  
+     
+    if(op1 == 1){
+    	var word = $("#input_search0").attr("value");
+    	if (word=="关键字搜索") {
+    		query ="";
+    	}else{
+    		query=$("#input_search0").val();
+    	} 
+    }else if(op1 == 2){
+    	var word = $("#input_search1").attr("value");
+    	if (word=="关键字搜索") {
+    		query ="";
+    	}else{
+    		query=$("#input_search1").val();
+    	} 
+    }else if(op1 == 3){
+    	var word = $("#input_search2").attr("value");
+    	if (word=="关键字搜索") {
+    		query ="";
+    	}else{
+    		query=$("#input_search2").val();
+    	} 
+    }else if(op1 == 4){
+    	var word = $("#input_search3").attr("value");
+    	if (word=="关键字搜索") {
+    		query ="";
+    	}else{
+    		query=$("#input_search3").val();
+    	} 
+    }
+	
+	var html="";
+	$.ajax({
+		type : 'post',
+		url : 'getKzzjBjList.do',
+		timeout : 1321231232131213123,
+		dataType:"json",
+		data:{
+			rows:pageRowNum1,
+			page:pager1,
+			op:op1,
+			dxsqu:obj1.dxSqu,
+			searchKey:query
+		},
+		success : function(data) {
+        
+			records1=data.total;
+			currentPage1=data.pageNumber;
+			total1 = data.pageCnt;
+			pageRowNum1=data.pageSize;
+			
+			html+="<thead><tr><th width ='50'>序号</th>";
+			html+="<th width ='0' style = 'padding:0px;border-left:0px'></th>";
+//			html+="<th width ='200'>产品编码</th>";
+			html+="<th width ='300'>部件名称</th>";
+			html+="<th width ='100'>部件类型</th>";
+//			html+="<th width ='100'>部件型号</th>";
+			html+="<th width ='50'>单位</th>";
+			html+="<th width ='50'>数量</th>";
+			html+="<th width ='50'>单价</th>";
+			html+="<th width ='50'>金额</th>";
+			html+="<th width ='200'>操作</th><tr></thead>";
+			
+			
+			html+="<tbody>";
+			for(var i = 0;i<data.rows.length;i++){
+				if(data.rows[i].BJLX == 0){//普通部件
+					
+					html+="<tr><td>"+(i+1)+"</td>";
+					
+					html+="<td style = 'padding:0px;border-left:0px'><input type = 'hidden' id = 'squ' value = '"+data.rows[i].SQU+"'/></td>";
+//					html+="<td>"+data.rows[i].CPBM+"</td>";
+					html+="<td>"+data.rows[i].CYMC+"</td>";
+					html+="<td>普通部件</td>";
+//					html+="<td>"+data.rows[i].BJXH+"</td>";
+					html+="<td>"+data.rows[i].JLDW+"</td>";
+					html+="<td>"+data.rows[i].SL+"</td>";
+					
+					if(data.rows[i].CBDJ == null || data.rows[i].CBDJ == ""){
+						html+="<td></td>";
+					}else{
+						html+="<td>"+data.rows[i].CBDJ+"</td>";
+					}
+					
+					html+="<td>"+(data.rows[i].SL*data.rows[i].CBDJ)+"</td>";
+					html+="<td><a title='编辑'  href='javascript:void(0);' onclick = 'showEditKzzjBj("+JSON.stringify(data.rows[i])+");'> <i class='icon-edit icon-black'></i></a>&nbsp;";
+					html+="<a title='删除'  href='javascript:void(0);' onclick = 'delKzzjBj(\""+data.rows[i].SQU+"\");'> <i class='icon-trash icon-black'></i></a></td></tr>";
+				}else{//组合部件
+					html+="</tr><td>"+(i+1)+"</td>";
+					
+					html+="<td style = 'padding:0px;border-left:0px'><input type = 'hidden' id = 'squ' value = '"+data.rows[i].SQU+"'/></td>";
+//					html+="<td></td>";
+					html+="<td>"+data.rows[i].DXZHMC+"</td>";
+					html+="<td>组合部件</td>";
+//					html+="<td></td>";
+					html+="<td>个</td>";
+					html+="<td>"+data.rows[i].SL+"</td>";
+					html+="<td></td>";
+					html+="<td></td>";
+					html+="<td><a title='编辑'  href='javascript:void(0);' onclick = 'showEditKzzjBj("+JSON.stringify(data.rows[i])+");'> <i class='icon-edit icon-black'></i></a>&nbsp;";
+					html+="<a title='删除'  href='javascript:void(0);' onclick = 'delKzzjBj(\""+data.rows[i].SQU+"\");'> <i class='icon-trash icon-black'></i></a></td></tr>";
+				}
+			}
+			html+="</tbody>";
+			
+			
+			if(bjfl == 1){
+				$('#t_table1').empty();//让列表置空
+				$("#t_table1").append(html);
+			}
+			 if(bjfl == 2){
+				$('#t_table2').empty();//让列表置空
+				$("#t_table2").append(html);
+			}
+			 if(bjfl == 3){
+				$('#t_table3').empty();//让列表置空
+				$("#t_table3").append(html);
+			 }
+			if(bjfl == 4){
+				$('#t_table4').empty();//让列表置空
+				$("#t_table4").append(html);
+			}
+				
+
+		pageDiv(records1,total1,currentPage1);
+		},
+		error : function() {
+			Modal.alert(
+			  {
+			    msg: '资源分离列表加载出错',
+			    title: '消息提示',
+			    btnok: '确定',
+			    btncl:'取消'
+			    	
+			  });
+		}
+	});
+	
+}
+
+
+//右边下半部分分页
+function pageDiv(records,total,currentPage){
+	var pageTotal=total;// 总共多少页
+	var pageCurrentPage=currentPage;//当前页
+	var pageRecords=records;//总记录数
+	var countt="";
+	var outstr="";
+	pageTotal=parseInt(pageRecords/pageRowNum1);
+	if(pageRecords%pageRowNum1>0){
+		pageTotal=pageTotal+1;
+	}
+        if(pageTotal<=pageShowPage){
+                for (var count=1;count<=pageTotal;count++){
+                        if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                        if(count!=pageCurrentPage){
+                             outstr = outstr + "<li tag='"+count+"' class='pageCk1'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }else{
+                        	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                        }
+                }
+        }
+        if(pageTotal>pageShowPage){
+                if(parseInt((pageCurrentPage-1)/pageShowPage) == 0){
+                        outstr = outstr + "<li><a><<</a></li> ";
+                        for (var count=1;count<=pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk1'><a  href='javascript:void(0);'>"+countt+"</a></li>";
+                                	
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr+"<li tag='"+count+"' class='pagePk1'><a href='javascript:void(0)'>>></a></li>";
+                }else if(parseInt((pageCurrentPage-1)/pageShowPage) == parseInt(pageTotal/pageShowPage)){
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk1'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt(pageTotal/pageShowPage)*pageShowPage+1;count<=pageTotal;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li  tag='"+count+"' class='pageCk1'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	 outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+                }else{
+                        outstr = outstr + "<li tag='"+(parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage)+"' class='pagePk1'><a href='javascript:void(0)'><<</a></li> ";
+                        for (var count=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+1;count<=parseInt((pageCurrentPage-1)/pageShowPage)*pageShowPage+pageShowPage;count++){
+                                if (count<10) {countt ="0"+count+"";}else{countt =""+count+"";}
+                                if(count!=pageCurrentPage){
+                                	outstr = outstr + "<li tag='"+count+"' class='pageCk1'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }else{
+                                	
+                                        outstr = outstr + "<li class='active'><a href='javascript:void(0);'>"+countt+"</a></li>";
+                                }
+                        }
+                        outstr = outstr + "<li  tag='"+count+"' class='pageCk1'><a href='javascript:void(0);'>>></a></li>";
+                }
+    }    
+        //共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum +"个　
+        if(bjfl == 1){
+        	 $("#pageDiv1").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+        }
+        if(bjfl == 2){
+        	 $("#pageDiv2").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+        }
+        if(bjfl == 3){
+			$("#pageDiv3").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+		}
+        if(bjfl == 4){
+			$("#pageDiv4").html("<div class='pagination pagination-centered'  align='right'><ul>" + outstr + "<a href='javascript:void(0);'>共"+pageTotal+"页/"+pageRecords+"条数据</a></li></ul></div>");
+		}
+        	
+        
+    outstr = "";
+    $(".pageCk1").unbind();
+    
+    $(".pageCk1").bind('click',function(){
+    	showBjList($(this).attr("tag"),bjfl);
+	});
+    
+    $(".pagePk1").unbind();
+    $(".pagePk1").bind('click',function(){
+    	showBjList($(this).attr("tag"),bjfl);
+	});
+}
+
+
+
+
+//部件新增功能
+function appRegister(){
+
+	$('#pt-select-box').hide();
+	$("#clearForm").click();
+	document.getElementById("userTitleName").innerHTML = "新增支架明细";
+	document.getElementById("selectButton").style.display="block";
+	document.getElementById("forCPZMMC").style.display="none";
+	document.getElementById("forEDHL").style.display="block";
+	document.getElementById("example").style.height="550px";
+	$('.select-res').find("a").click();
+	 $("#example").modal();
+	 $("#photoBox").css("display","block");
+	 
+	$('#appBtn').unbind();
+	 $('#appBtn').click(function() {
+
+		 var bjsqu = $('#bjsqu').val();//部件id
+		var bjsl = $('#bjsl').val();//部件数量
+		var op = $('#bjop').val();
+		
+			if(obj1 == null||obj1 ==""){
+				alert("请选择支架！");
+			}else if(bjsqu == null ||bjsqu == "" ){
+				alert("请选择部件！");
+			}else if(bjsl == "" || bjsl == null){
+				alert("请输入部件数量！");
+			}else{
+				$.ajax({
+					type : 'post',
+					url : 'addKzzjBj.do',
+					timeout : 1321231232131213123,
+					data : {
+						'dxsqu' : obj1.dxSqu,
+						'sl':bjsl,
+						'bjsqu':bjsqu,
+						'bjop':op,
+						'bjfl':bjfl
+					},
+					success : function(data) {
+						
+						if(data == "hasExit"){
+							alert("部件已存在！");
+						}else{
+							
+						alert("添加成功！");
+						$('#closeWin').click();
+						showBjList(pager1,bjfl);
+						}
+					},
+					error : function() {
+						alert('添加出错！');
+					}
+				});
+			}
+
+		 });
+	 
+}
+
+//部件删除
+function delKzzjBj(bjsqu){
+	
+	if (confirm('确认删除吗？')) {
+		$.ajax({
+			type : 'post',
+			url : 'delKzzjBj.do',
+			timeout : 1321231232131213123,
+			data : {
+				'dxsqu' : obj1.dxSqu,
+				'bjsqu':bjsqu
+			},
+			success : function(data) {
+				
+				if(data == "delError"){
+					alert("删除失败！");
+				}else{
+					alert("删除成功！");
+					showBjList(pager1,bjfl);
+				}
+			},
+			error : function() {
+				alert('删除支架部件出错！');
+			}
+		});
+	}
+	
+}
+//普通部件编辑
+function showEditKzzjBj(obj){
+	
+	var bjlx = obj.BJLX;
+	
+	
+	document.getElementById("userTitleName").innerHTML = "编辑支架明细";
+	document.getElementById("selectButton").style.display="none";
+	
+	document.getElementById("example").style.height="450px";
+	$("#photoBox").css("display","block");
+	if(bjlx == 0){//普通部件
+		document.getElementById("forCPZMMC").style.display="block";
+		document.getElementById("forEDHL").style.display="none";
+		
+		$("#cpmb").val(obj.CPBM);
+		$("#cpxh").val(obj.BJXH);
+		$("#cbdj").val(obj.CBDJ);
+		$("#cymc").val(obj.CYMC);
+		$("#jldw").val(obj.JLDW);
+		$("#bjsl").val(obj.SL);
+		
+		$("#cpzmmc").val(obj.CPZM);	
+		$("#bjsqu").val(obj.SQU);
+		
+		if(obj.ZP == null){
+			$("#photoBox").html("<img src='resource/images/picture.png'/>");
+		}else{
+
+			$("#photoBox").html("<img src='/upload/"+obj.ZP+"'/>")
+		}
+		
+		//普通部件显示内容显示
+		document.getElementById("cpbmDiv").style.display = "block";
+		document.getElementById("cpxhDiv").style.display = "block";
+		document.getElementById("cbdjDiv").style.display = "block";
+		document.getElementById("cymcDiv").style.display = "block";
+		document.getElementById("jldwDiv").style.display = "block";
+		document.getElementById("forEDHL").style.display = "none";
+
+		//组合部件信息隐藏
+		document.getElementById("zhgdlxDiv").style.display = "none";
+		document.getElementById("zhazfsDiv").style.display = "none";
+		document.getElementById("zhzjxsDiv").style.display = "none";
+		document.getElementById("zhbjmcDiv").style.display = "none";
+	}
+	if(bjlx == 1){//组合部件
+		
+		$("#zhgdlx").val(obj.GDLX);
+		$("#zhazfs").val(obj.AZFS);
+		$("#zhbjsl").val(obj.SL);
+		$("#zhzjxs").val(obj.ZJXS);
+		$("#zhbjmc").val(obj.DXZHMC);
+		$("#bjsqu").val(obj.SQU);
+		
+		if(obj.ZP == null){
+			$("#photoBox").html("<img src='resource/images/picture.png'/>");
+		}else{
+			$("#zhphotoBox").html("<img src='/upload/"+obj.ZP+"'/>")
+		}
+		
+		//隐藏普通部件显示内容
+		document.getElementById("cpbmDiv").style.display = "none";
+		document.getElementById("cpxhDiv").style.display = "none";
+		document.getElementById("cbdjDiv").style.display = "none";
+		document.getElementById("cymcDiv").style.display = "none";
+		document.getElementById("jldwDiv").style.display = "none";
+		document.getElementById("forEDHL").style.display = "none";
+		document.getElementById("forCPZMMC").style.display="none";
+		//组合部件信息显示
+		document.getElementById("zhgdlxDiv").style.display = "block";
+		document.getElementById("zhazfsDiv").style.display = "block";
+		document.getElementById("zhzjxsDiv").style.display = "block";
+		document.getElementById("zhbjmcDiv").style.display = "block";
+		
+	}
+	
+	
+	 $("#example").modal();
+	 
+	 $('#appBtn').unbind();
+	 $('#appBtn').click(function() {
+		 var squ = $('#bjsqu').val();//部件id
+		 var bjsl = $('#bjsl').val();//部件数量
+		 
+			$.ajax({
+				type : 'post',
+				url : 'editKzzjBj.do',
+				timeout : 1321231232131213123,
+				data : {
+					'dxsqu' : obj1.dxSqu,
+					'sl':bjsl,
+					'bjsqu':squ
+				},
+				success : function(data) {
+					
+					alert("编辑成功！");
+					$('#closeWin').click();
+					showBjList(pager1,bjfl);
+				},
+				error : function() {
+					alert('编辑出错！');
+				}
+			});
+			  
+	 });
+		
+}
+
+//组合部件编辑
+function editKzzjZhbj(obj){
+	
+	document.getElementById("zhuserTitleName").innerHTML = "编辑支架明细";
+	document.getElementById("zhselectButton").style.display="none";
+	document.getElementById("zhexample").style.height="450px";
+	$("#zhphotoBox").css("display","block");
+	
+	$("#zhgdlx").val(obj.GDLX);
+	$("#zhazfs").val(obj.AZFS);
+	$("#zhbjsl").val(obj.SL);
+	$("#zhzjxs").val(obj.ZJXS);
+	$("#zhbjmc").val(obj.DXZHMC);
+	$("#zhbjsqu").val(obj.ZHSQU);
+	
+	if(obj.ZP == null){
+		$("#photoBox").html("<img src='resource/images/picture.png'/>");
+	}else{
+		$("#zhphotoBox").html("<img src='/upload/"+obj.ZP+"'/>")
+	}
+	$("#zhexample").modal();
+	
+	$('#zhappBtn').unbind();
+	$('#zhappBtn').click(function() {
+		var bjsqu = $('#zhbjsqu').val();//部件id
+		var bjsl = $('#zhbjsl').val();//部件数量
+		
+		$.ajax({
+			type : 'post',
+			url : 'editKzzjBj.do',
+			timeout : 1321231232131213123,
+			data : {
+				'dxsqu' : obj1.dxSqu,
+				'sl':bjsl,
+				'bjsqu':bjsqu
+			},
+			success : function(data) {
+				
+				alert("编辑成功！");
+				$('#zhcloseWin').click();
+				showBjList(pager1,1);
+			},
+			error : function() {
+				alert('编辑出错！');
+			}
+		});
+		
+	});
+	
+}
+
+
+
+

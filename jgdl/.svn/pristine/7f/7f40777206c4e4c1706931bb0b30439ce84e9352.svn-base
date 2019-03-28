@@ -1,0 +1,28 @@
+package monitor.goodsHouse.service;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:41:37
+ *@version
+ *@author:唐青
+ *@since
+ */
+public interface IPartsService {
+	
+	/**
+	 * 
+	  * getPartsMenu:(加载部件目录).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午3:29:34
+	  * @param squ
+	  * @return
+	  * @throws Exception List<Map<String,String>>
+	  * @since JDK 1.7
+	 */
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws Exception;
+}

@@ -1,0 +1,335 @@
+
+var _projectSqu = "";
+
+$().ready(function(){
+	loadTree(1);
+});
+
+function project_link(index){
+	$('#holderBox').show();
+	$('#projectName').html($(index).attr("title"));
+	
+	_projectSqu = $(index).attr("id");
+	//加载支架列表
+	loadHolderOfProject($(index).attr("id"));
+}
+/**
+  * loadHolderOfProject:(加载项目下的支架列表)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-23 下午7:30:04
+  * @param: 
+  * @return: void
+ */
+function loadHolderOfProject(squOfProject){
+	$("#holderList").uiGrid({ 
+		url : "loadHolderOfProjectPageInfo.do",
+		rowNum : 10,//每页显示记录数
+		columns : [ {
+			field : 'dxmc',
+			title : '单项名称',
+			width : 300,
+		},{
+			field : 'zjxs',
+			title : '支架形式',
+			width : 300,
+		},{
+			field : 'sl',
+			title : '数量',
+			width : 100,
+		}],
+		divId : "#holderList",
+		showPage : 5,//显示
+		showDelete : true,
+		showDeleteEvent : showDelete,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		},
+		data : {
+			squ : squOfProject,
+		}
+	});
+}
+
+function showDelete(){
+	
+}
+
+/**
+  * showAddModal:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午6:38:39
+  * @param: 
+  * @return: void
+ */
+function showAddModal(){
+	$('#holderModal').modal();
+	loadHolderList();
+}
+
+/**
+  * loadHolderList:(分页加载支架信息)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午7:25:04
+  * @param: 
+  * @return: void
+ */
+function loadHolderList(){
+	$("#holderAll").uiGrid({ 
+		url : "getHolderList.do",
+		rowNum : 5,//每页显示记录数
+		columns : [ {
+			field : 'zp',
+			title : '照片',
+			width : 60,
+			formatter : function(value, rec) {
+					return '<img src="http://localhost:8080/cs/aaa.jpg" width="60px" height="60px">';
+			}
+		},{
+			field : 'dxmc',
+			title : '单项名称',
+			width : 800,
+			formatter : function(value, rec) {
+				return '<p><h4>支架名:' + rec.dxmc + '&nbsp;&nbsp;<small>支架形式:'+rec.zjxs+'</small></h4></p><span><b>管道类型:</b>'
+				+rec.gdlx+'</span>&nbsp;&nbsp;&nbsp;<span><b>安装方式:</b>'+rec.azfs+'</span>';
+		}
+		}],
+		divId : "#holderAll",
+		showPage : 5,//显示
+		toAdd : true,
+		toAddEvent : toAdd,
+		jsonPager : {
+			records : "rowCount",//总记录数
+			currentPage : 1,//当前访问页
+			total : "pageCount"//总页数
+		}
+	});
+}
+
+/**
+  * toAdd:(新增支架)
+  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项)
+  * @author: 黄月
+  * @dateTime: 2017-10-24 下午9:11:27
+  * @param: 
+  * @return: void
+ */
+function toAdd(row){
+	$.ajax({
+		type : "post",
+		url : "addHolderToProject.do",
+		timeout : 1321231232131213123,
+		dataType : 'text',
+		data : {
+			projectSqu : _projectSqu,
+			holderSqu : row.dxsqu
+		},
+		success : function(data) {
+			if (data == "success") {
+				Modal.alert({
+					title : "提示",
+					msg : "添加成功！",
+					btnok : "确定"
+				});
+				loadHolderOfProject(_projectSqu);
+			} else {
+				Modal.alert({
+					msg : '执行添加操作异常！',
+					title : '消息提示',
+					btnok : '确定',
+				});
+			}
+		},
+		error : function() {
+			Modal.alert({
+				msg : 'ajax执行添加操作错误！',
+				title : '消息提示',
+				btnok : '确定',
+			});
+		}
+	});
+}
+
+
+var records = 0;
+var currentPage = 0;
+var total = 0;
+var pageShowPage = 5;// 显示多少个人分页标签
+var pageRowNum1 = 10;// 每页显示记录数
+var pager = 1;
+function loadTree(pager) {
+	var html = "";
+	$.ajax({
+		type : 'post',
+		url : 'selectProjectPageInfo.do',
+		dataType : 'json',
+		async : false,
+		timeout : 1321231232131213123,
+		data : {
+			rows : pageRowNum1,
+			page : pager,
+		},
+		success : function(data) {
+			if (data.rows.length != 0) {
+				//$("#pageDiv1").show();
+				aData = data.rows;
+			}
+			records = data.total;
+			currentPage = data.pageNumber;
+			total = data.pageCnt;
+			pageRowNum1 = data.pageSize;
+			if (data.rows.length == 0) {
+				html += "<li class='border-bottom'>";
+				html += "<a href='javascript:void(0);'>未查询到项目列表</a>";
+				html += "</li>";
+				//$("#pageDiv1").hide();
+			}
+			
+			for ( var i = 0; i < data.rows.length; i++) {
+				html += "<li class='border-bottom'><span class='icon icon-color icon-treeview-corner'></span>";
+				html += "<a href='javascript:void(0);' onclick='project_link(this);' id='" + data.rows[i].squ + "' title='" + data.rows[i].gcmc + "'>" + data.rows[i].gcmc + "</a>";
+				html += "</li>";
+			}
+			$("#tree").html(html);
+			pageDiv1(records, total, currentPage);
+		},error : function() {
+				Modal.alert({
+					msg : '功能菜单加载出错！',
+					title : '消息提示',
+					btnok : '确定',
+					btncl : '取消'
+				});
+			}
+		});
+}
+
+
+function pageDiv1(records, total, currentPage) {
+	var pageTotal = total;// 总共多少页
+	var pageCurrentPage = currentPage;// 当前页
+	var pageRecords = records;// 总记录数
+	var countt = "";
+	var outstr = "";
+	pageTotal = parseInt(pageRecords / pageRowNum1);
+	if (pageRecords % pageRowNum1 > 0) {
+		pageTotal = pageTotal + 1;
+	}
+	if (pageTotal <= pageShowPage) {
+		for ( var count = 1; count <= pageTotal; count++) {
+			if (count < 10) {
+				countt = "0" + count + "";
+			} else {
+				countt = "" + count + "";
+			}
+			if (count != pageCurrentPage) {
+				outstr = outstr + "<li tag='" + count
+						+ "' class='pageCk'><a href='javascript:void(0);'>"
+						+ countt + "</a></li>";
+			} else {
+				outstr = outstr
+						+ "<li class='active'><a href='javascript:void(0);'>"
+						+ countt + "</a></li>";
+			}
+		}
+	}
+	if (pageTotal > pageShowPage) {
+		if (parseInt((pageCurrentPage - 1) / pageShowPage) == 0) {
+			outstr = outstr + "<li><a><<</a></li> ";
+			for ( var count = 1; count <= pageShowPage; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr
+							+ "<li tag='"
+							+ count
+							+ "' class='pageCk'><a  href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+
+				} else {
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr
+					+ "<li tag='"
+					+ count
+					+ "' class='pagePk'><a href='javascript:void(0)'>>></a></li>";
+		} else if (parseInt((pageCurrentPage - 1) / pageShowPage) == parseInt(pageTotal
+				/ pageShowPage)) {
+			outstr = outstr
+					+ "<li tag='"
+					+ (parseInt((pageCurrentPage - 1) / pageShowPage) * pageShowPage)
+					+ "' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+			for ( var count = parseInt(pageTotal / pageShowPage) * pageShowPage
+					+ 1; count <= pageTotal; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr + "<li  tag='" + count
+							+ "' class='pageCk'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				} else {
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr + "<li><a href='javascript:void(0)'>>></a></li>";
+		} else {
+			outstr = outstr
+					+ "<li tag='"
+					+ (parseInt((pageCurrentPage - 1) / pageShowPage) * pageShowPage)
+					+ "' class='pagePk'><a href='javascript:void(0)'><<</a></li> ";
+			for ( var count = parseInt((pageCurrentPage - 1) / pageShowPage)
+					* pageShowPage + 1; count <= parseInt((pageCurrentPage - 1)
+					/ pageShowPage)
+					* pageShowPage + pageShowPage; count++) {
+				if (count < 10) {
+					countt = "0" + count + "";
+				} else {
+					countt = "" + count + "";
+				}
+				if (count != pageCurrentPage) {
+					outstr = outstr + "<li tag='" + count
+							+ "' class='pageCk'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				} else {
+
+					outstr = outstr
+							+ "<li class='active'><a href='javascript:void(0);'>"
+							+ countt + "</a></li>";
+				}
+			}
+			outstr = outstr
+					+ "<li  tag='"
+					+ count
+					+ "' class='pageCk'><a href='javascript:void(0);'>>></a></li>";
+		}
+	}
+	// 共"+pageTotal+"页|"+pageRecords+"条数据|第"+pageCurrentPage+"页 每页" + pageRowNum
+	// +"个
+	$("#pageInfo").html(
+			"<div class='pagination pagination-centered'  align='right'><ul>"
+					+ outstr + "<a href='javascript:void(0);'>共" + pageTotal
+					+ "页/" + pageRecords + "条数据</a></li></ul></div>");
+	outstr = "";
+	$(".pageCk").unbind();
+	$(".pageCk").bind('click', function() {
+		loadTree($(this).attr("tag"));
+	});
+	$(".pagePk").unbind();
+	$(".pagePk").bind('click', function() {
+		loadTree($(this).attr("tag"));
+	});
+}

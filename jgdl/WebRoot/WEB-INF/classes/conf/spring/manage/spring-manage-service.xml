@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	   http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<bean id="controlService" class="monitor.manage.service.impl.ControlServiceImpl" scope="prototype">
+		<property name="controlDao" ref="controlDao" />
+	</bean>
+
+	<bean id="selectService" class="monitor.manage.service.impl.SelectCMServiceImpl" scope="prototype">
+		<property name="iSelectDao" ref="selectDao" />
+	</bean>
+
+	<bean id="sendBkTask" class="monitor.manage.timer.BKTask" scope="prototype">
+		<property name="iSelectDao" ref="selectDao"></property>
+	</bean>
+	<bean id="bkMessageService" class="monitor.manage.service.impl.BKMessageServiceImpl" scope="prototype">
+		<property name="iBKMessageDao" ref="bkMessageDao"></property>	
+	</bean>
+
+	<!-- 预警配置管理 -->
+	<bean id="ManageService" class="monitor.manage.service.impl.ManageServiceImpl" scope="prototype">
+		<property name="daoImpl" ref="ManageDao" />
+	</bean>
+	<!-- 短信配置管理 -->
+	<bean id="SmsService" class="monitor.manage.service.impl.SmsServiceImpl" scope="prototype">
+		<property name="daoImpl" ref="SmsDao"/>
+	</bean>
+	<bean id="QueryService" class="monitor.manage.service.impl.QueryServiceImpl" scope="prototype">
+		<property name="dao" ref="QueryDao"/>
+	</bean>
+</beans>

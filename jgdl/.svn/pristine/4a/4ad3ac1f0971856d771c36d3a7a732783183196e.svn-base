@@ -1,0 +1,54 @@
+package monitor.dispatched.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+public interface IDispatchedDao {
+    public String findMz(String gmsfzh);
+	
+	public String addDispatched(DispatchedDto dispatchedDto);
+
+	public String deleteDispatched(DispatchedDto dispatchedDto);
+
+	public String editDispatched(DispatchedDto dispatchedDto);
+
+	/**
+	  * listDispatchedInPage:分页查询已部署人员.<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-17 下午4:47:23
+	  * @param dispatchedDto
+	  * @param param
+	  * @return
+	  * @throws SQLException DispatchedDto
+	  * @since JDK 1.7
+	*/
+	public DispatchedDto listDispatchedInPage(DispatchedDto dispatchedDto,
+			String param) throws SQLException;
+	
+	/**
+	  * selectTrajectory:(查询人员轨迹).<br/>
+	  * TODO(已部署人员信息).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-4-25 下午3:21:23
+	  * @param strIdcard
+	  * @return List<Map<String,String>>
+	  * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	public List<Map<String, String>> selectTrajectory(String strIdcard) throws SQLException;
+	
+	/**
+	  * updateIsNew:(修改当前已部署人员信息状态).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-4-27 上午11:44:35
+	  * @param sfzhm void
+	  * @since JDK 1.7
+	*/
+	public String updateIsNew(String sfzhm);
+	
+}

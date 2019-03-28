@@ -1,0 +1,550 @@
+package monitor.dispatched.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import javax.sql.DataSource;
+
+
+import monitor.common.dao.BaseDAO;
+import monitor.dispatched.bean.entity.AddApplicationEntity;
+import monitor.dispatched.bean.entity.BkryEntity;
+import monitor.dispatched.bean.entity.SSPTuserinfo;
+import monitor.dispatched.dao.AppApplicationDao;
+import monitor.user.bean.dto.UserDto;
+
+public class AppApplicationDaoImpl extends BaseDAO implements AppApplicationDao{
+    private DataSource myzhzykDataSource = null;
+    
+
+    /**
+     * 添加布控人员的数据
+     * 此方法没有在接口dao里，是daoImpl自己的方法
+      * @param: @param bkryEntity
+     */
+    private int addInforToBkry(Vector<BkryEntity> bkryEntity){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int update = -1;
+        try {
+            con  = datasource.getConnection();
+            con.setAutoCommit(false);
+            for (int i = 0; i < bkryEntity.size(); i++) {
+                String sql =    "INSERT INTO T_BKRY (GMSFHM,XM,RYLX,CJSJ," +
+                		        "LRRSQU,HJDZ,BKZT,BKSY,BZ,SPRSQU,ISNEW,MZDM) " +
+                		        "VALUES ('"+bkryEntity.get(i).getGmsfhm()+"'," +
+                				"'"+bkryEntity.get(i).getXm()+"'," +
+                				"'"+bkryEntity.get(i).getRylx()+"'," +
+                				"TO_TIMESTAMP('"+bkryEntity.get(i).getCjsj()+"','yyyy-mm-dd hh24:mi:ss.ff')," +
+                				"'"+bkryEntity.get(i).getLrrsqu()+"'," +
+                				"'"+bkryEntity.get(i).getHjdz()+"'," +
+                				"'"+bkryEntity.get(i).getBkzt()+"'," +
+                				"'"+bkryEntity.get(i).getBksy()+"'," +
+                				"'"+bkryEntity.get(i).getBz()+"'," +
+                				"'"+bkryEntity.get(i).getSprsqu()+"'," +
+                				"'"+bkryEntity.get(i).getIsnew()+"'," +
+                				"'"+bkryEntity.get(i).getMz()+"')";
+                 ps = con.prepareStatement(sql);
+                 update = ps.executeUpdate();
+                 con.commit();
+            }
+            
+        }catch (SQLException e) {
+            try {
+                con.rollback();
+            }catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }finally{
+            this.close(rs, ps, con);
+        }
+        return update;
+    }
+    
+    
+    /**
+     * 
+      * listAdminRole:(查找列出为默认为admin(管理员)的登录用户).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-4-26 下午2:22:15
+      * @param: @return
+      * @return: List
+      * @throws
+      * @since JDK 1.6
+     */
+    public List<SSPTuserinfo> listAdminRole(){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        SSPTuserinfo entity = null;
+        List<SSPTuserinfo> list= new ArrayList<SSPTuserinfo>();
+        try {
+             con = datasource.getConnection();
+             String sql = "SELECT T1.SQU AS SQU,T1.USERNAME AS USERNAME FROM SSP_TUSERINFO T1 WHERE T1.ROLESQU IN (SELECT T.SQU FROM SSP_TROLEINFO T WHERE  T.ISADMIN = 1)";
+             ps = con.prepareStatement(sql);
+             rs = ps.executeQuery();
+             while(rs.next()){
+                 entity = new SSPTuserinfo();
+                 entity.setSqu(rs.getInt("SQU"));
+                 entity.setUsername(rs.getString("USERNAME"));
+                 list.add(entity);
+             }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            close(rs, ps, con);
+        }
+        return list;
+    }
+    
+    
+    /**
+      * findByIDCardVector:(通过身份证集合查询在逃和重点以及常住人口信息表人员的显示信息).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-3 下午5:22:23
+      * @param: @param v
+      * @param: @return
+      * @return: Vector<AddApplicationEntity>
+      * @since JDK 1.6
+     */
+    public Vector<AddApplicationEntity> findByIDCardVector(Vector<String> v,String rylx){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        AddApplicationEntity entity = null;
+        Vector<AddApplicationEntity > vector = new Vector<AddApplicationEntity>();
+        
+        try {
+            con = myzhzykDataSource.getConnection();
+            //查询常住人口
+            for (int i = 0; i < v.size(); i++) {
+                String sql = "SELECT T.* FROM MYZHZYK.ZA_CZRK_QX T WHERE T.GMSFHM =  '"+v.get(i).toString()+"'";
+                ps = con.prepareStatement(sql);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    entity = new AddApplicationEntity();
+                    //TODO这个表无主键标识值，用身份证代替取唯一值
+                    entity.setSqu(rs.getString("GMSFHM"));
+                    
+                    entity.setName(rs.getString("XM"));
+                    entity.setIdcard(rs.getString("GMSFHM"));
+                    entity.setMz(rs.getString("MZDM"));
+                    entity.setJzdz(rs.getString("ZZXZ"));
+                    if(rylx != null){
+                        entity.setRylx(Integer.parseInt(rylx));
+                    }
+                    vector.add(entity);
+                }
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }finally{
+            this.close(rs, ps, con);
+        }
+        return vector;
+    }
+    
+    /**
+     * 根据身份证集合返回所有的临时库的数据(锁定当前用户的)
+      * findByIDCardVectors:接口实现
+      * @param: @param v
+      * @param: @param user
+      * @param: @return
+     */
+    public Vector<AddApplicationEntity> findByIDCardVectors(List<String> v,UserDto user){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        AddApplicationEntity entity = null;
+        Vector<AddApplicationEntity > vector = new Vector<AddApplicationEntity>();
+        
+        try {
+            con = datasource.getConnection();
+            for (int i = 0; i < v.size(); i++) {
+                String sql = "SELECT T.* FROM T_APPAPPLICATION T WHERE T.IDCARD = '"+v.get(i).toString()+"'\tAND T.CZRSQU = '"+user.getSqu()+"'";
+                ps = con.prepareStatement(sql);
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    entity = new AddApplicationEntity();
+                    entity.setSqu(rs.getString("SQU"));
+                    entity.setName(rs.getString("NAME"));
+                    entity.setIdcard(rs.getString("IDCARD"));
+                    entity.setRylx(Integer.parseInt(rs.getString("RYLX")));
+                    entity.setMz(rs.getString("MZDM"));
+                    entity.setJzdz(rs.getString("JZDZ"));
+                    vector.add(entity);
+                }
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            this.close(rs, ps, con);
+        }
+        return vector;
+    }
+    
+    /**
+     * 
+      * singleFind:(身份证单个信息查询).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-15 下午4:06:39
+      * @param: @param idcard
+      * @param: @return
+      * @return: AddApplicationEntity
+      * @since JDK 1.6
+     */
+    public AddApplicationEntity singleFind(String idcard){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        AddApplicationEntity entity = null;
+        try {
+             con = myzhzykDataSource.getConnection();
+             String sql = "SELECT T.* FROM MYZHZYK.ZA_CZRK_QX T WHERE T.GMSFHM = ?";
+             ps = con.prepareStatement(sql);
+             ps.setString(1, idcard);
+             rs = ps.executeQuery();
+             while(rs.next()){
+                 entity = new AddApplicationEntity();
+                 entity.setIdcard(rs.getString("GMSFHM"));
+                 entity.setName(rs.getString("XM"));
+                 entity.setJzdz(rs.getString("ZZXZ"));
+                 entity.setMz(rs.getString("MZDM"));
+             }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            close(rs, ps, con);
+        }
+        return entity;
+    } 
+    
+    
+    
+    
+    
+    /**
+      * insertRecordToBKRY:(获取主键值，用户主键值，审批人主键信息添加新的人员布控记录).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-3 下午5:22:23
+      * @param: @param v
+      * @param: @return
+      * @return: Vector<AddApplicationEntity>
+      * @since JDK 1.6
+     */
+    public void insertRecordToBKRY(Vector<String> v,UserDto _user,String sprsqu){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        BkryEntity entity = null;
+        Vector<BkryEntity> vector_lk = new Vector<BkryEntity>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        
+        try {
+            con = myzhzykDataSource.getConnection();
+            for (int i = 0; i < v.size(); i++) {
+                String sql = "SELECT T.*,T2.RYLX AS RYLX FROM MYZHZYK.ZA_CZRK_QX T  INNER JOIN BKUSER.T_APPAPPLICATION T2 ON (T.GMSFHM = T2.IDCARD) WHERE T.GMSFHM = ?";
+                ps = con.prepareStatement(sql);
+                ps.setString(1, v.get(i).toString());
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    entity = new BkryEntity();
+                    entity.setGmsfhm(rs.getString("GMSFHM"));
+                    entity.setXm(rs.getString("XM"));
+                    entity.setRylx(Integer.parseInt(rs.getString("RYLX")));
+                    /**时间类型*/
+                    entity.setCjsj(sdf.format(new Date()));
+                     
+                    entity.setLrrsqu(_user.getSqu());
+                    entity.setHjdz(rs.getString("ZZXZ"));
+                    entity.setBkzt(BkryEntity.BKZT_DSP);
+                    entity.setBksy(null);
+                    entity.setBz(null);
+                    entity.setSprsqu(Integer.parseInt(sprsqu));
+                    entity.setIsnew(BkryEntity.ISNEW_YES);
+                    entity.setMz(rs.getString("MZDM"));
+                    vector_lk.add(entity);
+                }
+            }
+            if(vector_lk != null&&vector_lk.size() != 0){
+                this.addInforToBkry(vector_lk);
+            }
+        }catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }finally{
+            this.close(rs, ps, con);
+        }
+        
+        return;
+    }
+    
+    /**
+      * addTransitionData:(保存到过渡表里).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-15 下午4:25:14
+      * @param: @param entity
+      * @param: @param rylx
+      * @param: @return
+      * @return: int
+      * @since JDK 1.6
+     */
+    public int addTransitionData(AddApplicationEntity entity,String rylx,UserDto user){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int result = 0;
+        try {
+            con = datasource.getConnection();
+            con.setAutoCommit(false);
+            String sql = "INSERT INTO T_APPAPPLICATION VALUES (SEQ_T_APPAPPLICATION.NEXTVAL,?,?,?,?,?,?)";
+            ps = con.prepareStatement(sql);
+            ps.setString(1, entity.getName());
+            ps.setString(2, entity.getIdcard());
+            ps.setString(3, rylx);
+            ps.setString(4, entity.getJzdz());
+            ps.setString(5, entity.getMz());
+            ps.setInt(6, user.getSqu());
+            result = ps.executeUpdate();
+            con.commit();
+        }catch (SQLException e) {
+            try {
+                con.rollback();
+            }catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+        }finally{
+            close(rs, ps, con);
+        }
+        return result;
+    }
+    
+    /**
+      * deleteTransitionData:(删除临时的数据).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-16 上午11:48:20
+      * @param: @param ps
+      * @param: @return
+      * @return: int
+      * @since JDK 1.6
+     */
+    public int deleteTransitionData(UserDto user){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int delete = -1;
+        try {
+            con = datasource.getConnection();
+            String sql = "DELETE FROM T_APPAPPLICATION WHERE CZRSQU = ?";
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, user.getSqu());
+            delete = ps.executeUpdate();
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            close(rs, ps, con);
+        }
+        return delete;
+    }
+    
+    /**
+      * deleteRecordById:(根据ID删除临时的数据).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-18 下午5:34:52
+      * @param: @param id
+      * @param: @return
+      * @return: int
+      * @since JDK 1.6
+     */
+    public int deleteRecordById(String id,String rylx){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int m = -99;
+        try {
+            con = datasource.getConnection();
+            String sql = "DELETE FROM T_APPAPPLICATION";
+            StringBuffer sb = new StringBuffer(sql);
+            if( id != null){
+                sb.append("\t WHERE IDCARD = '"+id+"'");
+            }
+            if( rylx != null){
+                sb.append("\t AND RYLX = '"+rylx+"'");
+            }
+            ps = con.prepareStatement(new String(sb));
+            m = ps.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }finally{
+            close(rs, ps, con);
+        }
+        return m;
+    }
+    
+    public String checkIsBkedBy(String id,UserDto _user){
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        BkryEntity entity = null;
+        try {
+			con = this.datasource.getConnection();
+			String sql = "SELECT T.*,TO_CHAR(CJSJ,'yyyy-MM-dd HH24:mi:ss') AS CJSJ,TO_CHAR(SXSJ,'yyyy-MM-dd HH24:mi:ss') AS SXSJ FROM BKUSER.T_BKRY T  WHERE T.GMSFHM ='"+id+"' AND T.LRRSQU = '"+_user.getSqu()+"' ";
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				entity = new BkryEntity();
+				entity.setGmsfhm(rs.getString("GMSFHM"));
+				entity.setXm(rs.getString("XM"));
+				entity.setRylx(rs.getInt("RYLX"));
+				entity.setCjsj(rs.getString("CJSJ"));
+				entity.setSxsj(rs.getString("SXSJ"));
+				entity.setLrrsqu(rs.getInt("LRRSQU"));
+				entity.setHjdz(rs.getString("HJDZ"));
+				entity.setBkzt(rs.getInt("BKZT"));
+				entity.setBksy(rs.getString("BKSY"));
+				entity.setBz(rs.getString("BZ"));
+				entity.setSprsqu(rs.getInt("SPRSQU"));
+				entity.setIsnew(rs.getInt("ISNEW"));
+				entity.setMz(rs.getString("MZDM"));
+			}
+			if(entity != null){
+				if(entity.getBkzt() == 0 || entity.getBkzt() ==1){//布控状态0:待审批,1:布控
+					if(_user.getSqu() == entity.getLrrsqu()){
+						return "unusable";
+					}
+					return "usable";
+				}else if(entity.getBkzt()==2||entity.getBkzt()==3){//布控状态2:过期,3:审批未通过
+					if(_user.getSqu() == entity.getLrrsqu()){
+						return "unusable";
+					}else{
+						return "usable";
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			this.close(rs, ps, con);
+		}
+		return "usable";
+    }
+    
+    /**
+     * existInPage:(检查数据是否存在在页面了).<br/>
+     * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+     * @author: 张家俊
+     * @dateTime: 2017-5-23 上午11:35:43
+     * @return: void
+     * @since JDK 1.6
+    */
+    public String checkExistInPage(String id,UserDto user){
+    	 Connection con = null;
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+         
+         try {
+			con = datasource.getConnection();
+			String sql = "SELECT T.* FROM T_APPAPPLICATION T WHERE T.IDCARD = ? AND T.CZRSQU = ? ";
+			ps = con.prepareStatement(sql);
+			ps.setString(1,id );
+			ps.setInt(2, user.getSqu());
+			rs = ps.executeQuery();
+			if(rs.next()){
+				return "exist";
+			}else{
+				return "unexist";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			close(rs, ps, con);
+		}
+    	
+    	return "";
+    }
+    
+    /**
+     * reloadOwn:(重新加载自己用户所有的临时数据，用于和页面保持同步).<br/>
+     * @author: 张家俊
+     * @dateTime: 2017-5-23 上午11:36:21
+     * @return: void
+     * @since JDK 1.6
+    */
+    public Vector<AddApplicationEntity> reloadDataBySqu(UserDto user){
+    	Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        AddApplicationEntity entity =null;
+        Vector<AddApplicationEntity> vector = new Vector<AddApplicationEntity>();
+        try {
+			con = datasource.getConnection();
+			String sql = "SELECT T.* FROM T_APPAPPLICATION T WHERE T.CZRSQU = ?";
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, user.getSqu());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				entity = new AddApplicationEntity();
+				entity.setSqu(String.valueOf(rs.getInt("squ")));
+				entity.setName(rs.getString("NAME"));
+				entity.setIdcard(rs.getString("IDCARD"));
+				entity.setRylx(rs.getInt("RYLX"));
+				entity.setJzdz(rs.getString("jzdz"));
+				entity.setMz(rs.getString("MZDM"));
+				entity.setCzrsqu(rs.getInt("CZRSQU"));
+				vector.add(entity);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally{
+			close(rs, ps, con);
+		}
+    	return vector;
+    }
+     
+    
+    
+    
+    /**
+      * close:(关闭数据流).<br/>
+      * @author: 张家俊
+      * @dateTime: 2017-5-3 下午5:57:15
+      * @param: @param rs
+      * @param: @param ps
+      * @param: @param con
+      * @return: void
+      * @since JDK 1.6
+     */
+    private void close(ResultSet rs,PreparedStatement ps,Connection con){
+        try {
+            if(rs != null)
+               rs.close();
+            if(ps != null)
+               ps.close();
+            if(con != null)
+               con.close();
+        }catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public DataSource getMyzhzykDataSource(){
+        return myzhzykDataSource;
+    }
+    public void setMyzhzykDataSource(DataSource myzhzykDataSource){
+        this.myzhzykDataSource = myzhzykDataSource;
+    }
+}

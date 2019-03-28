@@ -1,0 +1,64 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+  	<!--载入默认的struts配置-->
+	<include file="struts-default.xml" />
+	<!-- 字符编码UTF-8 -->
+	<constant name="struts.il8n.encoding" value="UTF-8"></constant>
+	<!-- 访问action时候的扩展名 -->
+	<constant name="struts.action.extension" value="do"></constant>
+	 <!--当struts的配置文件修改后，系统是否自动重新加载该文件，默认值为false，生产环境下使用，开发阶段最好打开 -->
+    <constant name="struts.configuration.xml.reload" value="true"></constant>
+	<!-- 支持页面使用静态方法和属性 -->
+    <constant name="struts.ognl.allowStaticMethodAccess" value="true"></constant>
+    <!--Struts2集成Spring：所有action对象由Spring来负责创建-->
+    <constant name="struts.objectFactory" value="spring"></constant>
+    
+    <!-- 拦截器  -->
+    <include file="conf/struts/struts-interceptor.xml"/>
+   
+	<!-- 数据源注册  -->
+	<include file="conf/struts/registry/struts-registry-dataSource.xml"/>
+	<!-- 实体注册  -->
+	<include file="conf/struts/registry/struts-registry-entity.xml"/>
+	<!-- 字段注册  -->
+	<include file="conf/struts/registry/struts-registry-field.xml"/>
+	<!-- 查询实体 -->
+	<include file="conf/struts/registry/struts-registry-query.xml"/>
+	<!-- 操作日志 -->
+	<include file="conf/struts/log/struts-log.xml"/>
+	<!-- 用户角色 -->
+	<include file="conf/struts/user/struts-user.xml"/>
+	<!-- 公共action -->
+	<include file="conf/struts/common/struts-common.xml"/>
+	<!-- 布控预警管理 -->
+	<include file="conf/struts/manage/struts-manage.xml"/>
+	<!-- 布控人员-->
+	<include file="conf/struts/dispatched/struts-dispatched.xml"/>
+	<!-- 待审批-->
+	<include file="conf/struts/approvalPending/struts-approval.xml"/>
+	<!-- 新增布控应用 -->
+	<include file="conf/struts/addapplication/struts-addapplication.xml"></include>
+	<!-- 续期 -->
+	<include file="conf/struts/overdue/struts-overdue.xml"></include>
+	<!--部门管理  -->
+	<include file="conf/struts/dept/struts-dept.xml"></include>
+	<!--菜单配置  -->
+	<include file="conf/struts/ality/struts-ality.xml"></include>
+	<!--物资产品库——部件分类目录配置  -->
+	<include file="conf/struts/goodsHouse/struts-parts.xml"></include> 
+	<!--物资产品库——抗震支架部件配置  -->
+	<include file="conf/struts/goodsHouse/struts-stentts.xml"></include> 
+	<!-- 项目配置 -->
+	<include file="conf/struts/projectConfig/struts-projectConfig.xml"></include>
+
+	<!--抗震支架基本配置  -->
+	<include file="conf/struts/kzzj/struts-kzzj.xml"></include> 
+	<include file="conf/struts/kzzj/struts-holderReport.xml"></include> 
+	<!--抗震支架明细配置  -->
+	<include file="conf/struts/kzzjMxpz/struts-kzzjMxpz.xml"></include>
+	<!--照片资料管理  -->
+	<include file="conf/struts/goodsHouse/struts-img.xml"></include>
+</struts>

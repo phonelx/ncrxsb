@@ -1,0 +1,81 @@
+package monitor.projectConfig.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+
+import monitor.projectConfig.dao.ICalculationReportDao;
+
+/**
+ *@ClassName 支架报告计算
+ *@dataTime 2018-4-9-下午2:39:54
+ *@version
+ *@author:唐青
+ *@since
+ */
+public class CalculationReportDaoImpl implements ICalculationReportDao{
+
+	
+	private PreparedStatement ps = null;
+	private ResultSet rs = null;
+	/**
+	 * 根据项目SQU查询项目信息
+	  * selectProjectInfo:接口实现
+	  * @author 唐青
+	  * @date  2018-4-9 下午3:07:02
+	  * @param prosqu 项目squ
+	  * @return
+	  * @throws SQLException
+	 */
+	@Override
+	public Map<String, String> selectProjectInfo(Connection conn , String prosqu)
+			throws SQLException {
+		StringBuilder sql = new StringBuilder();
+		//List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		
+		sql.append(" SELECT XMBH,XMDZ,XMLX,XMMC,XMMJ,P1.LBMC DZSFLD,P2.LBMC DZJSD,P3.LBMC DZLX, ");
+		sql.append(" ALPHAMAX FROM PROJECT ,PROJECT_WZZDB P1,PROJECT_WZZDB P2,PROJECT_WZZDB P3 ");
+		sql.append(" WHERE P1.SQU = DZSFLD AND P2.SQU = DZJSD AND P3.SQU= DZLX AND PROJECT_SQU='"+prosqu+"'");
+		ps = conn.prepareStatement(sql.toString());
+		rs = ps.executeQuery();
+		Map<String, String> map = null;
+		map = new HashMap<String, String>();
+		while(rs.next()){
+			map.put("XMBH", rs.getString("XMBH"));
+			map.put("XMDZ", rs.getString("XMDZ"));
+			map.put("XMLX", rs.getString("XMLX"));
+			map.put("XMMC", rs.getString("XMMC"));
+			map.put("XMMJ", rs.getString("XMMJ"));
+			map.put("DZSFLD", rs.getString("DZSFLD"));
+			map.put("DZJSD", rs.getString("DZJSD"));
+			map.put("DZLX", rs.getString("DZLX"));
+			map.put("ALPHAMAX", rs.getString("ALPHAMAX"));			
+		}
+		return map;
+	}
+
+	@SuppressWarnings("unused")
+	private void closed(ResultSet rs, PreparedStatement ps){
+		if (rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if (ps != null) {
+			try {
+				ps.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

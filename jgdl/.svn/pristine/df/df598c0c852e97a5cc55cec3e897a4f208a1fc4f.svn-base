@@ -1,0 +1,125 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ include file="/pages/head.jsp" %>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>后台管理页</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="resource/css/backStage/backStage.css">
+	<script type="text/javascript" src="resource/js/backStage.js"></script>
+	<script type="text/javascript" src="resource/js/user/cookie.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){ 
+		setCookie("username",document.cookie,30);//30天
+	});
+	function goLogout(){
+		clearCookie("username")
+		var form = document.createElement("form");
+		form.style.display = "none";
+		form.action = "goloutout.do";
+		form.method = "post";
+		document.body.appendChild(form);
+		form.submit(); 
+		}
+	</script>
+	
+	<script type="text/javascript">
+		$(document).ready(function() {
+			
+		/* 	($("*").not(".we")).each(function(){
+				$(this).on("click",function(){
+					$("#xianli").css("dispaly","none");
+				});
+			}); */
+			
+			$(".child_list li").click(function(){
+	            $(this).siblings().removeClass("add-style");
+	            $(this).addClass("add-style");
+	        })
+	    });
+	</script>
+	
+	<style>
+	.btn-style{
+	color:#FFFFFF;
+	background-color:#27588c;
+	padding:8px 10px;
+	border-radius:4px;
+	box-shadow:-1px 0px 6px #0c366c;
+	}
+	.btn-style:hover{
+		color:white;
+		opacity:0.8;
+	}
+	.add-style{
+		border-left:2px solid #1869d0;
+	}
+	</style>
+  </head>
+  
+  <body>
+<!--   href="pages/bk_backIndex.jsp" title="首页" -->
+  	<div id="frame-all">
+		<div id="frame-top">
+			<dl id="header">
+				<dt class="logo"></dt>
+				<dd><a href="javascript:void(0);" id="logout"  class="btn-style" onclick="goLogout();"><i class="icon-off icon-white"></i>&nbsp;注销</a></dd>
+				<dd><a class="btn-style"><i class="icon icon-user icon-white"></i>&nbsp;[${userTitle}]</a></dd>
+			</dl>
+		</div>
+		
+		<div id="frame-left">
+			<div id="left-module">
+				<ul id="module-list">
+					<li style="background-color: #0065A5;">
+						<a >
+							<span class="text" style="text-align:center;">
+								<img src="resource/images/banshidating.png" />
+								&nbsp;
+								<span style="font-size: 16px;">首页</span>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<img src="resource/images/shouqicaidan.png" />
+								
+							</span>
+						</a>
+					</li>
+					<c:forEach var="mainBean" items="${moduleMainDtoList}" varStatus="status">
+						<li style="background-color:#1C2B36;border-bottom: 1px #131E26 solid;">
+							<a class="module_link">
+								<span class="text">
+									<span></span>
+									<span>${mainBean.name}</span>
+									<span class="icon icon-white icon-triangle-s" style="margin-left: 50px;"></span>
+								</span>
+							</a>
+							<ul class="child_list">
+								<c:forEach var="subBean" items="${mainBean.subModuleList}">
+									<li style="background-color:#131E26;border-bottom: 1px #1C2B36 solid;">
+										<a href="${subBean.entryUrl}" target="rightFrame">
+											<span>${subBean.name}</span>
+										</a>
+									</li>
+								</c:forEach>
+							</ul>
+						</li>
+					</c:forEach>
+				</ul>
+			</div>
+		</div>
+		
+		<div id="frame-right">
+			<iframe src="pages/bk_backIndex.jsp" name="rightFrame" id="rightMain" frameborder="0"
+			 scrolling="auto" style="width:100%;height: 100%;"></iframe>
+		</div>
+	</div>
+  </body>
+</html>

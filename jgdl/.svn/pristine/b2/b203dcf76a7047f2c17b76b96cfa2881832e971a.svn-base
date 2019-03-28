@@ -1,0 +1,247 @@
+
+/* �ļ��ϴ���ť����*/ 
+.btn_addPic{ 
+    display: block;
+    position: relative;
+    width: 122px;
+    height: 36px;
+    overflow: hidden;
+    border: 1px solid #EBEBEB;
+    background: none repeat scroll 0 0 #F3F3F3;
+    color: #999999;
+    cursor: pointer;
+    text-align: center;
+    float: right;
+} 
+.btn_addPic span{display: block;line-height: 39px;} 
+.btn_addPic em { 
+	background:url(http://p7.qhimg.com/t014ce592c1a0b2d489.png) 0 0; 
+	display: inline-block; 
+	width: 18px; 
+	height: 18px; 
+	overflow: hidden; 
+	margin: 10px 5px 10px 0; 
+	line-height: 20em; 
+	vertical-align: middle; 
+} 
+.btn_addPic:hover em{background-position:-19px 0;} 
+.filePrew { 
+	display: block; 
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 140px; 
+	height: 39px; 
+	font-size: 100px; /* ����ͬ������Ŀɵ������ */ 
+	opacity: 0; /* ʵ�ֵĹؼ�� */ 
+	filter:alpha(opacity=0);/* ����IE */ 
+} 
+
+
+
+
+.left_me {
+	width: 100px;
+	text-align: center;
+	border: none;
+	cursor: pointer;
+	color: blue;
+}
+
+* {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+ul {
+	list-style: none;
+}
+
+#webmenu {
+	height: 37px;
+	font-size: 1.3em;
+	text-align: center;
+}
+
+#webmenu a {
+	font-size: 0.65em;
+}
+
+#webmenu li ul {
+	display: none;
+}
+
+#webmenu li ul li {
+	float: none;
+}
+
+* html #webmenu li ul li {
+	display: inline;
+}
+
+#webmenu li ul a {
+	float: none;
+	height: 32px;
+	line-height: 32px;
+	padding: 0 10px;
+	text-transform: capitalize;
+}
+
+#webmenu .height-auto {
+	line-height: 15px;
+	padding: 5px 10px;
+}
+
+.second-menu {
+	position: absolute;
+}
+
+.first-menu li {
+	float: left;
+	position: relative;
+}
+
+.first-menu a {
+	float: left;
+	display: block;
+	padding: 0 20px;
+	height: 35px;
+	line-height: 35px;
+}
+
+.first-menu a:hover {
+	background: #4698ca;
+	border-top: 1px solid #5db1e0;
+	border-left: 1px solid #5db1e0;
+}
+
+.second-menu {
+	top: 0;
+	left: 75px;
+	background-color: #f5f5f5;
+	border-radius: 5px;
+}
+
+* html .second-menu {
+	right: -1px;
+}
+
+.second-menu a {
+	font-size: 11px;
+}
+
+#subMusic,#subNews {
+	width: 150px;
+}
+
+#subMusic li {
+	border-bottom: 1px solid #ccc;
+}
+
+#subMusic li a:hover {
+	color: white;
+}
+
+.bo_ta{
+	border: 1px solid #ccc;
+	text-align: center;
+}
+.bo_ta td{
+	border: 1px solid #ccc;
+}
+
+.bo_label{
+	    width: 40px;
+    	height: 35px;
+}
+
+#text_icon {
+	position: absolute;
+	top: 140px;
+	left: 540px;
+	display: none;
+}
+ 
+ .topnav {
+	padding: 40px 28px 25px 15px;
+    color:#3f9fd9;
+}
+
+ul.topnav {
+	padding: 0;
+	margin: 0;
+	line-height: 0.5em;
+	list-style: none;
+}
+
+
+
+ul.topnav li a:hover {
+	background-color:#ccc;    
+}
+
+ul.topnav ul {
+	margin: 0;
+	padding: 0;
+	display: none;
+}
+
+ul.topnav ul li {
+	margin: 0;
+	padding: 0;
+	clear: both;
+}
+
+
+ul.topnav ul li a:hover {
+	background-color:#D3C99C;
+	color:#675C7C;
+}
+
+
+ul.topnav ul ul li a:hover {
+	background-color:#D3CEB8;
+	color:#675C7C;
+}
+
+ul.topnav span{
+   float:left;
+}
+
+button.btn {
+  margin-top: -9px;
+  margin-left: -5px;
+}
+
+
+.nice-select ul {
+		width: 100%;
+		display: none;
+		position: absolute;
+		left: -26px;
+		top: 38px;
+		overflow: hidden;
+		background-color: #fff;
+		max-height: 150px;
+		overflow-y: auto;
+		border: 1px solid #999;
+		border-top: 0;
+		box-shadow: 0 3px 5px #999;
+		z-index: 9999;
+	}
+	.nice-select {
+		width: 200px;
+		padding: 0px;
+		height: 28px;
+		border-radius: 3px;
+		position: relative;
+		background: #fff url(resource/new/images/a2.jpg) no-repeat right center;
+		cursor: pointer;
+	}
+	
+#example{
+	height: 350px !important;
+}	

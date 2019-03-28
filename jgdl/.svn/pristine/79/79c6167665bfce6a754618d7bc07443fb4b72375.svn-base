@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	    http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+      
+	<!-- 项目实体 -->
+	<bean id="pro_child_site" class="monitor.projectConfig.bean.entity.Project_Child_Site" scope="prototype"/>
+	<!-- 项目基本配置功能 -->
+	<bean id="projectChildSiteAction" class="monitor.projectConfig.action.ProjectChildSiteAction" scope="prototype"/>
+	<bean id="projectChildSiteService" class="monitor.projectConfig.service.impl.ProjectChildSiteServiceImpl" scope="prototype">
+		<property name="datasource" ref="c3p0Datasource"></property>
+	</bean>
+	<bean id="projectChildSiteDao" class="monitor.projectConfig.dao.impl.ProjectChildSiteDaoImpl" scope="prototype"/>
+</beans>

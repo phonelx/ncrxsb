@@ -1,0 +1,147 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 16, 2011 5:46:32 PM
+*/
+package monitor.registry.bean.entity;
+
+/** 
+ * <description> 
+ * @author  liangxj
+ * @datetime  Apr 16, 2011 5:46:32 PM
+ */
+public class RegEntity {
+	// 序列号
+	private Integer squ ;
+	// 所属数据源squ
+	private Integer datasourceSqu ;
+	//实体名称，和数据库中相同
+	private String name ;
+	//实体注册标题，通常输入为中文，便于用户查看
+	private String title ;
+	//实体描述
+	private String descb ;
+	//实体注册时间
+	private String regDateTime ;
+	//是否为视图。	1：视图；0：表
+	private int isView ;
+	// 资源分类
+	private int typeSqu ;
+	// 要素   比如：人员要素，案事件要素，地点要素，机构要素，物品要素
+	private String essential ;
+	//是否为预警查询表
+	private String isquery;
+	/** 
+	 * @return squ 
+	 */
+	public Integer getSqu() {
+		return squ;
+	}
+	/** 
+	 */
+	
+	public void setSqu(Integer squ) {
+		this.squ = squ;
+	}
+	/** 
+	 * @return datasourceSqu 
+	 */
+	public Integer getDatasourceSqu() {
+		return datasourceSqu;
+	}
+	/** 
+	 */
+	
+	public void setDatasourceSqu(Integer datasourceSqu) {
+		this.datasourceSqu = datasourceSqu;
+	}
+	/** 
+	 * @return name 
+	 */
+	public String getName() {
+		return name;
+	}
+	/** 
+	 */
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	/** 
+	 * @return title 
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/** 
+	 */
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/** 
+	 * @return descb 
+	 */
+	public String getDescb() {
+		return descb;
+	}
+	/** 
+	 */
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	/** 
+	 * @return regDateTime 
+	 */
+	public String getRegDateTime() {
+		return regDateTime;
+	}
+	/** 
+	 */
+	public void setRegDateTime(String regDateTime) {
+		this.regDateTime = regDateTime;
+	}
+	/** 
+	 * @return isView 
+	 */
+	public int getIsView() {
+		return isView;
+	}
+	/** 
+	 */
+	public void setIsView(int isView) {
+		this.isView = isView;
+	}
+	/** 
+	 * @return typeSqu 
+	 */
+	public int getTypeSqu() {
+		return typeSqu;
+	}
+	/** 
+	 */
+	
+	public void setTypeSqu(int typeSqu) {
+		this.typeSqu = typeSqu;
+	}
+	/** 
+	 * @return essential 
+	 */
+	public String getEssential() {
+		return essential;
+	}
+	/** 
+	 */
+	
+	public void setEssential(String essential) {
+		this.essential = essential;
+	}
+	public String getIsquery() {
+		return isquery;
+	}
+	public void setIsquery(String isquery) {
+		this.isquery = isquery;
+	}
+	
+}

@@ -1,0 +1,61 @@
+package monitor.registry.bean.dto;
+
+public class RelationDto {
+	//编号
+	private int squ ;
+	//关系名称
+	private String name ;
+	//关系描述
+	private String descb ;
+	//实体编号
+	private String entity;
+	//参照实体的编号
+	private String refEntity ;
+	//字段编号
+	private String field ;
+	//参照字段的编号
+	private String refField ;
+	public int getSqu() {
+		return squ;
+	}
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescb() {
+		return descb;
+	}
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	public String getEntity() {
+		return entity;
+	}
+	public void setEntity(String entity) {
+		this.entity = entity;
+	}
+	public String getRefEntity() {
+		return refEntity;
+	}
+	public void setRefEntity(String refEntity) {
+		this.refEntity = refEntity;
+	}
+	public String getField() {
+		return field;
+	}
+	public void setField(String field) {
+		this.field = field;
+	}
+	public String getRefField() {
+		return refField;
+	}
+	public void setRefField(String refField) {
+		this.refField = refField;
+	}
+	
+}

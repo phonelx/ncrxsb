@@ -1,0 +1,141 @@
+package monitor.manage.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.bean.entity.Yjgz;
+
+public interface ManageDao {
+	/**
+	 * 
+	 * getallmz:(获取所有民族).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午01:51:48
+	 * @param: @return
+	 * @return: List
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public List getallmz();
+
+	/**
+	 * 
+	 * addManage:(添加预警配置).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午01:47:44
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String addManage(Yjgz yjgz);
+
+	/**
+	 * 
+	 * editmanage:(编辑预警配置).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午01:48:50
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String editmanage(Yjgz yjgz);
+
+	/**
+	 * 
+	 * delManage:(删除预警配置).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午01:49:08
+	 * @param: @return
+	 * @return: String
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public String delManage(String yjID);
+
+	/**
+	 * 
+	 * showManage:(显示已添加规则 分页显示).<br/>
+	 * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午02:41:08
+	 * @param: @return
+	 * @return: List
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public List showManage(int pageSize, int pageNo,String isquery);
+
+	/**
+	 * 
+	 * getregmanagecount:(获取已添加配置总数).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-8 下午02:40:38
+	 * @param: @return
+	 * @return: int
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public int getregmanagecount();
+
+	/**
+	 * 
+	 * showcitys:(根据输入模糊查询加载数据).<br/>
+	 * 
+	 * @author: 田浩楠
+	 * @dateTime: 2016-3-9 下午02:14:52
+	 * @param: @param option
+	 * @param: @return
+	 * @return: List
+	 * @throws
+	 * @since JDK 1.6
+	 */
+	public List showcitys(String option);
+	
+	/**
+	 * 
+	  * getoneyj:(获取指定条件的预警).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-17 上午10:59:59
+	  * @param: @return
+	  * @return: List<Yjgzdto>
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public Yjgzdto getoneyj(String id);
+	/**
+	 * 
+	  * GetYJSFZS:(分页查询身份证进行比对查询).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-23 下午02:59:57
+	  * @param: @param pageSize
+	  * @param: @param pageNo
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String GetYJSFZS(int pageSize, int pageNo);
+	/**
+	 * 
+	  * getyjsfzcount:(获取).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-3-23 下午03:12:54
+	  * @param: @return
+	  * @return: int
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public int getyjsfzcount(Yjgz yj, Map<String, String> Yjmap);
+
+}

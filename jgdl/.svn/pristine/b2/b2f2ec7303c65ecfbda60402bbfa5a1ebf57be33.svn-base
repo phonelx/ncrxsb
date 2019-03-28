@@ -1,0 +1,59 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:SMS.java
+	* Date:2016-3-14下午01:08:52   
+	***/
+package monitor.manage.bean.entity;
+
+/**
+ * @ClassName:SMS
+ * @dateTime: 2016-3-14 下午01:08:52
+ * @Description: TODO
+ * @version 
+ * @author: 田浩楠
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class SMS {
+	private Integer id;			//唯一标识
+	private String title;		//短信标题
+	private String end;			//短信结尾
+	private Integer isSend;		//是否发送
+	private String  bkid;		//布控标题
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getEnd() {
+		return end;
+	}
+	public void setEnd(String end) {
+		this.end = end;
+	}
+	public Integer getIsSend() {
+		return isSend;
+	}
+	public void setIsSend(Integer isSend) {
+		this.isSend = isSend;
+	}
+	public String getBkid() {
+		return bkid;
+	}
+	public void setBkid(String bkid) {
+		this.bkid = bkid;
+	}
+	
+	
+}

@@ -1,0 +1,98 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ControlAction.java
+	* Date:2017-5-12上午10:44:54   
+	***/
+package monitor.manage.action;
+import java.sql.SQLException;
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.manage.service.ControlService;
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ * @ClassName:ControlAction
+ * @dateTime: 2017-5-12 上午10:44:54
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ControlAction extends BaseAction {
+
+	/**
+	  * @Fields  serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	  * @since JDK1.7
+	*/
+	private static final long serialVersionUID = 1L;
+	
+	private ControlService controlService;
+
+	private PageInfoVo pageVo = new PageInfoVo();
+
+	
+	public String showManageIndex(){
+		return SUCCESS;
+	}
+	
+	/**
+	  * listControlInPage:(查询布控列表).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-23 上午10:48:38 void
+	  * @since JDK 1.7
+	*/
+	public void listControlInPage(){
+		String searchKey = getRequest().getParameter("searchKey");
+		// 每页显示条数
+		int pageSize  = Integer.parseInt(getRequest().getParameter("rows"));
+		// 当前页
+		int pageNo = Integer.parseInt(getRequest().getParameter("page"));
+		this.pageVo.setPageSize(pageSize);
+		this.pageVo.setPageNumber(pageNo);
+		try {
+			this.pageVo = controlService.listControlInPage(searchKey, pageVo);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		JSONObject json = JSONObject.fromObject(pageVo);
+		json.put("pageSize", pageSize);
+		json.put("pageNumber", pageNo);
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	  * deleteControl:(删除布控信息).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-23 上午10:57:04 void
+	  * @since JDK 1.7
+	*/
+	public void deleteControl(){
+		
+	}
+
+	public ControlService getControlService() {
+		return controlService;
+	}
+
+	public void setControlService(ControlService controlService) {
+		this.controlService = controlService;
+	}
+
+	public PageInfoVo getPageVo() {
+		return pageVo;
+	}
+
+	public void setPageVo(PageInfoVo pageVo) {
+		this.pageVo = pageVo;
+	}
+
+
+	
+}

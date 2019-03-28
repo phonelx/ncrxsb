@@ -1,0 +1,29 @@
+package monitor.dispatched.dao;
+
+import java.sql.SQLException;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+
+public interface IOverdueDao {
+	/**
+	 * 续期
+	 * @param gmsfhm（身份证号）
+	 * @return
+	 */
+	public String updateOverdue(String gmsfhm);
+
+	/**
+	  * listOverdueInPage:(分页查询已过期人员).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-5-22 上午10:57:02
+	  * @param dispatchedDto
+	  * @param param
+	  * @return
+	  * @throws SQLException DispatchedDto
+	  * @since JDK 1.7
+	*/
+	public DispatchedDto listOverdueInPage(DispatchedDto dispatchedDto,
+			String param) throws SQLException;
+}

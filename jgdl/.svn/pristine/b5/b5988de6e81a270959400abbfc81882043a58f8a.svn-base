@@ -1,0 +1,190 @@
+/***
+ * copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * Project Name:monitor
+ * @since：JDK1.6
+ * @version：1.0
+ * File Name:TRegfieldEntity.java
+ * Date:2016-3-16上午11:29:21
+ ***/
+package monitor.manage.bean.entity;
+
+/**
+ * @ClassName:TRegfieldEntity
+ * @dateTime: 2016-3-16 上午11:29:21
+ * @version
+ * @author: 张家俊
+ * @since JDK 1.6 History： Editor version Time Operation
+ */
+public class TRegfieldEntity {
+	private int squ;// 唯一标识
+	private int entitysqu;// 实体ID
+	private String name;// 字段名
+	private String title;// 字段标题
+	private String descb;// 描述
+	private String regdatetime;// 注册时间
+	private String type;// 字段类型
+	private int precision;
+	private int scale;
+	private int iskey;// 是否是主键 0:不是 1:是
+	private int isnullable;// 是否为空 0:不为空 1:为空
+	private int isautoincrement;// 是否自增 0:不自增 1:自增
+	private int isunique;// 是否是唯一约束 0:不是唯一约束 1:是唯一
+	private int ascondition;// 是否是检索条件 0:不是 1:是
+	private String dictypesqu;
+	private int displayprio;// 显示优先级，默认为1
+	private int issimpleel;// 共享等级，默认为0
+	private String bkindexof;// 匹配布控字段
+	private String isyjquery;// 是否检索字段
+	public int getSqu() {
+		return squ;
+	}
+
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+
+	public int getEntitysqu() {
+		return entitysqu;
+	}
+
+	public void setEntitysqu(int entitysqu) {
+		this.entitysqu = entitysqu;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescb() {
+		return descb;
+	}
+
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+
+	public String getRegdatetime() {
+		return regdatetime;
+	}
+
+	public void setRegdatetime(String regdatetime) {
+		this.regdatetime = regdatetime;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public int getPrecision() {
+		return precision;
+	}
+
+	public void setPrecision(int precision) {
+		this.precision = precision;
+	}
+
+	public int getScale() {
+		return scale;
+	}
+
+	public void setScale(int scale) {
+		this.scale = scale;
+	}
+
+	public int getIskey() {
+		return iskey;
+	}
+
+	public void setIskey(int iskey) {
+		this.iskey = iskey;
+	}
+
+	public int getIsnullable() {
+		return isnullable;
+	}
+
+	public void setIsnullable(int isnullable) {
+		this.isnullable = isnullable;
+	}
+
+	public int getIsautoincrement() {
+		return isautoincrement;
+	}
+
+	public void setIsautoincrement(int isautoincrement) {
+		this.isautoincrement = isautoincrement;
+	}
+
+	public int getIsunique() {
+		return isunique;
+	}
+
+	public void setIsunique(int isunique) {
+		this.isunique = isunique;
+	}
+
+	public int getAscondition() {
+		return ascondition;
+	}
+
+	public void setAscondition(int ascondition) {
+		this.ascondition = ascondition;
+	}
+
+	public String getDictypesqu() {
+		return dictypesqu;
+	}
+
+	public void setDictypesqu(String dictypesqu) {
+		this.dictypesqu = dictypesqu;
+	}
+
+	public int getDisplayprio() {
+		return displayprio;
+	}
+
+	public void setDisplayprio(int displayprio) {
+		this.displayprio = displayprio;
+	}
+
+	public int getIssimpleel() {
+		return issimpleel;
+	}
+
+	public void setIssimpleel(int issimpleel) {
+		this.issimpleel = issimpleel;
+	}
+
+	public String getBkindexof() {
+		return bkindexof;
+	}
+
+	public void setBkindexof(String bkindexof) {
+		this.bkindexof = bkindexof;
+	}
+
+	public String getIsyjquery() {
+		return isyjquery;
+	}
+
+	public void setIsyjquery(String isyjquery) {
+		this.isyjquery = isyjquery;
+	}
+	
+}

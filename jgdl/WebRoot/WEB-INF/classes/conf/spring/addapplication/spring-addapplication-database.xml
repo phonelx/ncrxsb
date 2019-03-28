@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd">  
+	 
+	<!--c3p0数据源配置  -->
+	<!--连接绵阳综合资源库使用  -->
+	<bean id="myzhzykDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="clone">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@192.168.0.11:1521:ORCL"/>
+		<property name="user" value="MYZHZYK"/>
+		<property name="password" value="MYZHZYK"/>
+	</bean>
+</beans>

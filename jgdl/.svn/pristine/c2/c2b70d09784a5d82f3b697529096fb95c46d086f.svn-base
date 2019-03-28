@@ -1,0 +1,151 @@
+package monitor.manage.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+//http://www.cnblogs.com/hongten/p/java_poi_excel_xls_xlsx.html
+public class ReadExcel {
+	public String readExcel(String path) {
+		if (path == null || path.equals("")) {
+			return null;
+		} else {
+			String postfix = getPostfix(path);// 得到文件后缀名
+
+			if (postfix.equals("xls")) {
+				return readXls(path);
+			} else if (postfix.equals("xlsx")) {
+				return readXlsx(path);
+			}
+		}
+		return null;
+	}
+
+	// 读取2003-2007版的EXECL
+	public String readXls(String path) {
+		String xlsStr = "";
+		InputStream inStream = null;
+		HSSFWorkbook hssfWorkbook = null;
+		try {
+			inStream = new FileInputStream(path);
+			hssfWorkbook = new HSSFWorkbook(inStream);
+			// Read the Sheet
+			for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
+				HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+				if (hssfSheet == null) {
+					continue;
+				}
+				// Read the Row
+				for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+					HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+					if (hssfRow != null) {
+						HSSFCell no = hssfRow.getCell(0);
+						xlsStr = xlsStr + getValue(no) + ",";
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				inStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return xlsStr.substring(0, xlsStr.length()-1);
+	}
+
+	private String getValue(HSSFCell hssfCell) {
+		if (hssfCell.getCellType() == hssfCell.CELL_TYPE_BOOLEAN) {
+			return String.valueOf(hssfCell.getBooleanCellValue());
+		} else if (hssfCell.getCellType() == hssfCell.CELL_TYPE_NUMERIC) {
+			return String.valueOf(hssfCell.getNumericCellValue());
+		} else {
+			return String.valueOf(hssfCell.getStringCellValue());
+		}
+	}
+
+	// 读取2007+版的EXECL
+	public String readXlsx(String path) {
+		String xlsxStr = "";
+		InputStream inStream = null;
+		XSSFWorkbook xssfWorkbook = null;
+		try {
+			inStream = new FileInputStream(path);
+			xssfWorkbook = new XSSFWorkbook(inStream);
+			// Read the Sheet
+			for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
+				XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
+				if (xssfSheet == null) {
+					continue;
+				}
+				// Read the Row
+				for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+					XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+					if (xssfRow != null) {
+						XSSFCell sfzhm = xssfRow.getCell(1);
+						xlsxStr = xlsxStr + getValue(sfzhm) + ",";
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				inStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return xlsxStr.substring(0, xlsxStr.length()-1);
+	}
+
+	private String getValue(XSSFCell xssfCell) {
+		if (xssfCell.getCellType() == xssfCell.CELL_TYPE_BOOLEAN) {
+			return String.valueOf(xssfCell.getBooleanCellValue());
+		} else if (xssfCell.getCellType() == xssfCell.CELL_TYPE_NUMERIC) {
+			return String.valueOf(xssfCell.getNumericCellValue());
+		} else {
+			return String.valueOf(xssfCell.getStringCellValue());
+		}
+	}
+
+	// 截取文件的后缀名，用于判断是那个版本的EXECL
+	public String getPostfix(String path) {
+		return path.substring(path.indexOf(".") + 1, path.length());
+	}
+
+	public static void main(String[] args) {
+		String path = "D:\\bkhmFile\\sfzhm.xlsx";
+		String getStr=new ReadExcel().readExcel(path);
+		System.out.println(getStr.substring(0,getStr.length()-1));
+	}
+	
+	/**
+	 * 删除文件
+	 * @param filename
+	 */
+	public static  void RemoveFile(String filePath){
+		File file = new File(filePath);
+		if(file.exists()){
+			file.delete();
+		}
+	}
+}

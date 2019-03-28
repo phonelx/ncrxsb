@@ -1,0 +1,35 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="monitor-common" extends="monitor-struts-default" >
+		<action name="generatePieChartOfAllFactorsCounts" class="commonAction" method="generatePieChartOfAllFactorsCounts">
+		</action>
+		
+		<action name="calculateAllFactourCounts" class="commonAction" method="calculateAllFactourCounts">
+		</action>
+		<action name="submitError" class="commonAction" method="saveErrorData"/>
+		<action name="showWelcome" class="commonAction" method="showWelcome">
+			<result name="success">/pages/welcome.jsp</result>
+		</action>
+		<action name="sameNameJudge" class="commonAction" method="sameNameJudge"/>
+		
+		
+		<!-- 根据父资源类型查询所有子资源dtos -->
+		<action name="fetchResourceTypesByParentSQU" class="resourceTypeAction" method="fetchResourceTypesByParentSQU">
+		</action>
+		<action name="fetchParentResourceTypesSqu" class="resourceTypeAction" method="fetchParentResourceTypesSqu">
+		</action>
+		<action name="genResourceTypeTree" class="resourceTypeAction" method="genResourceTypeTree">
+		</action>
+		
+		<!-- 单点登陆 -->
+		<action name="loginOtherSsp" class="commonAction" method="loginOtherSsp">			 
+		</action>
+
+		<!-- 检测系统运行状态 -->
+		<action name="checkSysStatus" class="commonAction" method="checkSysStatus">		
+		</action>
+
+	</package>	
+</struts>

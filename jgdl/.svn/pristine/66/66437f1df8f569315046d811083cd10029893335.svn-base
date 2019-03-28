@@ -1,0 +1,48 @@
+package monitor.dispatched.service;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+
+/**
+ * @ClassName:IDispatchedService
+ * @datetime: 2017-4-17 下午4:12:38
+ * @Description: 布控人员接口
+ * @version 
+ * @author: 桂人杰
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public interface IDispatchedService {
+
+	/**
+	  * listDispatchedInPage:(分页查询布控人员).<br/>
+	  * @author: 桂人杰
+	  * @datetime: 2017-4-17 下午4:12:27
+	  * @param: @param dispatchedDto
+	  * @return: DispatchedDto
+	 * @throws SQLException 
+	  * @throws
+	  * @since JDK 1.6
+	*/
+	public DispatchedDto listDispatchedInPage(DispatchedDto dispatchedDto) throws SQLException;
+	
+	/**
+	  * selectTrajectory:(查询人员轨迹).<br/>
+	  * TODO(已部署人员信息).<br/>
+	  * @author: 黄月
+	  * @dateTime: 2017-4-25 下午3:21:23
+	  * @param dispatchedDto
+	  * @return List<Map<String,String>>
+	  * @throws SQLException 
+	  * @since JDK 1.7
+	*/
+	public List<Map<String, String>> selectTrajectory(DispatchedDto dispatchedDto) throws SQLException;
+	
+	public String findMz(String gmsfzh);
+	
+}

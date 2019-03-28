@@ -1,0 +1,296 @@
+/**WebRoot/pages/type.jspp鐨勬牱寮�*/
+
+button{
+text-decoration: none;
+width: 40px;
+border: 0px solid #012552;
+}
+.navc{
+	border: 0px solid silver;
+	width: 100%!important;
+	border-radius: 8px;
+	height: 100% !important;
+}
+
+#poqo{
+	width: 80%;
+	height: 200px;/*杩欓噷鏄负浜嗛槻姝㈠彂鐢熷彉鍖�*/
+	border-radius:5px;
+	border-left: 0px;
+	border-right: 0px;
+}
+#selectl{
+	width:65%;
+	text-align: center;
+	border: 1px solid #e0d7d7;
+	background-color: #fff;
+}
+#selectw{
+	line-height: 0px;
+	display: none;
+	width: 100%;
+	height: 85%;
+	background-color: #f6f3f3;
+	border-bottom: 0px solid #eee;
+}
+#idcard {
+	float: left;
+	margin-top: 5px;
+	height: 25px;
+	width: 60%;
+	background-color: rgb(255, 255, 255);
+	color: #837777;
+	border: 1px solid #bfbfc3;
+	border-radius: 3px;
+	padding: 0px 0px 0px 4px;
+}
+
+.seek{
+	width: 22px;
+	height: 22px;
+	position: relative;
+	vertical-align: middle;
+	text-align: center;
+	top:5px;
+	left:3px;
+}
+.bottom-deco{
+	background-color: #f9fbfe;
+}
+table th{
+	padding: 4px 2px 4px 2px;
+}
+#ta td{
+	padding: 2px 6px 2px 6px;
+	text-align: center;
+}
+.dese{
+	background-color:white;
+	height:100%;
+	font-size: 12px;
+	border-radius:0px 0px 0px 2px;
+	width: 50%;
+	text-align: center;
+	font-weight: 300;
+	color: black;
+	float: left;
+	margin-top:0px;
+}
+.buttj{
+    background-color:white;
+	height:100%;
+	font-size: 12px;
+	border-radius:0px 0px 2px 0px;
+	width: 50%;
+	text-align: center;
+	float: right;
+	color: black;
+	font-weight: 300;
+	margin-top: 0px;
+}
+.tablel{
+	margin-top:-20px;
+	display:none;
+}
+.debut{
+	line-height: 0px;
+	height: 15%;
+	border-top: 0px solid #e4e4e4;
+	border-bottom: 0px;
+}
+.content{
+	width: 100%;
+	height: 100%;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+#tipsWindown{
+	width:100%;
+	display: none;
+	position:absolute;
+	margin-top: 20%;
+}
+.full{
+	width: 100%;height: 100%;
+}
+#disappare{
+	border: 1px solid #b2b6ab;
+	background: #fff;
+	font-size: 20px;
+	width: 89px;
+	height: 22px;
+	position: fixed;
+	top: 47%;
+	left: 38%;
+	text-align: center;
+	}
+	
+#showMsg{
+	border:1px solid #cebfbf;
+	font-size: 12px;
+	width: 83%;
+	display: none;
+	background-color: #f6f3f3;
+	position: fixed;
+	z-index: 9999;
+	margin-left: 8%;
+	height: 31%;
+	border-radius:5px;
+	bottom: 34%;
+}
+#form{
+	width: 100%;
+	height: 15%;
+}
+#gbclose {
+	width: 12px;
+	height: 12px;
+	float: right;
+	position: relative;
+	top: -7%;
+}
+#uppart {
+	width: 100%;
+	height: 85%;
+	text-align: left;
+	padding: 10px 0px 0px 10px;
+}
+
+#btnadd {
+	width: 100%;
+	height: 100%;
+	border-radius: 0px 0px 5px 5px;
+	color: orange;
+	background-color: #fff;
+	font-size: 12px;
+	margin-top: 0px;
+}
+
+#rylxselected{
+	width:65%;
+	text-align: center;
+	border: 1px solid #cebfbf;
+}
+#showIDCON{
+	display: none;
+	background-color: rgb(141, 138, 144);
+	width: 100%;
+	height: 40%;
+	border: 1px solid #DAC7C7;
+	position: fixed;
+	top: 64%;/*涓嬮潰浠嶆湁闃村奖鏈兘鏄剧ず鑰屽凡*/
+}
+#showIDCON button {
+	color: black;
+	background-color: #f9f6f6;
+	font-size: 14px;
+	font-weight: 200;
+	cursor: auto;
+	width: 23%;
+	height: 75%;
+	border-radius:4px;
+	margin-top: 2%; 	
+}
+#inputde{
+	width: 100%;
+	height: 90%;
+}
+#resume {
+	height: 10%;
+	border-bottom: 1px solid #D2C8C8;
+}
+
+#dleft {
+	width: 87%;
+	border-right: 1px solid #fff;
+	height: 100%;
+	float: left;
+}
+#dright {
+	width: 13%;
+	float: right;
+	height: 100%;
+}
+#dright p {
+	color: #ccc;
+	font-size: 25px;
+	text-align: center;
+}
+.deindex{
+	width: 13px;
+	height: 13px;
+	margin: 0 auto;
+	display: inherit;
+}
+.backspaceimg{
+	width: 24px;
+    height: 14px;
+    margin: 0 auto;
+    display: inherit;
+}
+#backspaceButton{
+	vertical-align: top;
+}
+.part1{
+	width: 100%;
+	height: 33.3%;
+	/* background-color: #aaa; */
+}
+.part2{
+	width: 100%;
+	height: 33.3%;
+	/* background-color: #bbb; */
+	top:-5%;
+}
+.part3{
+	width: 100%;
+	height: 33.3%;
+	/* background-color: #ccc; */
+	top:-10%;
+}
+
+#remindxx{
+	width: 100%;
+	height: 26%;
+	display: none;
+	top:40%;
+	position: fixed;
+	overflow: hidden;
+	z-index: 99999999999;
+}
+#remind{
+	width: 100%;
+	height:53%;
+	border-top: 2px solid #2abdea;
+}
+#buttons{
+	width: 100%;
+	height: 20%;
+}
+.sure {
+	width: 100%;
+	height: 100%;
+	margin-top: 0px;
+	border-radius: 0px;
+	color: orange;
+	font-size: 12px;
+	font-weight: 200;
+}
+.outside {
+	width: 69%;
+	height: 100%;
+	border: 1px solid #d4c8c8;
+	background-color: #fff;
+}
+.dhkxx{
+	width: 100%;
+	height: 27%;
+}
+/*遮罩层样式*/
+.aa{
+		width: 100%;
+		height:800px;
+		background-color: rgba(50, 50, 53, 0.56);
+		position: absolute;
+    	top: 0px;
+	}

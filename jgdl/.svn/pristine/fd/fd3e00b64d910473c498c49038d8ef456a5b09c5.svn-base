@@ -1,0 +1,20 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="calculationReport" extends="monitor-struts-default" >
+	
+		<!-- 计算报告中项目信息 -->
+		<action name="getProjectInfo" class="calculationReportAction" method="getProjectInfo"/>
+		<!-- 计算报告中子单位工程信息 -->
+		<action name="getChildInfo" class="calculationReportAction" method="getChildInfo"/>
+		<!-- 计算报告中部位信息 -->
+		<action name="getSiteInfo" class="calculationReportAction" method="getSiteInfo"/>
+		<!-- 计算报告中支架信息 -->
+		<action name="getZjInfo" class="calculationReportAction" method="getZjInfo"/>
+		<!-- 跳转到计算报告页面 -->
+		<action name="geToCalculationIndex" class="calculationReportAction" method="geToCalculationIndex">
+			<result name="success">pages/kzzj/calculationReport.jsp</result>
+		</action> 
+	</package>	
+</struts>

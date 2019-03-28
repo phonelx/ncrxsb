@@ -1,0 +1,51 @@
+<input type="hidden" value="1" id="typeId">
+		
+			<div id="example2" class="modal hide fade in windowBoxLittle" style="display: none;">
+			
+				<input type="hidden" id="rsqu" name="rtype.parSqu" />
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a>
+					<h3 id="secondTitle">添加子目</h3>
+				</div>
+				<div class="modal-body" style="padding:20px;height1:100px;">
+					<table id="sort_table" align="center">
+						<tr>
+							<td>管道类别：</td>
+							<td>
+								<input type="text" class="sort_input inputWidth" id="LBMC" name="LBMC"/>
+							</td>								
+						</tr>
+						<tr>								
+							<td>识别码：</td>
+							<td>
+								<input type="text" class="sort_input inputWidth"  id="DMLB" name="DMLB"/> 
+								<input type="hidden" value="ZDJJ" class="sort_input inputWidth"  id="ZHDM" name="ZHDM  "/> 
+							</td>
+						</tr>
+						
+						<tr>								
+							<td>是否是根节点：</td>
+							<td>
+								<select id="JD">
+									<option value="0" selected="selected">否</option>
+									<option value="1">是</option>
+								</select>
+								<!-- <input type="text" class="sort_input inputWidth"  id="DMLB" name="DMLB"/>  -->
+							</td>
+						</tr>
+						
+					</table>
+					<span id="msg"></span>
+				</div>
+				
+			
+				<div class="bottomBtnBox">
+					<a title="确定" href="javaScript:void(0);" class="btn btn-success" id="sortBtn" style="margin:14px 0;">
+						<i class="icon-ok icon-white"></i> 确定
+					</a> 
+					<a title="取消" href="javaScript:void(0);" class="btn" data-dismiss="modal" id="closeWin" style="margin:14px;"> 
+						<i class="icon-remove"></i> 取消
+					</a>
+				</div>
+		
+	  </div>

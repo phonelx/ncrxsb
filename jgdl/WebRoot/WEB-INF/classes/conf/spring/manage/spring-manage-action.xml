@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+	<!-- 布控配置 -->
+	<bean id="controlAction" class="monitor.manage.action.ControlAction" scope="prototype">
+		<property name="controlService" ref="controlService"></property>
+	</bean>
+	<bean id="UploadAction" class="monitor.manage.action.UploadAction" scope="prototype"/>
+	<!-- 布控人员查询 -->
+	<bean id="selectCMaction" class="monitor.manage.action.SelectCMAction" scope="prototype">
+		<property name="iSelectService" ref="selectService"/>
+	</bean>
+	
+	<bean id="bkMessageAction" class="monitor.manage.action.BKMessageAction" scope="prototype">
+		<property name="iBKMessageService" ref="bkMessageService"></property>
+	</bean>
+
+	<!-- 预警配置管理 -->
+	<bean id="ManageAction" class="monitor.manage.action.ManageAction" scope="prototype">
+		<property name="service" ref="ManageService"/>
+	</bean>
+
+	<!-- 短信配置管理 -->
+	<bean id="SmsAction" class="monitor.manage.action.SmsAction" scope="prototype">
+		<property name="serviceImpl" ref="SmsService" />
+	</bean>
+	<bean id="QuseryAction" class="monitor.manage.action.QueryAction" scope="prototype">
+		<property name="service"  ref="QueryService"/>
+	</bean>
+		
+	<!-- 预警任务调度 -->
+	<bean id="secondTask" class="monitor.manage.timer.YJTask" scope="prototype"/>
+</beans>

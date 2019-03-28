@@ -1,0 +1,11 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="holderReport" extends="monitor-struts-default">
+		<!-- 跳转到抗震支架检验报告 -->
+		<action name="toHolderReportIndex" class="holderReportAction" method="toHolderReportIndex">
+			<result name="success">pages/kzzj/holderReport.jsp</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,248 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildAction.java
+	* Date:2018-2-6上午9:52:25   
+	***/
+package monitor.projectConfig.action;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import net.sf.json.JSONObject;
+
+import org.apache.poi.hssf.record.formula.functions.T;
+
+import monitor.common.BaseAction;
+import monitor.projectConfig.bean.entity.Project;
+import monitor.projectConfig.bean.entity.Project_Child;
+import monitor.projectConfig.bean.entity.Project_Child_Site;
+import monitor.projectConfig.bean.entity.T_Project_Zj;
+import monitor.projectConfig.service.impl.ProjectChildSiteServiceImpl;
+import monitor.projectConfig.service.impl.ProjectConfigServiceImpl;
+
+import com.opensymphony.xwork2.ModelDriven;
+
+/**
+ * @ClassName:ProjectChildAction   子项目部位
+ * @dateTime: 2018-2-6 上午9:52:25
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildSiteAction  extends BaseAction implements 
+		ModelDriven<Project_Child_Site>{
+	/**
+	 * @Fields serialVersionUID:TODO(用一句话描述这个变量表示什么)
+	 * @since JDK1.7
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Resource(name = "pro_child_site")
+	private Project_Child_Site pro_child_site;
+	
+	
+	@Resource(name = "projectChildSiteService")
+	private ProjectChildSiteServiceImpl projectChildSiteService;
+	
+	private T_Project_Zj proZj;
+	@Override
+	public Project_Child_Site getModel() {
+		
+		return this.pro_child_site;
+	}
+	
+	/**
+	 * 
+	  * toProjectChilSiteIndex:(跳转到部位配置页面).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:17:48
+	  * @return String
+	  * @since JDK 1.7
+	 */
+	public String toProjectChilSiteIndex() {
+		return SUCCESS;
+	}
+	
+	/**
+	 * 
+	  * toDXinfoIndex:(跳转到支架页面).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:58:03
+	  * @return String
+	  * @since JDK 1.7
+	 */
+	public String toDXinfoIndex() {
+		return SUCCESS;
+	}
+
+	/**
+	 * 
+	  * addChildSite:(新增部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:27:20 void
+	  * @since JDK 1.7
+	 */
+	public void insertChildSite(){
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.addChildSite(pro_child_site);
+			json.accumulate("status", "success");
+			
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	 * 
+	  * delChildSite:(删除部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:27:33 void
+	  * @since JDK 1.7
+	 */
+	public void delChildSite(){
+		//部位squ
+		String squ = getRequest().getParameter("squ");
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.delChildSite(squ);
+			json.accumulate("status", "success");
+		
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	 * 
+	  * updateChildSite:(修改部位).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:30:49 void
+	  * @since JDK 1.7
+	 */
+	public void updateChildSite(){
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.updateChildSite(pro_child_site);
+			json.accumulate("status", "success");
+		
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	 * 
+	  * selectlistChildSite:(查询部位列表).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:33:47 void
+	  * @since JDK 1.7
+	 */
+	public void selectlistChildSite(){
+		//子单位工程的squ
+		String squ = getRequest().getParameter("squ");
+		JSONObject json = new JSONObject();
+		try {
+			List<Project_Child_Site> list = projectChildSiteService.listChildSite(squ);
+			json.accumulate("status", "success");
+			json.accumulate("result", list);
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	/**
+	 * 
+	  * addDxInfo:(添加支架).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午6:04:56 void
+	  * @since JDK 1.7
+	 */
+	public void insertDxInfo(){
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.addDxInfo(proZj);
+			json.accumulate("status", "success");
+			
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	/**
+	 * 
+	  * delDxInfo:(删除支架信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午5:58:42 void
+	  * @since JDK 1.7
+	 */
+	public void delDxInfo(){
+		//支架squ
+		String squ = getRequest().getParameter("squ");
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.delChildSite(squ);
+			json.accumulate("status", "success");				
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+			writeJsonBack(json.toString());
+	}
+	/**
+	 * 
+	  * updateDxInfo:(修改支架信息).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2018-2-6 下午6:04:10 void
+	  * @since JDK 1.7
+	 */
+	public void updateDxInfo(){
+		JSONObject json = new JSONObject();
+		try {
+			projectChildSiteService.updateDxInfo(proZj);
+			json.accumulate("status", "success");
+		
+		} catch (Exception e) {
+			json.accumulate("status", "error");
+			json.accumulate("result", e.getMessage());
+		}
+		writeJsonBack(json.toString());
+	}
+	
+	
+	public T_Project_Zj getProZj() {
+		return proZj;
+	}
+
+	public void setProZj(T_Project_Zj proZj) {
+		this.proZj = proZj;
+	}
+	
+	
+}

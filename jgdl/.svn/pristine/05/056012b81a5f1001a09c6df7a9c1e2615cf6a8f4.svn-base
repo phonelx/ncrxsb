@@ -1,0 +1,60 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 21, 2011 5:54:39 PM
+*/
+package monitor.registry.bean.vo;
+
+/** 
+ *  comboBox 实体Bean 
+ * 对应 jquery_easy_ui commbobox 至少需要三个属性
+ * @author  liangxj
+ * @datetime  Apr 21, 2011 5:54:39 PM
+ */
+public class ComboVo {
+	// id
+	private String id ;
+	//  显示文本
+	private String text ;
+	// 是否被选中
+	private String selected ;
+
+	/** 
+	 * @return id 
+	 */
+	public String getId() {
+		return id;
+	}
+	/** 
+	 */
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	/** 
+	 * @return text 
+	 */
+	public String getText() {
+		return text;
+	}
+	/** 
+	 */
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+	/** 
+	 * @return selected 
+	 */
+	public String getSelected() {
+		return selected;
+	}
+	/** 
+	 */
+	
+	public void setSelected(String selected) {
+		this.selected = selected;
+	}
+	
+}

@@ -1,0 +1,289 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  liangxj 
+ * @datetime:  Apr 16, 2011 5:55:27 PM
+*/
+package monitor.registry.bean.entity;
+
+/** 
+ * 注册字段表实体bean
+ * @author  liangxj
+ * @datetime  Apr 16, 2011 5:55:27 PM
+ */
+public class RegField {
+	
+	// 序列号
+	private Integer squ ;
+	// 所属实体squ
+	private Integer entitySqu ;
+	// 字段名称，和数据库中相同
+	private String name ;
+	// 字段注册标题，通常输入为中文，便于用户查看
+	private String title ;
+	// 实体描述
+	private String descb ;
+	// 实体注册时间
+	private String regDateTime; 
+	// 字段类型
+	private String type ;
+	// 字段精度
+	private Integer precision ;
+	// 小数位数
+	private Integer scale ;
+	// 是否是主键。1：是；0：否
+	private int isKey ;
+	// 是否允许为空。1：是；0：否
+	private int isNullable ;
+	// 是否是自增长。1：是；0：否
+	private int isAutoIncrement ;
+	// 是否是唯一列。1：是；0：否
+	private int isUnique ;
+	// 是否作为检索条件。1：是； 0：否
+	private int asCondition ;
+	// 字段对应的数据字典
+	private String dictypesqu  ;
+	// 字段显示优先级  1 最低   最大值10
+	private int displayPrio  ;
+	// 是否是简项  1：是；0：不是
+	private int isSimpleEl  ;
+	//是否为预警项目  1：否 ; 0：是
+	private String isquery;
+	//匹配的字段
+	private String indexof;
+	private String isbkquery;
+	private String bkindexof;
+	/** 
+	 * @return squ 
+	 */
+	public Integer getSqu() {
+		return squ;
+	}
+	/** 
+	 */
+	
+	public void setSqu(Integer squ) {
+		this.squ = squ;
+	}
+	/** 
+	 * @return entitySqu 
+	 */
+	public Integer getEntitySqu() {
+		return entitySqu;
+	}
+	/** 
+	 */
+	
+	public void setEntitySqu(Integer entitySqu) {
+		this.entitySqu = entitySqu;
+	}
+	/** 
+	 * @return name 
+	 */
+	public String getName() {
+		return name;
+	}
+	/** 
+	 */
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	/** 
+	 * @return title 
+	 */
+	public String getTitle() {
+		return title;
+	}
+	/** 
+	 */
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	/** 
+	 * @return descb 
+	 */
+	public String getDescb() {
+		return descb;
+	}
+	/** 
+	 */
+	
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	/** 
+	 * @return regDateTime 
+	 */
+	public String getRegDateTime() {
+		return regDateTime;
+	}
+	/** 
+	 */
+	
+	public void setRegDateTime(String regDateTime) {
+		this.regDateTime = regDateTime;
+	}
+	/** 
+	 * @return type 
+	 */
+	public String getType() {
+		return type;
+	}
+	/** 
+	 */
+	
+	public void setType(String type) {
+		this.type = type;
+	}
+	/** 
+	 * @return precision 
+	 */
+	public Integer getPrecision() {
+		return precision;
+	}
+	/** 
+	 */
+	
+	public void setPrecision(Integer precision) {
+		this.precision = precision;
+	}
+	/** 
+	 * @return scale 
+	 */
+	public Integer getScale() {
+		return scale;
+	}
+	/** 
+	 */
+	
+	public void setScale(Integer scale) {
+		this.scale = scale;
+	}
+	/** 
+	 * @return isKey 
+	 */
+	public int getIsKey() {
+		return isKey;
+	}
+	/** 
+	 */
+	
+	public void setIsKey(int isKey) {
+		this.isKey = isKey;
+	}
+	/** 
+	 * @return isNullable 
+	 */
+	public int getIsNullable() {
+		return isNullable;
+	}
+	/** 
+	 */
+	
+	public void setIsNullable(int isNullable) {
+		this.isNullable = isNullable;
+	}
+	/** 
+	 * @return isAutoIncrement 
+	 */
+	public int getIsAutoIncrement() {
+		return isAutoIncrement;
+	}
+	/** 
+	 */
+	
+	public void setIsAutoIncrement(int isAutoIncrement) {
+		this.isAutoIncrement = isAutoIncrement;
+	}
+	/** 
+	 * @return isUnique 
+	 */
+	public int getIsUnique() {
+		return isUnique;
+	}
+	/** 
+	 */
+	
+	public void setIsUnique(int isUnique) {
+		this.isUnique = isUnique;
+	}
+	/** 
+	 * @return asCondition 
+	 */
+	public int getAsCondition() {
+		return asCondition;
+	}
+	/** 
+	 */
+	
+	public void setAsCondition(int asCondition) {
+		this.asCondition = asCondition;
+	}
+	/** 
+	 * @return dictypesqu 
+	 */
+	public String getDictypesqu() {
+		return dictypesqu;
+	}
+	/** 
+	 */
+	
+	public void setDictypesqu(String dictypesqu) {
+		this.dictypesqu = dictypesqu;
+	}
+	/** 
+	 * @return displayPrio 
+	 */
+	public int getDisplayPrio() {
+		return displayPrio;
+	}
+	/** 
+	 */
+	
+	public void setDisplayPrio(int displayPrio) {
+		this.displayPrio = displayPrio;
+	}
+	/** 
+	 * @return isSimpleEl 
+	 */
+	public int getIsSimpleEl() {
+		return isSimpleEl;
+	}
+	/** 
+	 */
+	
+	public void setIsSimpleEl(int isSimpleEl) {
+		this.isSimpleEl = isSimpleEl;
+	}
+	public String getIsquery() {
+		return isquery;
+	}
+	public void setIsquery(String isquery) {
+		this.isquery = isquery;
+	}
+	public String getIndexof() {
+		if(indexof==null){
+			return "";
+		}
+		return indexof;
+	}
+	public void setIndexof(String indexof) {
+		this.indexof = indexof;
+	}
+	public String getIsbkquery() {
+		return isbkquery;
+	}
+	public void setIsbkquery(String isbkquery) {
+		this.isbkquery = isbkquery;
+	}
+	public String getBkindexof() {
+		return bkindexof;
+	}
+	public void setBkindexof(String bkindexof) {
+		this.bkindexof = bkindexof;
+	}
+	
+	
+}

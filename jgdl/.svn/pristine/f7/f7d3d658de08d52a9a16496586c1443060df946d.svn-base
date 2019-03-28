@@ -1,0 +1,271 @@
+<%@ page language="java" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ include file="/pages/head.jsp"%>
+<!DOCTYPE html>
+<html>
+<head>
+<base href="<%=basePath%>" />
+<title>资源分类配置</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="resource/new/bootstrap/img/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+<link rel="stylesheet" type="text/css" href="resource/new/css/dataSort.css" />
+<link rel="stylesheet" type="text/css" href="resource/new/css/iconfont/iconfont.css"/>
+<script type="text/javascript"
+	src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+<script type="text/javascript">
+		$(document).ready(function() {
+			$(".topnav").accordion({
+				accordion:true,
+				speed: 500,
+				closedSign: '[+]',
+				openedSign: '[-]'
+			});
+		});
+		function ac(){
+		 $(this).attr("checked","true");
+		}
+</script> 
+<style type="text/css">
+	#sort_table td{
+		border:1px solid #ccc;
+	}
+	.sort_input{
+		width: 180px;
+	}
+</style>
+</head>
+
+<body onkeydown="keyDown(event);">
+	<c:forEach items="${list }" var="t" varStatus="status">
+		<c:if test="${status.index == 0 }">
+			<input type="hidden" name="pd" id="pd" value="${t.SQU }">
+			<input type="hidden" name = "ifEnd" id="ifEnd" value="${t.JD}">
+			<input type="hidden" name="gotohome" id="gotohome" value="0">
+			<input type="hidden" name="homeTypeName" id="homeTypeName"
+				value="所有分类">
+		</c:if>
+	</c:forEach>
+	<input type="hidden" name="parentId" id="parentId">
+	
+	<!-- 页头结束 -->
+	<div class="container-fluid">
+      
+		<div class="row-fluid">
+		<!-- 左菜单开始 -->
+			<div class="span2 main-menu-span" style="width: 180px;">
+				<div class="well nav-collapse sidebar-nav">
+						<ul class="nav nav-tabs nav-stacked main-menu">
+						<li class="nav-header hidden-tablet"><a class="ajax-link" href="javascript:void(0);" id="0" flag="1" title="所有分类" onclick="parentload(this);" ><font size="2">目录分类</font></a></li>
+						<li>
+						
+						<ul class="topnav">
+							 	<c:forEach items="${list}" var="t" varStatus="status">
+	                            <li style="margin-left:15px;">
+	                              <a href="javascript:void(0);"  flag="1" id="${t.SQU}"  title ='${t.LBMC}' isEnd = "${t.JD}" onclick="parentload(this)">
+	                              <i class="icon-darkgray "></i>&nbsp;${t.LBMC}</a>
+		                            <ul class="topnav">
+												
+									</ul>
+	                            </li>
+                          
+                            </c:forEach>      
+							</ul>
+							
+						</li>
+						
+						</ul>
+					
+				</div>
+			</div>
+			<!-- 左菜单结束 -->
+			<div id="content" class="span10" style="margin-left:10px;">
+				<div>
+					<ul class="breadcrumb" style="list-style:none;line-height: 27px;">
+						<span id="home" style="padding-top: 10px;"> 
+						<a href="javascript:void(0);" onclick="goHome();">首页</a>
+						 <span class="divider">/</span>
+						</span>
+						<span> <a href="javascript:void(0);" id="navg"> 
+						<c:forEach items="${list}" var="l" varStatus="i" begin="0" end="0">
+							${l.DESCB}
+						</c:forEach>
+						</a>
+						</span>
+						<li style="float: right;">
+							<a onclick="addChildMenu();" title="新增产品分类" href="javascript:void(0);"style="text-decoration: none;" ><i class="iconfont">&#xe720;</i></a>
+						</li>
+							<li id="ss" style="float:right;margin-right: 5px;">
+					<input id="input_search" type="text" style="width:200px;color:#ccc;" value="关键字搜索" onfocus="if(this.value == '关键字搜索') this.value = ''" onblur="if(this.value =='')  this.value = '关键字搜索'">
+					&nbsp;&nbsp;
+					<a style="margin-top:-10px;" class="btn " onclick="searchWord();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+				</li>
+					</ul>
+				</div>
+				<div id="uigrld"></div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="container">
+	<input type="hidden" value="1" id="typeId">
+		<form action="" method="post" id="secondForm" class="registerform">
+			<div id="example2" class="modal hide fade in" style="display: none;width: 706px;height:520px; margin-left:-353px;margin-top:-247px;">
+			
+				<input type="hidden" id="rsqu" name="rtype.parSqu" />
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a>
+					<h3 id="secondTitle">资源分类配置</h3>
+				</div>
+				<div class="modal-body"	style="overflow-x: hidden; overflow-y: hidden;">
+					<div
+						style="border: 1px solid #ccc;padding: 5px;width: 590px;margin: 30px auto;">
+						<table id="sort_table">
+							<tr style="height: 35px;">
+								<td>分类名称:</td>
+								<td style="width:193px;"><input type="text" class="sort_input" id="tName" onblur="descload();" style="position: absolute;top: 99px;height: 20px;border:none;"
+									 datatype="*1-20" nullmsg="请输入分类名称！"	errormsg="请输入分类名称1-20个字符！" name="rtype.typeName"> <span
+									class="help-inline"></span></td>
+								<td>分类代码:</td>
+								<td style="width:205px;"><input type="text" class="sort_input" onblur="paramload();" style="position: absolute;top: 101px;height: 20px;border:none;width:194px;" 
+									id="abbr" datatype="*1-40" nullmsg="请输入分类简称！"
+									errormsg="请输入1-10个字符！" name="rtype.abbr"> <span
+									class="help-inline"></span></td>
+							</tr>
+							<tr style="height: 35px;">
+								<td>分类描述:</td>
+								<td><input type="text" class="sort_input" style="position: absolute;top:134px;height: 20px;border:none;"
+									id="descb" datatype="*1-80" nullmsg="请输入分类描述！"
+									errormsg="请输入1-20个字符！" name="rtype.descb"> <span
+									class="help-inline"></span></td>
+								<td>分类图标:</td>
+								<td>
+									<div class="wrap">
+										<div class="nice-select" name="nice-select">
+											<input type="text" id="iconClass" class="sort_input" name="rtype.iconClass"
+												style="position: absolute;top:-2px;width:143px;height: 22px;border:none;" readonly>
+											<button class="btn" style="margin-left: 152px;margin-top: 0px" id="sort_select" type="button">选择</button>
+											<ul id="icon_list" style="text-align:left;">
+
+											</ul>
+										</div>
+										<div id="my_icon">
+											<i id="text_icon" class="icon-edit"></i>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr style="height: 35px;">
+								<td>
+									结束分类:
+								</td>
+								<td>
+									<div class="controls">
+										<select id="isEnd"  name="rtype.isEnd" style=" position: absolute;top: 170px;height: 31px;width: 193px;border:none;"
+											data-rel="chosen">
+											<option value="0">否</option>
+											<option value="1">是</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									分类编号:
+								</td>
+								<td>
+									<div class="controls">
+										<input type="text" id="squ" style="position: absolute;top: 169px;height: 22px;border:none;width:194px;" 
+											name="rtype.squ" readonly>
+									</div>
+								</td>
+							</tr>
+							<tr style="height: 35px;">
+								<td>
+									初始化数据:
+								</td>
+								<td>
+									<div class="controls">
+										<select id="isInit" style="position: absolute;height: 33px;top: 204px;width: 193px;border: none" name="rtype.isInit"
+											data-rel="chosen">
+											<option value="0">否</option>
+											<option value="1">是</option>
+										</select>
+									</div>
+								</td>
+								<td>
+									排序编号:
+								</td>
+								<td>
+										<input type="text" id="orderNo" style="position: absolute;top: 204px;border:none;height: 22px;width: 194px;"
+											name="rtype.orderNo" />
+								</td>
+							</tr>
+							<tr>
+									<td  style="width:96px;height: 35px;">
+									合并上级描述：
+								</td>
+								<td style="text-align: center;">
+										<input type="radio" name="m" onclick="msgo(1);" checked="checked" value="1" id="a2">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="radio" name="m" onclick="msgo(0);" value="0" id="a1">否
+								</td>
+									<td style="width:80px;">
+									合并分隔符：
+								</td>
+								<td>
+										<input type="text" id="msfgf" onchange="msChang(this.value);" style="position: absolute;top: 240px;height: 22px;width: 194px;border:none;"/>
+								</td>
+							</tr>
+							<tr>
+									<td style="height: 35px;">
+									合并代码：
+								</td>
+								<td style="text-align: center;">
+										<input type="radio" name="d" checked="checked" onclick="dmgo(1);" value="1" id="a2">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="radio" name="d" onclick="dmgo(0);" value="0" id="a1">否	
+								</td>
+									<td>
+									代码分隔符：
+								</td>
+								<td>
+										<input type="text" id="dmfgf" onchange="dmChang(this.value);" style="position: absolute;top: 278px;height: 22px;width: 194px;border:none;"/>
+								</td>
+							</tr>
+							<tr>
+							<td>
+									自定义条件：
+								</td>
+								<td style="text-align: center;height:35px;">
+										<input type="radio"  onclick="tjgo(1);" name="p" id="tj_yes"  value="1" >是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<input type="radio"  onclick="tjgo(0);" name="p" id="tj_no" checked="checked" value="0" >否
+								</td>
+								<td colspan="2">
+									<input type="text" id="param_value" name="rtype.param" style="position: absolute;top: 317px;height: 24px;width: 278px;border: none;">
+								</td>
+							</tr>
+								<tr id="add_param">
+								<td style="height:35px;">条件设置:</td>
+								<td colspan="3">
+									<input type="text" id="param_where" onblur="paramSplit();" style="position: absolute;top: 351px;height: 29px;width: 146px;left: 157px;">
+									<input type="text" id="param" onblur="paramSplit();" style="position: absolute;top: 351px;height: 29px;width: 154px;left: 312px;">
+									<input type="text" id="param_fh" onblur="paramSplit();" style="width: 160px;position: absolute;top: 351px;height: 29px;right: 62px">
+								</td>
+							</tr>
+						</table>
+					</div>
+					<span id="msg"></span>
+				</div>
+				<div class="modal-footer">
+					<a href="javaScript:void(0);" class="btn btn-success" id="sortBtn"
+						onclick="$('#secondForm').submit();">确定</a>
+					<a href="javaScript:void(0);" class="btn" data-dismiss="modal"
+						id="closeTwo" onclick="cancel_clear();">取消</a>
+				</div>
+		</form>
+	</div>
+	<script type="text/javascript" src="resource/js/goodsHouse/partsTree.js"></script>
+	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+	<script type="text/javascript" src='resource/js/uiGrid.js'></script>
+</body>
+
+</html>
+                       

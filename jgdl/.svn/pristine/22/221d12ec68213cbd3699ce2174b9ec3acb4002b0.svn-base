@@ -1,0 +1,25 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:jgdl
+	* @since：JDK1.7
+	* @version：1.0
+	* File Name:ProjectChildServiceImpl.java
+	* Date:2018-2-6上午9:54:04   
+	***/
+package monitor.projectConfig.service.impl;
+
+import monitor.projectConfig.service.IProjectChildService;
+
+/**
+ * @ClassName:ProjectChildServiceImpl
+ * @dateTime: 2018-2-6 上午9:54:04
+ * @Description: TODO
+ * @version 
+ * @author: 黄月
+ * @since JDK 1.7
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class ProjectChildServiceImpl implements IProjectChildService {
+
+}

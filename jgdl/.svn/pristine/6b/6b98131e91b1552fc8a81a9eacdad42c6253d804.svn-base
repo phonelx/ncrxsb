@@ -1,0 +1,212 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ include file="/pages/head.jsp" %>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<base href="<%=basePath%>">
+
+	<title>项目配置页面</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="resource/ztree/css/zTreeStyle.css" />
+	<link rel="stylesheet" type="text/css" href="resource/new/css/iconfont/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="pages/ality/css/set.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/addStyle.css" />
+	<link rel="stylesheet" type="text/css"  href="resource/css/level/levelStyle.css" />
+	<script type="text/javascript" src="resource/ztree/jquery.ztree-2.6.min.js"></script>
+	<script type="text/javascript" src="resource/js/projectConfig/projectGrid.js"></script>
+	<script type="text/javascript" src="resource/js/projectConfig/holderGrid.js"></script>
+	<style>
+	.add-style1{
+		background-color: #f5f5f5;
+	}
+	.container-fluid {
+	    padding-right: 10px;
+	    padding-left: 10px;
+	}
+	.topnav li:last-child{
+		border-bottom:none;
+	}
+	.form-horizontal .control-group {
+    margin-bottom: 8px;
+	}
+	.control-group h4{
+	    margin-top:4px;
+	}
+	#tree .border-bottom a{
+    margin-left: 10px;
+    }
+	</style>
+</head>
+  
+<body>
+	<ul class="breadcrumb" style="list-style:none;">
+		<li id="titleName1" style="color: #369BD7;">
+			当前页面：项目配置管理&nbsp;&gt;
+			<span> 
+				<a id="head_title1" href="javascript:void(0)"> 
+					项目明细配置
+				</a>
+			</span>
+		</li>
+	</ul>
+
+<!-- 页面内容-->	
+	<div class="container-fluid">
+		<div class="row-fluid">
+		
+		<!-- 左边菜单 start-->
+		<div class="leftSideBar span3">
+			<ul style="width:100%;" class="parNav">
+				<li class="nav-header hidden-tablet border-bottom">
+					<a class="ajax-link" style="padding-left:10px;"
+						href="javascript:void(0);"><b>[工程项目目录]</b>
+					</a>
+				</li>
+				<li>
+					 <ul id="tree">
+					</ul>
+				</li>
+				<li>
+					<div id="pageInfo"></div>
+				</li>
+			</ul>
+		</div>
+		<!-- 左边菜单 end-->	
+		
+		<!-- 右边内容 start-->	
+		<div class="span9" style="margin-left: 20px;">
+			<div id="holderBox" style="display: none;">
+				<div id="projectMsgBox">
+					<legend style="margin-bottom: 20px;">
+						<blockquote>
+						  <span id="projectName">项目名</span><br />
+						  <a style="margin-top:-30px;float: right;margin-right: 20px;" title="新增" id="addBtn" class="btn btn-primary" 
+						  	onclick="showAddModal();" href="javascript:void(0);">
+							<i class="icon-plus-sign icon-white"></i> 新增</a>
+							  <a style="margin-top:-30px;float: right;margin-right: 20px;display: none;" id="retBtn" title="返回" class="btn btn-primary" 
+						  	onclick="showHolderListAndHideSubassembly();" href="javascript:void(0);">
+							<i class="icon icon-white icon-undo"></i>返回</a>
+						</blockquote>
+					</legend>
+					<div id="projectMsg" style="height: 60px;">
+					</div>
+				</div>
+				
+				<div id="holderMsgBox" style="display: none;">
+					<legend>
+						<blockquote>
+						  <span id="holderName" style="font-size: 17px;">支架信息</span><br />
+						</blockquote>
+					</legend>
+					<div class="container-fluid">
+						 <div class="row-fluid tooltip-demo">
+						     <!--左边图片-->
+						     <div class="span2">
+						     	<div class="photoBox" align="center" style="margin-bottom:10px;">
+									<img id="kzzjImg" src="" onerror="javascript:this.src='resource/images/mrtp.png';">
+								</div>
+						     </div>
+						      <!--左边图片-->
+						      <!--右边内容-->
+						     <div class="span10">
+						     	<div class="box-content">
+									<form class="form-horizontal" style="margin-bottom:-40px;">
+										<input type="hidden" id="kzzjDXSQU"/>
+										<fieldset>
+										  <div class="control-group">
+											<label class="control-label">支架名称：</label>
+											<div class="controls">
+												 <h4 id="kzzjDXMC"></h4>
+											</div>
+										  </div>
+										   <div class="control-group">
+											<label class="control-label">管道类型：</label>
+											<div class="controls">
+												  <h4 id="kzzjGDLX"></h4>
+											</div>
+										  </div>
+										   <div class="control-group">
+											<label class="control-label">安装方式：</label>
+											<div class="controls">
+												  <h4 id="kzzjAZFS"></h4>
+											</div>
+										  </div>
+										  <div class="control-group">
+											<label class="control-label">支架形式：</label>
+											<div class="controls">
+												  <h4 id="kzzjZJXS"></h4>
+											</div>
+										  </div>
+										 </fieldset>
+									</form>
+						     </div>
+						   </div>
+					 </div>
+				</div>
+				</div>
+				
+				<div id="holderListBox" style=" margin-top: 10px;">
+					<!-- 支架列表 -->
+					<div id="holderList"></div>
+					<div id="pageInfo2"></div>
+				</div>
+				
+				<div id="subassemblyListBox"  style="display: none;margin-top: 10px;">
+						<div class="tabbable">
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#tab1" data-toggle="tab" id="1stTemp" onclick="loadZJListByType(1)">结构组件</a></li>
+								<li><a href="#tab2" data-toggle="tab" onclick="loadZJListByType(2)">承重组件</a></li>
+								<li><a href="#tab3" data-toggle="tab" onclick="loadZJListByType(3)">抗震组件</a></li>
+								<li><a href="#tab4" data-toggle="tab" onclick="loadZJListByType(4)">约束组件</a></li>
+							</ul>
+						</div>
+					<!-- 组件列表 -->
+			 		<div id="zjList"></div>
+			 		<div id="pageInfo3"></div>
+				</div>
+			</div>
+		</div>
+		
+			<!-- 右边内容 end-->		
+	  </div>
+	</div>
+	<!-- 页面内容-->	
+	
+	<!-- 新增或者修改模态框 -->
+	 <div class="container">
+		<form method="post" id="holderForm" class="form-horizontal" enctype="multipart/form-data">
+			<div id="holderModal" class="modal hide fade in windowBoxBig" style="display: none;height: 680px;top:45%;">
+				<div class="modal-header">
+					<a class="close" data-dismiss="modal">×</a> <h3>新增支架明细</h3>
+				</div>
+				<div class="modal-body">
+					<div>
+						<ul class="breadcrumb" style="list-style:none;line-height: 27px;height: 27px;">
+							<li style="margin-right: 5px;">
+								管道类型：<select id="gdlx_select" onchange="loadHolderList()"></select>
+								安装方式：<select id="azfs_select" onchange="loadHolderList()"></select>
+							</li>
+							<li id="ss" style="float:right;margin-right: 5px;">
+								<input id="input_search" type="text" style="margin-top:-5px;width:200px;color:#ccc;" placeholder="支架搜索"/>
+								&nbsp;&nbsp;
+								<a style="margin-top:-5px;" class="btn " onclick="loadHolderList();" href="javascript:void(0);"><i class="icon-search"></i> 检索</a>
+							</li>
+						</ul>
+					</div>
+					<div id="holderAll"></div>
+				</div>
+		</form>
+	</div> 
+	
+</body>
+<script type="text/javascript" src="resource/js/projectConfig/projectMsgConfig.js"></script>
+	<script type="text/javascript" src="resource/js/ality/alitySet.js"></script>
+	<script type="text/javascript" src="resource/js/scriptbreaker-multiple-accordion-1.js"></script>
+	<script type="text/javascript" src="resource/js/common/multiSelect.js"></script>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="manage" extends="monitor-struts-default">
+		<!-- 布控规则配置 -->
+		<action name="showManageIndex" class="controlAction" method="showManageIndex">
+			<result name="success" >/pages/manage/controlIndex.jsp</result>
+		</action>
+		<!-- 查询布控规则列表 -->
+		<action name="listControlInPage" class="controlAction" method="listControlInPage"/>
+		<!-- 删除布控 -->
+		<action name="deleteControl" class="controlAction" method="deleteControl"></action>
+		
+		<action name="addControl" class="controlAction" method="addControl"></action>
+		<action name="editControl" class="controlAction" method="editControl"></action>
+		<action name="getGLSource" class="controlAction" method="getGLSource"></action>
+		<action name="selectBDTime" class="controlAction" method="selectBDTime"></action>
+		<action name="editBDTime" class="controlAction" method="editBDTime"></action>
+		<action name="uploadExecl" class="UploadAction" method="uploadExecl"></action>
+		<action name="downloadFile" class="controlAction" >
+			<result type="stream" name="success">
+				<param name="contentType">application/vnd.ms-excel</param>
+         		<param name="contentDisposition">attachment;filename="sfzhm.xlsx"</param>
+         		<param name="inputName">downloadFile</param>
+			</result>
+		</action>
+		<!-- 布控人员查询 -->
+		<action name="selectListIndex" class="selectCMaction" method="selectListIndex">
+			<result name="success">/pages/manage/selectPage.jsp</result>
+		</action>
+		<action name="selectList" class="selectCMaction" method="selectList"></action>
+		<action name="getSourceTable" class="selectCMaction" method="getSourceTable"></action>
+		<action name="detialInformation" class="selectCMaction" method="selectDetail"></action>
+		<action name="detialTabPage" class="selectCMaction" method="detialTabPage"></action>
+		
+		<action name="deleteMess" class="bkMessageAction" method="deleteMess">
+			<result name="deleteSuccess">/pages/manage/selectPage.jsp</result>
+		</action>
+		<action name="selectMess" class="bkMessageAction" method="selectMess"></action>
+		
+		<!-- 预警查询 -->
+		<action name="showYJSFZ" class="QuseryAction"  method="showyjsfz">
+			<result name="success">/pages/manage/yjselect.jsp</result>
+		</action>
+		<!-- 分页显示身份证号 -->			 
+		<action name="selectyjsfz" class="QuseryAction" method="QuerYJXX"/>
+		<!-- 获取注册数据源表信息 -->	
+		<action name="getSourceTables" class="QuseryAction" method="getSourceTables"/>
+		<!-- 显示查询数据 -->
+		<action name="detialInformations" class="QuseryAction" method="detialInformations"/>
+		<!-- 分页显示数据 -->
+		<action name="detialTabPages" class="QuseryAction" method="detialTabPages"/>
+		
+		<!-- 显示预警规则 -->
+		<!-- 跳转预警规则页面 -->
+		<action name="showManage" class="ManageAction" method="showManage">
+			<result name="success">/pages/manage/yjgc.jsp</result>
+		</action>
+
+
+		<!-- 获取所有民族 -->
+		<action name="showCNMZ" class="ManageAction" method="showCNMZ" />
+		<!-- 添加预警规则 -->
+		<action name="QueryCountSFZ" class="ManageAction" method="QueryCountSfz"/>
+		<action name="addManage" class="ManageAction" method="addManage" />
+		<!-- 编辑预警规则 -->
+		<action name="EditManage" class="ManageAction" method="editManage" />
+		<!-- 分页显示预警规则信息 -->
+		<action name="listManage" class="ManageAction" method="listManage" />
+		<!-- 加载省市区县 默认加载100条 -->
+		<action name="showCitys" class="ManageAction" method="showCitys" />
+		<!-- 删除预警规则配置 -->
+		<action name="DelManage" class="ManageAction" method="deleteManage" />
+		
+		<!-- 更改比对子系统时间间隔 -->	
+		<action name="EditRunTime" class="ManageAction" method="editRunTime"/>
+		
+		<!-- 跳转短信配置管理 -->
+		<action name="showSMS" class="SmsAction" method="showSMS">
+			<result name="success">/pages/manage/sms.jsp</result>
+		</action>
+		<!-- 分页显示短信管理配置 -->
+		<action name="listSMS" class="SmsAction" method="listSMS"/>
+		<!-- 下拉显示所有布控规则 -->
+		<action name="showBK" class="SmsAction" method="showBK"/>
+		<!-- 添加短信管理配置 -->
+		<action name="AddSMS" class="SmsAction" method="addSMS"/>
+		<!-- 编辑短信管理 -->
+		<action name="ExitSMS" class="SmsAction" method="editSMS"/>
+		<!-- 删除短信配置 -->
+		<action name="DelSms" class="SmsAction" method="deleteSms"/>
+	
+	</package>
+</struts>

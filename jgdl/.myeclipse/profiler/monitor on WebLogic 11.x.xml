@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<entry key="profiler.settings.instrument.empty.methods">true</entry>
+<entry key="ProfilerCPUSettings_profile_runnables">true</entry>
+<entry key="ProfilerCPUSettings_filter_type">2</entry>
+<entry key="ProfilerMemorySettings_track_every">10</entry>
+<entry key="ProfilerMemorySettings_mode">4</entry>
+<entry key="ProfilerCPUSettings_root_classes">monitor.common.**
+monitor.log.action.**
+monitor.log.bean.entity.**
+monitor.log.bean.vo.**
+monitor.log.dao.**
+monitor.log.service.**
+monitor.manage.action.**
+monitor.manage.bean.dto.**
+monitor.manage.bean.entity.**
+monitor.manage.dao.**
+monitor.manage.service.**
+monitor.manage.timer.**
+monitor.manage.util.**
+monitor.registry.action.**
+monitor.registry.bean.dto.**
+monitor.registry.bean.entity.**
+monitor.registry.bean.vo.**
+monitor.registry.dao.**
+monitor.registry.service.**
+monitor.text.**
+monitor.user.action.**
+monitor.user.bean.dto.**
+monitor.user.bean.entity.**
+monitor.user.bean.vo.**
+monitor.user.dao.**
+monitor.user.service.**
+</entry>
+<entry key="ProfilerCPUSettings_filter_value">monitor.common.*,
+monitor.log.action.*,
+monitor.log.bean.entity.*,
+monitor.log.bean.vo.*,
+monitor.log.dao.*,
+monitor.log.service.*,
+monitor.manage.action.*,
+monitor.manage.bean.dto.*,
+monitor.manage.bean.entity.*,
+monitor.manage.dao.*,
+monitor.manage.service.*,
+monitor.manage.timer.*,
+monitor.manage.util.*,
+monitor.registry.action.*,
+monitor.registry.bean.dto.*,
+monitor.registry.bean.entity.*,
+monitor.registry.bean.vo.*,
+monitor.registry.dao.*,
+monitor.registry.service.*,
+monitor.text.*,
+monitor.user.action.*,
+monitor.user.bean.dto.*,
+monitor.user.bean.entity.*,
+monitor.user.bean.vo.*,
+monitor.user.dao.*,
+monitor.user.service.*</entry>
+<entry key="profiler.settings.istrument.getter.setter.methods">true</entry>
+<entry key="myeclipse.profiling.mode">0</entry>
+<entry key="ProfilerMemorySettings_stacktraces">-1</entry>
+</properties>

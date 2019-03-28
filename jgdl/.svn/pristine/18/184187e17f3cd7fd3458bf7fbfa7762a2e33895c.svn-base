@@ -1,0 +1,37 @@
+/***
+	* copyright ：  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+	* Project Name:monitor
+	* @since：JDK1.6
+	* @version：1.0
+	* File Name:Citys.java
+	* Date:2016-3-9下午02:22:05   
+	***/
+package monitor.manage.bean.dto;
+
+/**
+ * @ClassName:Citys
+ * @dateTime: 2016-3-9 下午02:22:05
+ * @Description: TODO
+ * @version 
+ * @author: 田浩楠
+ * @since JDK 1.6
+ * History：
+ * Editor     version      Time               Operation
+ */
+public class Citys {
+	private Integer SQU ;			//唯一标识
+	private String CityName;		//省市县名字
+	public Integer getSQU() {
+		return SQU;
+	}
+	public void setSQU(Integer sQU) {
+		SQU = sQU;
+	}
+	public String getCityName() {
+		return CityName;
+	}
+	public void setCityName(String cityName) {
+		CityName = cityName;
+	}
+	
+}

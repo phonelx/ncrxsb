@@ -1,0 +1,85 @@
+/*
+ * @copyright:  xindongsheng Technologies Co., Ltd. Copyright 2010-9999,  All rights reserved 
+ * @description:  <description> 
+ * @author:  cl 
+ * @datetime:  2011-4-18 上午10:57:58
+*/
+package monitor.user.bean.dto;
+
+import monitor.user.bean.entity.RoleEntity;
+import monitor.user.bean.vo.RoleVo;
+
+/** 
+ * <description> 
+ * @author  cl
+ * @datetime  2011-4-18 上午10:57:58
+ */
+public class RoleDto {
+	private int squ = -1;
+	private String roleName = null;
+	private String descb = null;
+	private int isAdmin = 0;//是否是管理角色;1:管理角色 0：查询角色
+	private int isDefault = 0;
+	private int isSpr = -1;
+	
+	public RoleDto() {
+		
+	}
+	
+	public RoleDto(RoleEntity role) {
+		this.squ = role.getSqu();
+		this.roleName = role.getRoleName();
+		this.descb = role.getDescb();
+		this.isAdmin = role.getIsAdmin();
+		this.isDefault = role.getIsDefault();
+		this.isSpr = role.getIsSpr();
+	}
+	
+	public int getIsSpr() {
+		return isSpr;
+	}
+
+	public void setIsSpr(int isSpr) {
+		this.isSpr = isSpr;
+	}
+
+	public RoleDto(RoleVo roleVo) {
+		this.squ = roleVo.getSqu();
+		this.roleName = roleVo.getRoleName();
+		this.descb = roleVo.getDescb();
+		this.isAdmin = roleVo.getIsAdmin();
+	}
+
+	public int getSqu() {
+		return squ;
+	}
+	public void setSqu(int squ) {
+		this.squ = squ;
+	}
+	public String getRoleName() {
+		return roleName;
+	}
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+	public String getDescb() {
+		return descb;
+	}
+	public void setDescb(String descb) {
+		this.descb = descb;
+	}
+	public int getIsDefault() {
+		return isDefault;
+	}
+	public void setIsDefault(int isDefault) {
+		this.isDefault = isDefault;
+	}
+	public int getIsAdmin() {
+		return isAdmin;
+	}
+	public void setIsAdmin(int isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+	
+	
+}

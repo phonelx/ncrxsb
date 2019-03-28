@@ -1,0 +1,43 @@
+package monitor.goodsHouse.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import monitor.user.bean.vo.PageInfoVo;
+
+/**
+ *@ClassName
+ *@dataTime 2017-10-14-下午2:09:44
+ *@version
+ *@author:唐青
+ *@since
+ */
+public interface IPartsDao {
+	
+	/**
+	 * 
+	  * getParentMenu:().
+	  * TODO(加载部件目录).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午3:11:49
+	  * @param squ
+	  * @return
+	  * @throws SQLException List<Map<String,String>>
+	  * @since JDK 1.7
+	 */
+	public List<Map<String, String>> getPartsMenu(String squ)
+			throws SQLException;
+	
+	/**
+	 * 
+	  * selectChildMenu:(分页查询菜单).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-10-14 下午5:48:18
+	  * @param page
+	  * @return PageInfoVo
+	  * @since JDK 1.7
+	 */
+	public PageInfoVo selectChildMenu(PageInfoVo page) throws SQLException;;
+}

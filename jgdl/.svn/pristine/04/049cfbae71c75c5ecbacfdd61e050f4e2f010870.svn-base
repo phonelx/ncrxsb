@@ -1,0 +1,114 @@
+package monitor.approvalPending.action;
+
+import net.sf.json.JSONObject;
+import monitor.approvalPending.bean.entity.ApprovalEntity;
+import monitor.approvalPending.service.IApprovalService;
+import monitor.common.BaseAction;
+import monitor.dispatched.bean.dto.DispatchedDto;
+
+import monitor.user.bean.vo.PageInfoVo;
+
+
+public class ApprovalAction extends BaseAction{
+	
+	private static final long serialVersionUID = 1L;
+	private IApprovalService approvalSrevice ;
+	private ApprovalEntity approval ;
+	private PageInfoVo pageVo = new PageInfoVo();
+
+	private DispatchedDto dispatchedDto = new DispatchedDto();
+	
+	public IApprovalService getApprovalSrevice() {
+		return approvalSrevice;
+	}
+	public void setApprovalSrevice(IApprovalService approvalSrevice) {
+		this.approvalSrevice = approvalSrevice;
+	}
+	
+	public ApprovalEntity getApproval() {
+		return approval;
+	}
+
+	public void setApproval(ApprovalEntity approval) {
+		this.approval = approval;
+	}
+	public DispatchedDto getDispatchedDto() {
+		return dispatchedDto;
+	}
+	public void setDispatchedDto(DispatchedDto dispatchedDto) {
+		this.dispatchedDto = dispatchedDto;
+	}
+	
+	public String gotoApprovalIndex(){
+		//从页面获取类型并传入跳转后页面
+		getRequest().setAttribute("type", getRequest().getParameter("type"));
+		return SUCCESS;
+	}
+	//跳转
+	public String approvalclock(){
+		return SUCCESS;
+	}
+/**
+ * 审批
+ */
+	public void editApproval(){
+		int result = 0;
+		String gmsfhm = getRequest().getParameter("gmsfhm");
+		String bz = getRequest().getParameter("bz");
+		result = approvalSrevice.editApproval(bz, gmsfhm);
+		writeJsonBack(result + "");
+	}
+	/**
+	 * 
+	  * quxiaoApproval:(这里用一句话描述这个方法的作用).取消审批
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-6-14 下午5:16:02 void
+	  * @since JDK 1.7
+	 */
+	public void quxiaoApproval(){
+		int result = 0;
+		String gmsfhm = getRequest().getParameter("gmsfhm");
+		String bz = getRequest().getParameter("bz");
+		result = approvalSrevice.quxiaoApproval(bz, gmsfhm);
+		writeJsonBack(result + "");
+	}
+	
+	/**
+	 * 待审批详情信息
+	 * @return
+	 */
+	public String toApprovaldetails(){
+		String strJson = getRequest().getParameter("strJson");
+		System.out.println(strJson);
+		getRequest().setAttribute("personMsg", strJson);
+		return SUCCESS;
+	}
+	/**
+	 * 待审批信息
+	  * listApprovalInPage:(这里用一句话描述这个方法的作用).
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).
+	  * @author: 唐青
+	  * @dateTime: 2017-6-14 下午5:16:51 void
+	  * @since JDK 1.7
+	 */
+	public void listApprovalInPage(){
+		dispatchedDto.setUserdto(userDto);
+		int page = Integer.parseInt(getRequest().getParameter("page"));
+		int rows = Integer.parseInt(getRequest().getParameter("rows"));
+		int bkzt = Integer.valueOf(getRequest().getParameter("bkzt"));
+		int isnew = Integer.valueOf(getRequest().getParameter("isnew"));
+		int currentPage = Integer.valueOf(getRequest().getParameter("currentPage"));
+		dispatchedDto.getPageInfo().setPageNumber((page));
+		dispatchedDto.getPageInfo().setPageSize((rows));
+		dispatchedDto.setBkzt(bkzt);
+		dispatchedDto.setIsnew(isnew);
+		dispatchedDto.setPageInfo(pageVo);
+		pageVo.setPageNumber(page);
+		pageVo.setPageNumber(currentPage);
+		dispatchedDto.setPageInfo(pageVo);
+		DispatchedDto dto = approvalSrevice.listDispatchedInPage(dispatchedDto,page,rows);
+		JSONObject jsonObj = JSONObject.fromObject(dto.getPageInfo());
+		writeJsonBack(jsonObj.toString());
+	}
+}

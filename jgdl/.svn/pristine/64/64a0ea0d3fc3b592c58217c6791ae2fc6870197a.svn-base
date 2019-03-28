@@ -1,0 +1,17 @@
+package monitor.manage.service;
+
+import java.util.List;
+import java.util.Map;
+
+import monitor.manage.bean.dto.CMDto;
+import monitor.manage.bean.dto.Yjgzdto;
+
+public interface QueryService {
+	public List QuerySFZ(int pageSize, int pageNo,String sfhm,String yjbt);
+	public int GetCount(String sfhm,String yjbt);
+	public List chooseSource(String yjid);
+	public List chooseTable(String yjid);
+	public List<Map<String,Object>> selectDetail(Yjgzdto Yjgzdto);
+	public List detialTabPage(Yjgzdto Yjgzdto);
+	public int detialTabCount(Yjgzdto Yjgzdto);
+}	

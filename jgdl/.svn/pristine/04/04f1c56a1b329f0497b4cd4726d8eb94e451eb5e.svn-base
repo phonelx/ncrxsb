@@ -1,0 +1,94 @@
+package monitor.dispatched.service.impl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import monitor.dispatched.bean.dto.DispatchedDto;
+import monitor.dispatched.dao.IDispatchedDao;
+import monitor.dispatched.service.IDispatchedService;
+
+public class DispatchedServiceImpl implements IDispatchedService{
+	
+	/**
+	 * 是否是管理员（审批）角色
+	 */
+	public static final int ISADMIN = 1;
+	public static final int ISSPR = 1;
+	
+	/**
+	 * 是否是最新已部署信息
+	 */
+	public static final int ISNEW = 1;
+	
+	/**
+	 * dao层注入
+	 */
+	private IDispatchedDao dispatchedDao;
+
+	/**
+	  * listDispatchedInPage:查询已部署人员列表
+	  * @author 黄月
+	  * @date  2017-4-27 上午10:39:44
+	  * @param dispatchedDto
+	  * @param isNew
+	  * @return
+	 * @throws SQLException 
+	 */
+	@Override
+	public DispatchedDto listDispatchedInPage(DispatchedDto dispatchedDto) throws SQLException {
+		StringBuffer sbParam = new StringBuffer();
+		//判断用户的权限
+		if (ISSPR == dispatchedDto.getUserdto().getRoleEntity().getIsSpr()) {
+			//查询当前审批人且为已部署信息
+			sbParam.append("　AND　SPRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+			//是否查询最新数据
+			if (dispatchedDto.getIsnew() == 1) {
+				sbParam.append(" AND ISNEW = 1");
+			}
+		} else {
+			//查询当前录入人下已部署信息
+			sbParam.append("　AND　LRRSQU = ");
+			sbParam.append(dispatchedDto.getUserdto().getSqu());
+			//是否查询最新数据
+			if (dispatchedDto.getIsnew() == 1) {
+				sbParam.append(" AND ISNEW = 1");
+			}
+		}
+		return dispatchedDao.listDispatchedInPage(dispatchedDto, sbParam.toString());
+	}
+	
+	/**
+	  * selectTrajectory:查询人员轨迹
+	  * @author 黄月
+	  * @date  2017-4-25 下午3:25:23
+	  * @param strIdcard 身份证
+	  * @return 
+	 * @throws SQLException 
+	*/
+	@Override
+	public List<Map<String, String>> selectTrajectory(DispatchedDto dispatchedDto) throws SQLException {
+		List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+		list = dispatchedDao.selectTrajectory(dispatchedDto.getGmsfhm());
+		//如果是最新数据则改变状态
+		if (dispatchedDto.getIsnew() == 1) {
+			dispatchedDao.updateIsNew(dispatchedDto.getGmsfhm());
+		}
+		return list;
+	}
+	
+	public String findMz(String gmsfzh){
+	    return this.dispatchedDao.findMz(gmsfzh);
+	}
+	
+	public IDispatchedDao getDispatchedDao() {
+		return dispatchedDao;
+	}
+
+	public void setDispatchedDao(IDispatchedDao dispatchedDao) {
+		this.dispatchedDao = dispatchedDao;
+	}
+
+}

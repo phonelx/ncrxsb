@@ -1,0 +1,28 @@
+/**
+ * 打印
+ */
+function print(){
+	/*$(".tab-pane").css("display","block")*/
+	/*$("#tab_1").show();
+	$("#tab_2").show();
+	$("#tab_3").show();*/
+	/*$("#tab_1").css("width","192mm");
+	$("#tab_1").css("height","310mm");
+	$("#tab_2").css("width","192mm");
+	$("#tab_2").css("height","297mm");*/
+	/*$("#tab_3").css("width","192mm");
+	$("#tab_3").css("height","547mm");*/
+	/*$(".tab-content").print({
+		$("#tab_1").attr("height","800mm");
+		$("#tab_2").attr("height","800mm");
+		$("#tab_3").attr("height","800mm");
+	})*/
+	$(".tab-content").jqprint({
+		 debug: false,            
+         importCSS: true,         
+         printContainer: true,    
+         operaSupport: false 
+	})
+	/*$("#tab_2").hide();
+	$("#tab_3").hide();*/
+}

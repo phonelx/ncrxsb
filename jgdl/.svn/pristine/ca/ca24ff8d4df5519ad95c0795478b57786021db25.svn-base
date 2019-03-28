@@ -1,0 +1,29 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="projectChildSite" extends="monitor-struts-default" >
+		
+		<!-- 新增部位-->
+		<action name="insertChildSite" class="projectChildSiteAction" method="insertChildSite"/>
+		<!-- 根据squ删除部位 -->
+		<action name="delChildSite" class="projectChildSiteAction" method="delChildSite"/>
+		<!-- 修改部位 -->
+		<action name="updateChildSite" class="projectChildSiteAction" method="updateChildSite"/>
+		<!-- 查询部位列表 -->
+		<action name="selectlistChildSite" class= "projectChildSiteAction" method="selectlistChildSite"/>
+		<!-- 添加支架 -->
+		<action name="insertDxInfo" class= "projectChildSiteAction" method="insertDxInfo"/>
+		<!-- 删除支架 -->
+		<action name="delDxInfo" class= "projectChildSiteAction" method="delDxInfo"/>
+		<!--修改支架  -->
+		<action name="updateDxInfo" class= "projectChildSiteAction" method="updateDxInfo"/>
+		<!-- 查询支架列表 -->
+		<action name="selectlistDxInfo" class= "projectChildSiteAction" method="selectlistDxInfo"/>
+		<!-- 获取当前部位下没有的支架 -->
+		<action name="getHolderNotInSite" class= "projectChildSiteAction" method="getHolderNotInSite"/>
+		<!-- 生成部位下所有支架流水号 -->
+		<action name="numberTheHolder" class= "projectChildSiteAction" method="numberTheHolder"/>
+		<action name="getT_Project_ZjById" class= "projectChildSiteAction" method="getT_Project_ZjById"/>
+	</package>	
+</struts>

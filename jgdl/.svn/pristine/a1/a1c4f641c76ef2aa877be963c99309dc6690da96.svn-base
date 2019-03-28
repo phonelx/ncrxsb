@@ -1,0 +1,204 @@
+package monitor.manage.action;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import net.sf.json.JSONObject;
+import monitor.common.BaseAction;
+import monitor.common.exception.BizException;
+import monitor.manage.bean.dto.Yjgzdto;
+import monitor.manage.service.QueryService;
+
+public class QueryAction extends BaseAction {
+
+	private static final long serialVersionUID = 1L;
+	private QueryService service;
+	private String yjbt;
+	private String sfhm;
+	private String yjid;
+	private String checked;
+	private String rq1;
+	private String rq2;
+	/**
+	 * 调整预警查询也没
+	 * @return
+	 */
+	public String showyjsfz(){
+		return SUCCESS;
+	}
+	
+	/**
+	 * 分页显示预警身份证
+	 * @return
+	 */
+	public void QuerYJXX(){
+		try {
+			PrintWriter writer = getResponse().getWriter();
+			JSONObject json = new JSONObject();
+			// 每页显示条数
+			int pageSize
+			 = Integer.parseInt(getRequest().getParameter("rows"));
+			// 当前页
+			int pageNo
+			= Integer.parseInt(getRequest().getParameter("page"));
+			json.put("total", service.GetCount(sfhm,yjbt));
+			json.put("rows", service.QuerySFZ(pageSize, pageNo,sfhm,yjbt));
+			json.put("pageSize", pageSize);
+	        json.put("pageNumber", pageNo);
+			writer.print(json);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	/**
+	 * 
+	  * selectDetail:(分页显示数据).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-4-21 上午11:53:40
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String detialTabPages() {
+		int pageSize
+		 = Integer.parseInt(getRequest().getParameter("pageSize"));
+		// 当前页
+		int pageNo 
+		= Integer.parseInt(getRequest().getParameter("pageNo"));
+		String id = getRequest().getParameter("dbid");
+		String yjid = getRequest().getParameter("id");
+		Yjgzdto dto = new Yjgzdto();
+		dto.setDbConID(Integer.parseInt(id));
+		dto.setPageNo(pageNo);
+		dto.setPageSize(pageSize);
+		dto.setId(Integer.parseInt(yjid));
+		dto.setChecked(checked);
+		dto.setSfhm(sfhm);
+		dto.setCsrq1(rq1);
+		dto.setCsrq2(rq2);
+		JSONObject json = new JSONObject();
+		json.put("total", service.detialTabCount(dto));
+		json.put("rows", service.detialTabPage(dto));
+		writeJsonBack(json.toString());
+		return null;
+	}
+	/**
+	  * detialInformations:(显示选择数据).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-4-21 上午10:02:42
+	  * @param: @return
+	  * @return: String
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public String detialInformations(){
+		JSONObject json = new JSONObject();
+		int pageSize
+		 = Integer.parseInt(getRequest().getParameter("pageSize"));
+		// 当前页
+		int pageNo 
+		= Integer.parseInt(getRequest().getParameter("pageNo"));
+		String id = getRequest().getParameter("dbid");
+		String yijd = getRequest().getParameter("id");
+		Yjgzdto dto = new Yjgzdto();
+		dto.setDbConID(Integer.parseInt(id));
+		dto.setPageNo(pageNo);
+		dto.setPageSize(pageSize);
+		dto.setId(Integer.parseInt(yijd));
+		dto.setSfhm(sfhm);
+		dto.setCsrq1(rq1);
+		dto.setCsrq2(rq2);
+		dto.setChecked(checked);
+ 		json.put("rows", service.selectDetail(dto));
+		writeJsonBack(json.toString());
+		return null;
+	}
+	
+	/**
+	 * 
+	  * getSourceTables:(显示选择数据).<br/>
+	  * TODO(这里描述方法适用条件/执行流程/使用方法/注意事项).<br/>
+	  * @author: 田浩楠
+	  * @dateTime: 2016-4-21 上午10:02:21
+	  * @param: 
+	  * @return: void
+	  * @throws
+	  * @since JDK 1.6
+	 */
+	public void getSourceTables(){
+		JSONObject json = new JSONObject();
+		json.put("source", service.chooseSource(yjid));
+		json.put("table", service.chooseTable(yjid));
+		writeJsonBack(json.toString());
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	public QueryService getService() {
+		return service;
+	}
+	public void setService(QueryService service) {
+		this.service = service;
+	}
+
+	public String getYjbt() {
+		return yjbt;
+	}
+
+	public void setYjbt(String yjbt) {
+		this.yjbt = yjbt;
+	}
+
+	public String getSfhm() {
+		return sfhm;
+	}
+
+	public void setSfhm(String sfhm) {
+		this.sfhm = sfhm;
+	}
+
+	public String getYjid() {
+		return yjid;
+	}
+
+	public void setYjid(String yjid) {
+		this.yjid = yjid;
+	}
+
+	public String getChecked() {
+		return checked;
+	}
+
+	public void setChecked(String checked) {
+		this.checked = checked;
+	}
+
+	public String getRq1() {
+		return rq1;
+	}
+
+	public void setRq1(String rq1) {
+		this.rq1 = rq1;
+	}
+
+	public String getRq2() {
+		return rq2;
+	}
+
+	public void setRq2(String rq2) {
+		this.rq2 = rq2;
+	}
+	
+	
+}
